@@ -1,0 +1,58 @@
+{
+  "id": "navbar",
+  "name": "Navbar",
+  "category": "navigation",
+  "aliases": ["top bar", "header nav", "menu bar", "navigation bar", "app bar"],
+  "looksLike": [
+    "bar across the top of the page with links",
+    "logo on the left and menu links on the right",
+    "header with a button on the far right"
+  ],
+  "definition": "A horizontal bar at the top of the page holding the logo, the main navigation links, and often a call-to-action button.",
+  "whenToUse": ["Primary site navigation", "Marketing and app headers"],
+  "notConfusedWith": [
+    { "id": "drawer", "difference": "Slides in on demand; the navbar is always visible." }
+  ],
+  "related": ["hamburger-icon", "drawer"],
+  "prompts": {
+    "short": "Add a sticky top navbar: logo left, links center, CTA right.",
+    "detailed": "Add a sticky top navbar with the logo on the left, centered nav links with a clear active state, and a primary CTA button on the right. Collapse to a hamburger menu that opens a drawer below 768px, and use a nav landmark with an aria-label."
+  },
+  "snippets": {
+    "html": [
+      "<header>",
+      "  <nav aria-label=\"Main\">",
+      "    <a href=\"/\">Logo</a>",
+      "    <a href=\"/docs\">Docs</a>",
+      "    <a href=\"/pricing\">Pricing</a>",
+      "    <a href=\"/signup\">Sign up</a>",
+      "  </nav>",
+      "</header>"
+    ],
+    "reactTailwind": [
+      "<header className=\"sticky top-0 z-40 border-b bg-white\">",
+      "  <nav aria-label=\"Main\" className=\"mx-auto flex h-14 max-w-6xl items-center justify-between px-4\">",
+      "    <a href=\"/\" className=\"font-semibold\">Logo</a>",
+      "    <div className=\"hidden gap-6 md:flex\">",
+      "      <a href=\"/docs\">Docs</a>",
+      "      <a href=\"/pricing\">Pricing</a>",
+      "    </div>",
+      "    <a href=\"/signup\" className=\"rounded-lg bg-black px-4 py-2 text-white\">Sign up</a>",
+      "  </nav>",
+      "</header>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Navigation Menu",
+    "MUI": "AppBar",
+    "Mantine": "AppShell.Header",
+    "Bootstrap": "Navbar",
+    "Chakra UI": "No built-in navbar (compose with Flex)"
+  },
+  "a11yNotes": [
+    "Wrap the links in a nav element with an aria-label",
+    "Mark the current page with aria-current",
+    "Keep the hamburger button labelled"
+  ],
+  "tags": ["navigation", "header", "layout"]
+}

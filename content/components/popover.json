@@ -1,0 +1,57 @@
+{
+  "id": "popover",
+  "name": "Popover",
+  "category": "overlay",
+  "aliases": ["floating panel", "flyout", "info bubble"],
+  "looksLike": [
+    "small box that appears next to a button when you click it",
+    "floating card with an arrow pointing at its trigger",
+    "little panel with no dark background"
+  ],
+  "definition": "A small floating panel anchored to the element that opened it. The rest of the page stays usable and there is no dimmed backdrop.",
+  "whenToUse": [
+    "Extra info or options tied to one button",
+    "Quick settings or filters",
+    "Mini forms such as a rename field"
+  ],
+  "notConfusedWith": [
+    { "id": "modal", "difference": "Centered, blocks the page, and has a dimmed backdrop." },
+    { "id": "drawer", "difference": "Slides in from a screen edge instead of sitting next to its trigger." }
+  ],
+  "related": ["modal", "drawer", "toast"],
+  "prompts": {
+    "short": "Add a popover anchored to this button. Close on outside click and Esc.",
+    "detailed": "Add a popover anchored below the trigger button with a small arrow, flipping above when there's no room. Close on outside click or Esc, return focus to the trigger, and set aria-expanded on the button."
+  },
+  "snippets": {
+    "html": [
+      "<button popovertarget=\"info\">More info</button>",
+      "<div id=\"info\" popover>Anchored help text goes here.</div>"
+    ],
+    "reactTailwind": [
+      "<div className=\"relative inline-block\">",
+      "  <button aria-expanded={open} onClick={() => setOpen(!open)}>",
+      "    More info",
+      "  </button>",
+      "  {open && (",
+      "    <div className=\"absolute left-0 top-full z-10 mt-2 w-64 rounded-lg border bg-white p-4 shadow-lg\">",
+      "      Anchored help text goes here.",
+      "    </div>",
+      "  )}",
+      "</div>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Popover",
+    "MUI": "Popover (or Popper)",
+    "Chakra UI": "Popover",
+    "Mantine": "Popover",
+    "Radix UI": "Popover"
+  },
+  "a11yNotes": [
+    "Set aria-expanded on the trigger",
+    "Close on Esc and on outside click",
+    "Keep the focus order logical"
+  ],
+  "tags": ["overlay", "anchored", "floating"]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "hamburger-icon",
+  "name": "Hamburger icon",
+  "category": "icons-assets",
+  "aliases": ["menu icon", "nav toggle", "three-lines icon", "menu button", "burger menu"],
+  "looksLike": [
+    "three horizontal lines stacked in a button",
+    "the icon you tap to open the menu on a phone",
+    "three lines icon"
+  ],
+  "definition": "An icon of three stacked horizontal lines that opens a hidden navigation menu. It is the standard toggle for mobile menus and drawers.",
+  "whenToUse": ["Collapsed mobile navigation", "Opening a drawer or sidebar"],
+  "notConfusedWith": [],
+  "related": ["navbar", "drawer"],
+  "prompts": {
+    "short": "Add a hamburger button that opens the mobile menu.",
+    "detailed": "Add a 44px hamburger icon button (three lines) to the navbar on screens below 768px. Give it an aria-label, aria-expanded, and aria-controls pointing at the menu, and animate it to an X when open."
+  },
+  "snippets": {
+    "html": [
+      "<button aria-label=\"Open menu\" aria-expanded=\"false\" aria-controls=\"menu\">",
+      "  <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"",
+      "       stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\">",
+      "    <path d=\"M4 6h16M4 12h16M4 18h16\" />",
+      "  </svg>",
+      "</button>"
+    ],
+    "reactTailwind": [
+      "import { Menu } from \"lucide-react\";",
+      "",
+      "<button",
+      "  aria-label=\"Open menu\"",
+      "  aria-expanded={open}",
+      "  aria-controls=\"menu\"",
+      "  className=\"grid h-11 w-11 place-items-center\"",
+      ">",
+      "  <Menu aria-hidden=\"true\" />",
+      "</button>"
+    ]
+  },
+  "libraries": {
+    "Lucide": "Menu",
+    "Heroicons": "Bars3Icon",
+    "Phosphor": "List",
+    "Tabler": "IconMenu2",
+    "Material Icons": "menu",
+    "Radix Icons": "HamburgerMenuIcon"
+  },
+  "a11yNotes": [
+    "Icon-only buttons need an aria-label",
+    "Expose the open state with aria-expanded",
+    "Keep the tap target at least 44px"
+  ],
+  "tags": ["icon", "mobile", "menu"]
+}

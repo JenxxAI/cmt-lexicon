@@ -1,0 +1,50 @@
+{
+  "id": "toggle-switch",
+  "name": "Toggle switch",
+  "category": "input",
+  "aliases": ["switch", "toggle", "on/off switch"],
+  "looksLike": [
+    "pill that slides left and right to turn something on or off",
+    "on off switch",
+    "little round knob on a track"
+  ],
+  "definition": "A two-state control that turns a setting on or off immediately, like a physical light switch.",
+  "whenToUse": ["Settings that apply instantly", "Enabling or disabling a feature"],
+  "notConfusedWith": [],
+  "related": [],
+  "prompts": {
+    "short": "Add an on/off toggle switch with a label. Apply the change instantly.",
+    "detailed": "Add an accessible toggle switch (switch role, aria-checked) with a visible label, a sliding knob, and the on state in the accent color. It applies immediately, so don't add a Save button. Support Space to toggle and a visible focus ring."
+  },
+  "snippets": {
+    "html": [
+      "<button role=\"switch\" aria-checked=\"false\" aria-label=\"Email notifications\">",
+      "  <span class=\"knob\"></span>",
+      "</button>"
+    ],
+    "reactTailwind": [
+      "<button",
+      "  role=\"switch\"",
+      "  aria-checked={on}",
+      "  aria-label=\"Email notifications\"",
+      "  onClick={() => setOn(!on)}",
+      "  className={`h-6 w-11 rounded-full p-0.5 transition ${on ? \"bg-indigo-600\" : \"bg-gray-300\"}`}",
+      ">",
+      "  <span className={`block h-5 w-5 rounded-full bg-white transition ${on ? \"translate-x-5\" : \"\"}`} />",
+      "</button>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Switch",
+    "MUI": "Switch",
+    "Chakra UI": "Switch",
+    "Mantine": "Switch",
+    "Radix UI": "Switch"
+  },
+  "a11yNotes": [
+    "Use the switch role with aria-checked",
+    "Support Space (and Enter) to toggle",
+    "Don't rely on color alone to show the state"
+  ],
+  "tags": ["input", "settings", "boolean"]
+}

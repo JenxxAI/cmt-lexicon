@@ -1,0 +1,46 @@
+{
+  "id": "bottom-sheet",
+  "name": "Bottom sheet",
+  "category": "overlay",
+  "aliases": ["bottom drawer", "action sheet", "slide-up panel"],
+  "looksLike": [
+    "panel that slides up from the bottom of the screen",
+    "mobile menu that rises from the bottom",
+    "card with a little handle bar at the top that you can drag down"
+  ],
+  "definition": "A panel that slides up from the bottom edge, common on mobile for actions, filters, or details. Often has a drag handle and can be swiped away.",
+  "whenToUse": [
+    "Mobile action menus",
+    "Filters and sort options on phones",
+    "Detail previews such as a map pin card"
+  ],
+  "notConfusedWith": [
+    { "id": "drawer", "difference": "Slides in from the side instead of the bottom." },
+    { "id": "modal", "difference": "Centered, and not swipe-to-dismiss." }
+  ],
+  "related": ["drawer", "modal"],
+  "prompts": {
+    "short": "Add a bottom sheet with a drag handle. Swipe down or tap outside to close.",
+    "detailed": "Add a mobile bottom sheet that slides up from the bottom with a drag handle, rounded top corners, and a dimmed backdrop. Support swipe-down and backdrop tap to close, cap its height at 85vh with internal scroll, and respect the safe-area inset."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "<div className=\"fixed inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-4 pb-[env(safe-area-inset-bottom)] shadow-2xl\">",
+      "  <div className=\"mx-auto mb-3 h-1.5 w-10 rounded-full bg-gray-300\" />",
+      "  {children}",
+      "</div>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Drawer (built on Vaul)",
+    "MUI": "SwipeableDrawer (anchor bottom)",
+    "Chakra UI": "Drawer (placement bottom)",
+    "Mantine": "Drawer (position bottom)"
+  },
+  "a11yNotes": [
+    "Provide a close button as well as the swipe gesture",
+    "Trap focus while it is open",
+    "Use the dialog role and give it a name"
+  ],
+  "tags": ["mobile", "overlay", "gesture"]
+}

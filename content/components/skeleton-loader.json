@@ -1,0 +1,45 @@
+{
+  "id": "skeleton-loader",
+  "name": "Skeleton loader",
+  "category": "feedback",
+  "aliases": ["skeleton screen", "shimmer", "placeholder", "ghost loading", "loading placeholder"],
+  "looksLike": [
+    "gray boxes that stand in for content while it loads",
+    "shimmering placeholder blocks shaped like the page",
+    "fake grey lines where text will appear"
+  ],
+  "definition": "Gray placeholder shapes that mimic the layout of content that is still loading, so the page doesn't jump when the real content arrives.",
+  "whenToUse": [
+    "Lists, cards, and profiles loading from an API",
+    "Anywhere a spinner would feel slow or jumpy"
+  ],
+  "notConfusedWith": [],
+  "related": [],
+  "prompts": {
+    "short": "Replace the list spinner with skeleton placeholders.",
+    "detailed": "Replace the loading spinner with skeleton placeholders that match the final layout: a circle avatar and two text lines per row, a subtle shimmer animation, and no layout shift when real content loads. Respect prefers-reduced-motion."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "<div className=\"flex items-center gap-3\" aria-busy=\"true\">",
+      "  <div className=\"h-10 w-10 animate-pulse rounded-full bg-gray-200\" />",
+      "  <div className=\"space-y-2\">",
+      "    <div className=\"h-3 w-40 animate-pulse rounded bg-gray-200\" />",
+      "    <div className=\"h-3 w-24 animate-pulse rounded bg-gray-200\" />",
+      "  </div>",
+      "</div>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Skeleton",
+    "MUI": "Skeleton",
+    "Chakra UI": "Skeleton",
+    "Mantine": "Skeleton"
+  },
+  "a11yNotes": [
+    "Mark the loading region with aria-busy",
+    "Respect prefers-reduced-motion for the shimmer",
+    "Hide purely decorative placeholders from screen readers"
+  ],
+  "tags": ["feedback", "loading", "performance"]
+}

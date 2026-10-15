@@ -1,0 +1,53 @@
+{
+  "id": "toast",
+  "name": "Toast",
+  "category": "feedback",
+  "aliases": ["snackbar", "notification pop", "toast notification", "flash message"],
+  "looksLike": [
+    "small message that pops up in the corner and disappears",
+    "little black bar at the bottom saying saved",
+    "notification that fades away by itself"
+  ],
+  "definition": "A brief message that appears over the page, usually in a corner, and dismisses itself after a few seconds. It never blocks the page.",
+  "whenToUse": [
+    "Confirming a save or a copy",
+    "Undo prompts after a delete",
+    "Non-critical errors"
+  ],
+  "notConfusedWith": [
+    { "id": "modal", "difference": "Blocks the page and needs a response." },
+    { "id": "popover", "difference": "Anchored to a trigger instead of a screen corner." }
+  ],
+  "related": ["modal", "popover"],
+  "prompts": {
+    "short": "Show a toast bottom-right after save. Auto-dismiss in 3s.",
+    "detailed": "Add a toast system: bottom-right stack, auto-dismiss after 3s, pause on hover, with success and error variants and an optional Undo action. Render it in a polite live region so screen readers announce it."
+  },
+  "snippets": {
+    "html": [
+      "<div role=\"status\" aria-live=\"polite\" class=\"toast\">Saved</div>"
+    ],
+    "reactTailwind": [
+      "<div",
+      "  role=\"status\"",
+      "  aria-live=\"polite\"",
+      "  className=\"fixed bottom-4 right-4 rounded-lg bg-gray-900 px-4 py-3 text-sm text-white shadow-lg\"",
+      ">",
+      "  Saved",
+      "</div>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Sonner (the older Toast is deprecated)",
+    "MUI": "Snackbar",
+    "Chakra UI": "Toast",
+    "Mantine": "Notifications",
+    "Radix UI": "Toast"
+  },
+  "a11yNotes": [
+    "Use a polite live region (role=status)",
+    "Don't auto-dismiss messages people need time to read",
+    "Pause the timer on hover and focus"
+  ],
+  "tags": ["feedback", "notification", "temporary"]
+}

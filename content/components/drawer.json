@@ -1,0 +1,74 @@
+{
+  "id": "drawer",
+  "name": "Drawer",
+  "category": "overlay",
+  "aliases": ["off-canvas", "side sheet", "slide-over", "side panel", "flyout menu"],
+  "looksLike": [
+    "panel that slides in from the side",
+    "menu that covers part of the screen",
+    "thing that opens when I tap the three lines",
+    "sliding sidebar with a dark overlay behind it"
+  ],
+  "definition": "A panel that slides in from the edge of the screen, usually holding navigation or actions, and sits on top of the page with a dimmed backdrop.",
+  "whenToUse": [
+    "Mobile navigation menus",
+    "Filters or settings that shouldn't leave the current page",
+    "Cart or detail previews"
+  ],
+  "notConfusedWith": [
+    { "id": "modal", "difference": "Centered and blocks the page. Best for confirmations." },
+    { "id": "popover", "difference": "Small, anchored to a button, no backdrop." },
+    { "id": "bottom-sheet", "difference": "Slides up from below. Mostly mobile." }
+  ],
+  "related": ["hamburger-icon", "modal", "bottom-sheet", "navbar"],
+  "prompts": {
+    "short": "Add a right-side drawer. Close on overlay click and Esc.",
+    "detailed": "Add a right-side drawer (320px wide) with a dimmed backdrop and a slide-in animation. Trap focus inside it, close on Esc or backdrop click, return focus to the trigger on close, and mark it aria-modal."
+  },
+  "snippets": {
+    "html": [
+      "<button id=\"open-menu\">Menu</button>",
+      "<div id=\"backdrop\" hidden></div>",
+      "<aside id=\"drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Menu\" hidden>",
+      "  <button id=\"close-menu\" aria-label=\"Close menu\">×</button>",
+      "  <!-- links go here -->",
+      "</aside>"
+    ],
+    "reactTailwind": [
+      "export function Drawer({ open, onClose, children }: {",
+      "  open: boolean;",
+      "  onClose: () => void;",
+      "  children: React.ReactNode;",
+      "}) {",
+      "  if (!open) return null;",
+      "  return (",
+      "    <>",
+      "      <div className=\"fixed inset-0 bg-black/40\" onClick={onClose} />",
+      "      <aside",
+      "        role=\"dialog\"",
+      "        aria-modal=\"true\"",
+      "        aria-label=\"Menu\"",
+      "        className=\"fixed inset-y-0 right-0 w-80 bg-white p-6 shadow-xl\"",
+      "      >",
+      "        <button onClick={onClose} aria-label=\"Close\">×</button>",
+      "        {children}",
+      "      </aside>",
+      "    </>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Sheet",
+    "MUI": "Drawer",
+    "Chakra UI": "Drawer",
+    "Mantine": "Drawer",
+    "Radix UI": "Dialog, styled as a side panel"
+  },
+  "a11yNotes": [
+    "Trap focus while it is open",
+    "Close on Esc and on backdrop click",
+    "Return focus to the button that opened it"
+  ],
+  "tags": ["navigation", "mobile", "overlay"]
+}

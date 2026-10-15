@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* Design tokens from the mockup. Use these names in components instead of raw hex values. */
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #f2f4f7; /* page background */
+  --color-surface: #ffffff; /* cards, inputs */
+  --color-ink: #101828; /* main text, dark bands */
+  --color-body: #344054; /* long-form text */
+  --color-muted: #475467; /* secondary text */
+  --color-line: #eaecf0; /* hairlines */
+  --color-rule: #d0d5dd; /* borders */
+  --color-accent: #3730f0;
+  --color-accent-deep: #2b24c9;
+  --color-accent-soft: #ecebfe;
+  --color-hi: #ffe14d; /* token-count badges, highlights */
+  --color-stage: #e4e8ef; /* preview backgrounds */
+  --color-skel: #b7bfcc;
+  --color-skel-soft: #c9d0db;
+  --color-code: #1d2939;
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 1rem;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}

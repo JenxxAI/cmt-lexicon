@@ -1,0 +1,80 @@
+{
+  "id": "modal",
+  "name": "Modal",
+  "category": "overlay",
+  "aliases": ["dialog", "dialog box", "popup", "pop-up", "lightbox"],
+  "looksLike": [
+    "popup with a dark background behind it",
+    "box in the middle of the screen that blocks everything else",
+    "confirmation window with Cancel and OK buttons",
+    "window that appears on top of the page"
+  ],
+  "definition": "A centered window that appears on top of the page and blocks everything behind it until the person responds or dismisses it.",
+  "whenToUse": [
+    "Confirming a destructive action",
+    "Short forms that need full focus",
+    "Showing a single important message"
+  ],
+  "notConfusedWith": [
+    { "id": "drawer", "difference": "Slides in from an edge and usually holds more content." },
+    { "id": "popover", "difference": "Small and anchored to a button; the page stays usable." },
+    { "id": "toast", "difference": "Appears briefly and doesn't block anything." }
+  ],
+  "related": ["drawer", "popover", "toast", "bottom-sheet"],
+  "prompts": {
+    "short": "Add a centered modal with title, body, Cancel and Confirm buttons. Trap focus.",
+    "detailed": "Add a centered modal (max-width 480px) with a title, body text, and Cancel/Confirm buttons over a dimmed backdrop. Trap focus, close on Esc, lock page scroll while open, and use the dialog role with aria-modal and aria-labelledby."
+  },
+  "snippets": {
+    "html": [
+      "<dialog id=\"confirm\">",
+      "  <h2>Delete project?</h2>",
+      "  <p>This can't be undone.</p>",
+      "  <form method=\"dialog\">",
+      "    <button>Cancel</button>",
+      "    <button value=\"confirm\">Delete</button>",
+      "  </form>",
+      "</dialog>",
+      "",
+      "<button onclick=\"document.getElementById('confirm').showModal()\">Delete</button>"
+    ],
+    "reactTailwind": [
+      "export function Modal({ open, onClose, title, children }: {",
+      "  open: boolean;",
+      "  onClose: () => void;",
+      "  title: string;",
+      "  children: React.ReactNode;",
+      "}) {",
+      "  if (!open) return null;",
+      "  return (",
+      "    <div className=\"fixed inset-0 grid place-items-center bg-black/50\" onClick={onClose}>",
+      "      <div",
+      "        role=\"dialog\"",
+      "        aria-modal=\"true\"",
+      "        aria-label={title}",
+      "        className=\"w-full max-w-md rounded-xl bg-white p-6\"",
+      "        onClick={(e) => e.stopPropagation()}",
+      "      >",
+      "        <h2 className=\"text-lg font-semibold\">{title}</h2>",
+      "        {children}",
+      "      </div>",
+      "    </div>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Dialog (AlertDialog for confirmations)",
+    "MUI": "Dialog (Modal is the low-level base)",
+    "Chakra UI": "Dialog (v3) / Modal (v2)",
+    "Mantine": "Modal",
+    "Radix UI": "Dialog"
+  },
+  "a11yNotes": [
+    "Trap focus while it is open",
+    "Close on Esc",
+    "Return focus to the trigger on close",
+    "Give it an accessible name (aria-labelledby)"
+  ],
+  "tags": ["overlay", "confirmation", "blocking"]
+}
