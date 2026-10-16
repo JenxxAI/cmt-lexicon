@@ -1,0 +1,55 @@
+{
+  "id": "alert",
+  "name": "Alert",
+  "category": "feedback",
+  "aliases": [
+    "alert banner",
+    "notification banner",
+    "inline alert"
+  ],
+  "looksLike": [
+    "wide message strip with a warning",
+    "notice that stays above the form",
+    "colored box explaining an error on the page"
+  ],
+  "definition": "A visible message that stays in the page to explain a problem, warning, or update, often near the content it concerns.",
+  "whenToUse": [
+    "Form-level errors",
+    "Persistent notices about a service"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "toast",
+      "difference": "Appears briefly and often disappears automatically; an alert usually stays until resolved or dismissed."
+    }
+  ],
+  "related": [
+    "toast",
+    "modal",
+    "badge"
+  ],
+  "prompts": {
+    "short": "Add an alert with a clear message that stays visible until resolved.",
+    "detailed": "Add a persistent alert near the affected content with a clear heading and helpful next step. Use text as well as color. Reserve role=\"alert\" for urgent dynamic messages; use role=\"status\" for routine updates and a normal section for static notices. Do not move focus or auto-dismiss essential information."
+  },
+  "snippets": {
+    "html": [
+      "<section aria-labelledby=\"service-notice\">",
+      "  <h2 id=\"service-notice\">Scheduled maintenance</h2>",
+      "  <p>Uploads will be unavailable tonight from 10 to 11 PM. Save your work before then.</p>",
+      "</section>",
+      "<!-- For urgent dynamically inserted errors, use role=\"alert\"; routine updates use role=\"status\". -->"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Alert"
+  },
+  "a11yNotes": [
+    "Keep essential messages visible and avoid relying only on color",
+    "Use assertive alerts only for urgent dynamic messages",
+    "Do not move focus to a notice unexpectedly"
+  ],
+  "tags": [
+    "feedback"
+  ]
+}

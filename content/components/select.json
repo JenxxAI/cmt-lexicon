@@ -1,0 +1,58 @@
+{
+  "id": "select",
+  "name": "Select / combobox",
+  "category": "input",
+  "aliases": [
+    "select",
+    "combobox",
+    "dropdown field",
+    "choice picker"
+  ],
+  "looksLike": [
+    "field with a down arrow that opens choices",
+    "box where I pick one item from a list",
+    "type in a field to narrow the available choices"
+  ],
+  "definition": "A field for choosing an option. A select offers fixed choices; an editable combobox also lets users type to find options and may allow a custom value.",
+  "whenToUse": [
+    "Choosing a country or category",
+    "Searching a long list of options"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "dropdown-menu",
+      "difference": "Runs commands such as Rename; a select or combobox sets a field value."
+    }
+  ],
+  "related": [
+    "radio",
+    "text-input",
+    "dropdown-menu"
+  ],
+  "prompts": {
+    "short": "Add a labeled select with keyboard-operable options and a visible selected value.",
+    "detailed": "Add a native select for a fixed list of choices, with an associated label, visible focus, and a 44px target. For a searchable combobox, use an accessible implementation with a labeled input, expanded state, linked listbox, arrow-key navigation, Enter selection, and Escape dismissal."
+  },
+  "snippets": {
+    "html": [
+      "<!-- Fixed-choice select. An editable combobox needs additional keyboard and focus behavior. -->",
+      "<label for=\"category\">Category</label>",
+      "<select id=\"category\" name=\"category\" style=\"min-height:44px; width:100%; box-sizing:border-box\">",
+      "  <option value=\"guides\">Guides</option>",
+      "  <option value=\"examples\">Examples</option>",
+      "  <option value=\"news\">News</option>",
+      "</select>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Select / Combobox"
+  },
+  "a11yNotes": [
+    "Associate a visible label and retain keyboard operation",
+    "Use native select for simple fixed choices",
+    "For custom comboboxes, expose expanded state and active option; support Escape and Enter"
+  ],
+  "tags": [
+    "input"
+  ]
+}

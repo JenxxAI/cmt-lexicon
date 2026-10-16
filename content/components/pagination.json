@@ -1,0 +1,55 @@
+{
+  "id": "pagination",
+  "name": "Pagination",
+  "category": "navigation",
+  "aliases": [
+    "page navigation",
+    "page numbers"
+  ],
+  "looksLike": [
+    "numbered links below a list of results",
+    "previous and next buttons beside page numbers",
+    "row of numbers with the current page highlighted"
+  ],
+  "definition": "Controls for moving between pages of a longer list, usually with page numbers and previous or next links.",
+  "whenToUse": [
+    "Search results split into pages",
+    "Long product or article lists"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "breadcrumb",
+      "difference": "Shows a hierarchy of parent pages rather than positions in a result list."
+    }
+  ],
+  "related": [
+    "breadcrumb",
+    "button"
+  ],
+  "prompts": {
+    "short": "Add pagination with page links and a marked current page.",
+    "detailed": "Add labeled pagination navigation using real links for result pages. Mark the current link with aria-current=\"page\", label page numbers clearly, and omit unavailable previous or next links. Keep targets at least 44px square and allow wrapping on small screens."
+  },
+  "snippets": {
+    "html": [
+      "<nav aria-label=\"Results pages\">",
+      "  <ul style=\"display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0\">",
+      "    <li><a href=\"?page=1\" aria-label=\"Page 1\" style=\"display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px\">1</a></li>",
+      "    <li><a href=\"?page=2\" aria-label=\"Page 2\" aria-current=\"page\" style=\"display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px; font-weight:bold\">2</a></li>",
+      "    <li><a href=\"?page=3\" aria-label=\"Page 3\" style=\"display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px\">3</a></li>",
+      "  </ul>",
+      "</nav>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Pagination"
+  },
+  "a11yNotes": [
+    "Label the navigation and each numbered page link",
+    "Mark the current page with aria-current=\"page\"",
+    "Provide visible focus, 44px targets, and wrapping"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}

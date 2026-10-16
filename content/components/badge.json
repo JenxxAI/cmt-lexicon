@@ -1,0 +1,51 @@
+{
+  "id": "badge",
+  "name": "Badge",
+  "category": "feedback",
+  "aliases": [
+    "status badge",
+    "count badge",
+    "status pill"
+  ],
+  "looksLike": [
+    "small pill with a status word inside",
+    "tiny number next to a label",
+    "little colored tag saying new or pending"
+  ],
+  "definition": "A compact label that communicates a status, category, or count beside another item.",
+  "whenToUse": [
+    "Unread message counts",
+    "Short status labels on cards"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "button",
+      "difference": "Performs an action; a badge usually just communicates information."
+    }
+  ],
+  "related": [
+    "card",
+    "avatar",
+    "alert"
+  ],
+  "prompts": {
+    "short": "Add a badge showing a short status label without relying on color alone.",
+    "detailed": "Add a compact badge beside the item it describes. Use readable text for its status or count, maintain text contrast, and do not rely on color alone. Keep it non-interactive unless it performs an action; if interactive, use a properly labeled button or link."
+  },
+  "snippets": {
+    "html": [
+      "<p>Application status: <span style=\"border:1px solid currentColor; border-radius:999px; padding:2px 8px; font-weight:bold\">Pending</span></p>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Badge"
+  },
+  "a11yNotes": [
+    "Express status in text as well as color",
+    "Keep text contrast at least 4.5:1",
+    "Use a real button or link only if the badge is interactive"
+  ],
+  "tags": [
+    "feedback"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "radio",
+  "name": "Radio",
+  "category": "input",
+  "aliases": [
+    "radio button",
+    "radio group",
+    "single-choice option"
+  ],
+  "looksLike": [
+    "round choices where only one can be selected",
+    "little circles with a dot in the chosen one",
+    "picking one option clears the other circle"
+  ],
+  "definition": "A set of mutually exclusive choices: choosing one radio button deselects the others in the same group.",
+  "whenToUse": [
+    "Choosing one delivery method",
+    "Selecting one billing interval"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "checkbox",
+      "difference": "Allows independent selections; several boxes can be checked at once."
+    }
+  ],
+  "related": [
+    "checkbox",
+    "select",
+    "button"
+  ],
+  "prompts": {
+    "short": "Add a radio group with labeled choices and one selection at a time.",
+    "detailed": "Add native radio inputs sharing a name inside a fieldset with a descriptive legend. Give each option a clickable label at least 44px high. Keep native arrow-key and Space behavior, visible focus, and a clear selected state."
+  },
+  "snippets": {
+    "html": [
+      "<fieldset>",
+      "  <legend>Delivery method</legend>",
+      "  <label style=\"display:flex; align-items:center; gap:8px; min-height:44px\">",
+      "    <input type=\"radio\" name=\"delivery\" value=\"standard\" checked>",
+      "    Standard delivery",
+      "  </label>",
+      "  <label style=\"display:flex; align-items:center; gap:8px; min-height:44px\">",
+      "    <input type=\"radio\" name=\"delivery\" value=\"express\">",
+      "    Express delivery",
+      "  </label>",
+      "</fieldset>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Radio Group"
+  },
+  "a11yNotes": [
+    "Group options using fieldset and legend",
+    "Use one shared name and a visible label for every radio",
+    "Preserve native keyboard behavior and visible focus"
+  ],
+  "tags": [
+    "input"
+  ]
+}

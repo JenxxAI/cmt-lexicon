@@ -311,6 +311,155 @@ function ProgressBar() {
   );
 }
 
+function Pagination() {
+  return (
+    <Page>
+      <div className="absolute inset-x-[12%] bottom-[14%] flex h-[21%] items-center justify-center gap-[5%]">
+        {[false, true, false, false].map((active, index) => (
+          <div key={index} className={`flex aspect-square h-full items-center justify-center rounded-md ${active ? "bg-accent" : "bg-surface"}`}>
+            <div className={`h-[35%] w-[12%] rounded-full ${active ? "bg-surface" : "bg-skel"}`} />
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
+
+function Sidebar() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-y-0 left-0 flex w-[32%] flex-col gap-[9%] border-r border-rule bg-surface p-[4%]">
+        <Bar w={70} tone="ink" />
+        <div className="h-[14%] rounded-sm bg-accent-soft" />
+        <Bar w={80} />
+        <Bar w={65} />
+      </div>
+      <div className="absolute left-[40%] top-[20%] h-[8%] w-[35%] rounded-full bg-skel" />
+      <div className="absolute left-[40%] top-[40%] h-[5%] w-[48%] rounded-full bg-skel-soft" />
+      <div className="absolute left-[40%] top-[54%] h-[5%] w-[41%] rounded-full bg-skel-soft" />
+    </Page>
+  );
+}
+
+function Carousel() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[22%] top-[12%] flex h-[60%] flex-col justify-end gap-[12%] rounded-lg bg-surface p-[5%]">
+        <div className="h-[38%] w-full rounded-md bg-accent-soft" />
+        <Bar w={65} tone="ink" />
+      </div>
+      <div className="absolute left-[10%] top-[38%] aspect-square w-[4%] rotate-45 border-b-2 border-l-2 border-accent" />
+      <div className="absolute right-[10%] top-[38%] aspect-square w-[4%] rotate-45 border-r-2 border-t-2 border-accent" />
+      <div className="absolute inset-x-[35%] bottom-[12%] flex h-[6%] justify-center gap-[14%]">
+        {[true, false, false].map((active, index) => <div key={index} className={`aspect-square h-full rounded-full ${active ? "bg-accent" : "bg-skel"}`} />)}
+      </div>
+    </Page>
+  );
+}
+
+function Badge() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[12%] top-[32%] flex h-[36%] items-center justify-between rounded-lg bg-surface px-[6%]">
+        <div className="h-[16%] w-[40%] rounded-full bg-skel" />
+        <div className="flex h-[50%] w-[32%] items-center justify-center rounded-full bg-accent-soft">
+          <div className="h-[20%] w-[60%] rounded-full bg-accent" />
+        </div>
+      </div>
+    </Page>
+  );
+}
+
+function Avatar() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[15%] top-1/2 aspect-square w-[24%] -translate-y-1/2 overflow-hidden rounded-full bg-accent-soft">
+        <div className="absolute left-[35%] top-[18%] aspect-square w-[30%] rounded-full bg-accent" />
+        <div className="absolute inset-x-[18%] bottom-0 h-[42%] rounded-t-full bg-accent" />
+      </div>
+      <div className="absolute left-[48%] top-[39%] h-[7%] w-[33%] rounded-full bg-ink" />
+      <div className="absolute left-[48%] top-[56%] h-[5%] w-[25%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
+function Radio() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[20%] inset-y-[22%] flex flex-col gap-[22%]">
+        {[true, false].map((selected) => (
+          <div key={String(selected)} className="flex h-[38%] items-center gap-[12%]">
+            <div className={`flex aspect-square h-full items-center justify-center rounded-full border-2 bg-surface ${selected ? "border-accent" : "border-skel"}`}>
+              {selected && <div className="aspect-square w-[50%] rounded-full bg-accent" />}
+            </div>
+            <div className="h-[18%] flex-1 rounded-full bg-skel" />
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
+
+function Slider() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[14%] top-[24%] h-[6%] w-[30%] rounded-full bg-ink" />
+      <div className="absolute inset-x-[14%] top-[52%] h-[6%] rounded-full bg-surface">
+        <div className="h-full w-[60%] rounded-full bg-accent" />
+      </div>
+      <div className="absolute left-[52%] top-[45%] aspect-square h-[20%] rounded-full border-2 border-accent bg-surface" />
+      <div className="absolute right-[14%] bottom-[20%] h-[5%] w-[12%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
+function Select() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[16%] top-[12%] h-[5%] w-[25%] rounded-full bg-ink" />
+      <div className="absolute inset-x-[16%] top-[25%] flex h-[23%] items-center justify-between rounded-md border border-accent bg-surface px-[5%]">
+        <div className="h-[18%] w-[48%] rounded-full bg-skel" />
+        <div className="aspect-square w-[6%] rotate-45 border-b-2 border-r-2 border-accent" />
+      </div>
+      <div className="absolute inset-x-[16%] top-[53%] flex h-[35%] flex-col gap-[18%] rounded-md bg-surface p-[4%]">
+        <div className="h-[24%] w-full rounded-sm bg-accent-soft" />
+        <Bar w={52} />
+        <Bar w={64} />
+      </div>
+    </Page>
+  );
+}
+
+function Spinner() {
+  return (
+    <Page lines={false}>
+      <svg viewBox="0 0 100 100" className="absolute left-[38%] top-[16%] aspect-square w-[24%]" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" fill="none" strokeWidth="8" className="stroke-skel-soft" />
+        <circle cx="50" cy="50" r="42" fill="none" strokeWidth="8" pathLength="100" strokeDasharray="25 75" transform="rotate(-90 50 50)" className="stroke-accent" />
+      </svg>
+      <div className="absolute inset-x-[35%] bottom-[15%] h-[5%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
+function Alert() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[8%] top-[18%] flex h-[42%] items-center gap-[8%] rounded-lg border border-accent bg-accent-soft px-[5%]">
+        <div className="flex aspect-square h-[46%] shrink-0 flex-col items-center justify-center gap-[12%] rounded-full bg-accent">
+          <div className="h-[34%] w-[10%] rounded-full bg-surface" />
+          <div className="aspect-square w-[10%] rounded-full bg-surface" />
+        </div>
+        <div className="flex h-[48%] flex-1 flex-col justify-around">
+          <Bar w={62} tone="ink" />
+          <Bar w={90} />
+        </div>
+      </div>
+      <div className="absolute left-[8%] bottom-[20%] h-[5%] w-[55%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
 function Generic() {
   return (
     <div className="absolute inset-0 grid place-items-center bg-stage">
@@ -320,6 +469,16 @@ function Generic() {
 }
 
 const PREVIEWS: Record<string, () => ReactNode> = {
+  pagination: Pagination,
+  sidebar: Sidebar,
+  carousel: Carousel,
+  badge: Badge,
+  avatar: Avatar,
+  radio: Radio,
+  slider: Slider,
+  select: Select,
+  spinner: Spinner,
+  alert: Alert,
   tabs: Tabs,
   breadcrumb: Breadcrumb,
   tooltip: Tooltip,
