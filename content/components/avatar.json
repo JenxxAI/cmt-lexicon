@@ -1,0 +1,70 @@
+{
+  "id": "avatar",
+  "name": "Avatar",
+  "category": "layout",
+  "aliases": [
+    "profile picture",
+    "user picture",
+    "profile image"
+  ],
+  "looksLike": [
+    "small round photo beside a persons name",
+    "circle with initials when there is no photo",
+    "little face picture next to a comment"
+  ],
+  "definition": "A small image or initials representing a person or account, often shown beside a name.",
+  "whenToUse": [
+    "Comment authors",
+    "Account identity in a header"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "badge",
+      "difference": "Shows a short status or count rather than a person or account."
+    }
+  ],
+  "related": [
+    "badge",
+    "card",
+    "navbar"
+  ],
+  "prompts": {
+    "short": "Add an avatar with initials as a fallback and an accessible identity label.",
+    "detailed": "Add a circular avatar beside a visible user name. Use an empty image alt when the adjacent name already identifies the person. Fall back to initials if the photo is missing or fails. If the avatar is the only content of an action, give that button or link an accessible name."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "import { useState } from \"react\";",
+      "",
+      "export function Avatar({ src, name, initials }: {",
+      "  src?: string;",
+      "  name: string;",
+      "  initials: string;",
+      "}) {",
+      "  const [failedSrc, setFailedSrc] = useState<string>();",
+      "  return (",
+      "    <span className=\"inline-flex items-center gap-2\">",
+      "      {src && src !== failedSrc ? (",
+      "        <img src={src} alt=\"\" width={44} height={44} onError={() => setFailedSrc(src)} className=\"size-11 rounded-full object-cover\" />",
+      "      ) : (",
+      "        <span aria-hidden=\"true\" className=\"grid size-11 shrink-0 place-items-center rounded-full border\">{initials}</span>",
+      "      )}",
+      "      <span>{name}</span>",
+      "    </span>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Avatar"
+  },
+  "a11yNotes": [
+    "Avoid redundant image alt when a visible name is adjacent",
+    "Provide an accessible name for an avatar-only action",
+    "Do not use the photo alone to communicate status"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

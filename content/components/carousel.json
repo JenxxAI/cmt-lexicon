@@ -1,0 +1,76 @@
+{
+  "id": "carousel",
+  "name": "Carousel",
+  "category": "layout",
+  "aliases": [
+    "slideshow",
+    "content slider",
+    "slide gallery"
+  ],
+  "looksLike": [
+    "pictures you move through with left and right arrows",
+    "one featured item at a time with next and previous controls",
+    "row of dots underneath changing pictures"
+  ],
+  "definition": "A sequence of slides or items shown in the same space, with controls for moving between them.",
+  "whenToUse": [
+    "Browsing a small set of featured items",
+    "Manually browsing product photos"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "tabs",
+      "difference": "Uses labeled choices for direct access to panels rather than moving through a slide sequence."
+    }
+  ],
+  "related": [
+    "card",
+    "tabs",
+    "pagination"
+  ],
+  "prompts": {
+    "short": "Add a carousel with labeled previous and next buttons. Keep autoplay off.",
+    "detailed": "Add a manually controlled carousel with labeled previous and next buttons, a visible slide position, and a named region. Keep focus on the controls as slides change, hide inactive content from keyboard and screen-reader navigation, and announce the new position politely. Use 44px targets and avoid autoplay."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "import { useState } from \"react\";",
+      "",
+      "const slides = [",
+      "  { title: \"Plan your garden\", text: \"Choose plants that suit your space.\" },",
+      "  { title: \"Prepare the soil\", text: \"Give roots room and good drainage.\" },",
+      "  { title: \"Water consistently\", text: \"Check the soil before watering.\" },",
+      "];",
+      "",
+      "export function GuideCarousel() {",
+      "  const [index, setIndex] = useState(0);",
+      "  const slide = slides[index];",
+      "  return (",
+      "    <section aria-label=\"Gardening guides\" aria-roledescription=\"carousel\">",
+      "      <div role=\"group\" aria-roledescription=\"slide\" aria-label={`${index + 1} of ${slides.length}`}>",
+      "        <h2>{slide.title}</h2>",
+      "        <p>{slide.text}</p>",
+      "      </div>",
+      "      <div className=\"flex flex-wrap items-center gap-2\">",
+      "        <button type=\"button\" className=\"min-h-11 min-w-11 px-3 focus-visible:outline-2\" aria-label=\"Previous slide\" onClick={() => setIndex((i) => (i - 1 + slides.length) % slides.length)}>Previous</button>",
+      "        <button type=\"button\" className=\"min-h-11 min-w-11 px-3 focus-visible:outline-2\" aria-label=\"Next slide\" onClick={() => setIndex((i) => (i + 1) % slides.length)}>Next</button>",
+      "      </div>",
+      "      <p role=\"status\" aria-atomic=\"true\">Slide {index + 1} of {slides.length}: {slide.title}</p>",
+      "    </section>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Carousel"
+  },
+  "a11yNotes": [
+    "Give the carousel and its controls accessible names",
+    "Keep focus on controls and announce manual slide changes politely",
+    "Keep inactive slides out of navigation and avoid autoplay"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

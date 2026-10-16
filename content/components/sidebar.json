@@ -1,0 +1,57 @@
+{
+  "id": "sidebar",
+  "name": "Sidebar",
+  "category": "navigation",
+  "aliases": [
+    "side navigation",
+    "vertical navigation"
+  ],
+  "looksLike": [
+    "column of links down the left side",
+    "menu that stays beside the main content",
+    "vertical list of sections along the edge of a page"
+  ],
+  "definition": "A side column that keeps navigation or supporting information beside the main content instead of covering it.",
+  "whenToUse": [
+    "Persistent dashboard navigation",
+    "Documentation section links"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "drawer",
+      "difference": "Slides over the page and may use a backdrop; a sidebar occupies space beside content."
+    }
+  ],
+  "related": [
+    "navbar",
+    "drawer",
+    "accordion"
+  ],
+  "prompts": {
+    "short": "Add a sidebar with labeled navigation and a marked current link.",
+    "detailed": "Add a sidebar beside the main content using a labeled navigation landmark. Mark the current page link, keep links at least 44px high, and show keyboard focus. Stack the navigation above content on narrow screens so the layout does not overflow."
+  },
+  "snippets": {
+    "html": [
+      "<nav aria-label=\"Project navigation\">",
+      "  <ul style=\"list-style:none; padding:0; margin:0\">",
+      "    <li><a href=\"/overview/\" aria-current=\"page\" style=\"display:flex; align-items:center; min-height:44px; font-weight:bold\">Overview</a></li>",
+      "    <li><a href=\"/activity/\" style=\"display:flex; align-items:center; min-height:44px\">Activity</a></li>",
+      "    <li><a href=\"/settings/\" style=\"display:flex; align-items:center; min-height:44px\">Settings</a></li>",
+      "  </ul>",
+      "</nav>",
+      "<!-- Place this navigation beside main content; stack it above on narrow screens. -->"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Sidebar"
+  },
+  "a11yNotes": [
+    "Label navigation landmarks distinctly",
+    "Mark the current page and keep keyboard focus visible",
+    "Keep DOM reading order logical when the sidebar stacks"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "slider",
+  "name": "Slider",
+  "category": "input",
+  "aliases": [
+    "range input",
+    "range slider"
+  ],
+  "looksLike": [
+    "line with a knob I drag to change a value",
+    "volume control with a handle on a track",
+    "drag a dot between minimum and maximum"
+  ],
+  "definition": "A control with a movable handle for choosing a value within a range, such as volume or brightness.",
+  "whenToUse": [
+    "Approximate volume or brightness settings",
+    "Choosing a value within fixed limits"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "progress-bar",
+      "difference": "Displays completion; it does not let the user adjust a value."
+    }
+  ],
+  "related": [
+    "progress-bar",
+    "text-input",
+    "radio"
+  ],
+  "prompts": {
+    "short": "Add a labeled slider with keyboard adjustment and a visible current value.",
+    "detailed": "Add a native range input with a visible label, minimum, maximum, and step. Show its current value and units, preserve arrow-key controls and visible focus, and give the input a 44px-high interaction area. Offer a number input when exact entry matters."
+  },
+  "snippets": {
+    "html": [
+      "<label for=\"volume\">Volume</label>",
+      "<input id=\"volume\" name=\"volume\" type=\"range\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" aria-describedby=\"volume-unit\" style=\"min-height:44px; width:100%; margin:0\" oninput=\"document.getElementById('volume-value').textContent = this.value\">",
+      "<output id=\"volume-value\" for=\"volume\">50</output>",
+      "<span id=\"volume-unit\">percent</span>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Slider"
+  },
+  "a11yNotes": [
+    "Label the range and communicate units",
+    "Preserve keyboard adjustment and visible focus",
+    "Provide precise entry when a slider alone is insufficient"
+  ],
+  "tags": [
+    "input"
+  ]
+}
