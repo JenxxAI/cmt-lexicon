@@ -1,0 +1,53 @@
+{
+  "id": "button",
+  "name": "Button",
+  "category": "input",
+  "aliases": [
+    "action button",
+    "push button"
+  ],
+  "looksLike": [
+    "filled rectangle you press to do something",
+    "clickable box labeled save or submit",
+    "rounded control that starts an action"
+  ],
+  "definition": "An interactive control that performs an action, such as submitting a form or opening a panel.",
+  "whenToUse": [
+    "Submitting a form",
+    "Starting or confirming an action"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "toggle-switch",
+      "difference": "Represents an on/off setting rather than a one-time action."
+    }
+  ],
+  "related": [
+    "text-input",
+    "modal"
+  ],
+  "prompts": {
+    "short": "Add a button with a clear action label and visible keyboard focus.",
+    "detailed": "Add a native button with an explicit type, a descriptive action label, a visible focus ring, and a target at least 44px square. Use a link instead when navigating to another page."
+  },
+  "snippets": {
+    "html": [
+      "<form action=\"/search\" method=\"get\">",
+      "  <label for=\"search-query\">Search guides</label>",
+      "  <input id=\"search-query\" name=\"q\" type=\"search\" style=\"min-height:44px; max-width:100%; box-sizing:border-box\">",
+      "  <button type=\"submit\" style=\"min-height:44px; min-width:44px\">Search</button>",
+      "</form>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Button"
+  },
+  "a11yNotes": [
+    "Use a native button with an explicit type",
+    "Provide an accessible name and visible focus",
+    "Support Enter and Space with a 44px target"
+  ],
+  "tags": [
+    "input"
+  ]
+}

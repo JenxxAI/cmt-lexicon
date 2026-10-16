@@ -1,0 +1,51 @@
+{
+  "id": "progress-bar",
+  "name": "Progress bar",
+  "category": "feedback",
+  "aliases": [
+    "progress indicator",
+    "completion bar"
+  ],
+  "looksLike": [
+    "bar that fills up as a file uploads",
+    "horizontal strip showing how much is finished",
+    "loading line with a percentage completed"
+  ],
+  "definition": "A bar that shows how much of a task is complete, or indicates ongoing work when the total is unknown.",
+  "whenToUse": [
+    "File upload progress",
+    "Multi-step task completion"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "skeleton-loader",
+      "difference": "Reserves space for incoming content without measuring completion."
+    }
+  ],
+  "related": [
+    "skeleton-loader",
+    "toast"
+  ],
+  "prompts": {
+    "short": "Add a labeled progress bar showing task completion and a visible percentage.",
+    "detailed": "Add a native progress element with an accessible label and visible percentage text. Update its value as work completes. Omit value when completion is unknown, and announce major status changes without announcing every percentage update."
+  },
+  "snippets": {
+    "html": [
+      "<label for=\"upload-progress\">Upload progress</label>",
+      "<progress id=\"upload-progress\" value=\"60\" max=\"100\" style=\"width:100%\">60%</progress>",
+      "<p>60% uploaded</p>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Progress"
+  },
+  "a11yNotes": [
+    "Give the progress element an accessible label",
+    "Expose the value and maximum; omit value for unknown progress",
+    "Announce meaningful status changes without excessive live updates"
+  ],
+  "tags": [
+    "feedback"
+  ]
+}

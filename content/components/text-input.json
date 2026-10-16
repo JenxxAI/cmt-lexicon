@@ -1,0 +1,52 @@
+{
+  "id": "text-input",
+  "name": "Text input",
+  "category": "input",
+  "aliases": [
+    "text field",
+    "textbox",
+    "single-line input"
+  ],
+  "looksLike": [
+    "empty box where I type my name",
+    "one line field with a label above it",
+    "rectangle with a blinking cursor for typing"
+  ],
+  "definition": "A single-line field for entering or editing text, such as a name or email address.",
+  "whenToUse": [
+    "Names and contact details",
+    "Short search queries"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "checkbox",
+      "difference": "Records a checked choice rather than typed text."
+    }
+  ],
+  "related": [
+    "button",
+    "checkbox"
+  ],
+  "prompts": {
+    "short": "Add a text input with a visible label and associated help text.",
+    "detailed": "Add a single-line text input with an explicitly associated label, appropriate autocomplete, and help text linked with aria-describedby. Keep the field at least 44px high, responsive, and visibly focused. Associate validation errors and set aria-invalid only when invalid."
+  },
+  "snippets": {
+    "html": [
+      "<label for=\"full-name\">Full name</label>",
+      "<input id=\"full-name\" name=\"name\" type=\"text\" autocomplete=\"name\" aria-describedby=\"name-help\" style=\"min-height:44px; width:100%; box-sizing:border-box\">",
+      "<p id=\"name-help\">Enter your name as you would like it displayed.</p>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Input"
+  },
+  "a11yNotes": [
+    "Associate a visible label; do not rely on placeholder text",
+    "Link help and errors with aria-describedby",
+    "Use appropriate autocomplete and visible focus"
+  ],
+  "tags": [
+    "input"
+  ]
+}

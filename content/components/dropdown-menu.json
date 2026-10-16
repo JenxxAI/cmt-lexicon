@@ -1,0 +1,67 @@
+{
+  "id": "dropdown-menu",
+  "name": "Dropdown menu",
+  "category": "overlay",
+  "aliases": [
+    "action menu",
+    "drop-down menu"
+  ],
+  "looksLike": [
+    "list of actions that opens below a button",
+    "small floating list with edit and copy choices",
+    "click more to reveal a vertical list of commands"
+  ],
+  "definition": "A menu of actions that opens next to a trigger button and closes after choosing an action or dismissing it.",
+  "whenToUse": [
+    "Secondary actions for an item",
+    "Compact groups of commands"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "popover",
+      "difference": "Holds general content rather than a keyboard-navigable list of menu commands."
+    }
+  ],
+  "related": [
+    "button",
+    "popover",
+    "navbar"
+  ],
+  "prompts": {
+    "short": "Add a dropdown menu with keyboard navigation and Escape dismissal.",
+    "detailed": "Add a button-triggered dropdown menu. Move focus into the menu on keyboard opening, support arrow-key navigation, and close on selection or Escape. Return focus to the trigger on dismissal, expose the expanded state, and use 44px targets."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "// Requires the Base UI variant of shadcn/ui dropdown-menu in the consuming project.",
+      "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from \"@/components/ui/dropdown-menu\";",
+      "",
+      "export function DocumentMenu({ onRename, onDuplicate }: {",
+      "  onRename: () => void;",
+      "  onDuplicate: () => void;",
+      "}) {",
+      "  return (",
+      "    <DropdownMenu>",
+      "      <DropdownMenuTrigger className=\"min-h-11 min-w-11 px-4 focus-visible:outline-2 focus-visible:outline-offset-2\">Document actions</DropdownMenuTrigger>",
+      "      <DropdownMenuContent>",
+      "        <DropdownMenuItem onClick={onRename} className=\"min-h-11\">Rename</DropdownMenuItem>",
+      "        <DropdownMenuItem onClick={onDuplicate} className=\"min-h-11\">Duplicate</DropdownMenuItem>",
+      "      </DropdownMenuContent>",
+      "    </DropdownMenu>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Dropdown Menu"
+  },
+  "a11yNotes": [
+    "Use a named trigger with expanded state",
+    "Support arrow keys and Escape",
+    "Manage menu focus and return it to the trigger on dismissal"
+  ],
+  "tags": [
+    "overlay"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "checkbox",
+  "name": "Checkbox",
+  "category": "input",
+  "aliases": [
+    "check box",
+    "tick box"
+  ],
+  "looksLike": [
+    "little square you tick next to a choice",
+    "boxes that let me pick several options",
+    "square with a check mark when selected"
+  ],
+  "definition": "A control that records a checked or unchecked choice. Several checkboxes can be selected independently.",
+  "whenToUse": [
+    "Choosing multiple preferences",
+    "Agreeing to terms in a form"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "toggle-switch",
+      "difference": "Usually applies an on/off setting immediately rather than collecting a form choice."
+    }
+  ],
+  "related": [
+    "toggle-switch",
+    "text-input",
+    "button"
+  ],
+  "prompts": {
+    "short": "Add a checkbox with a clickable label and keyboard toggling.",
+    "detailed": "Add a native checkbox with an associated visible label and a clickable label area at least 44px high. Let Space toggle it, keep its focus indicator visible, and group related choices with fieldset and legend."
+  },
+  "snippets": {
+    "html": [
+      "<label style=\"display:flex; align-items:center; gap:8px; min-height:44px\">",
+      "  <input type=\"checkbox\" name=\"newsletter\" value=\"yes\">",
+      "  Send me the monthly newsletter",
+      "</label>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Checkbox"
+  },
+  "a11yNotes": [
+    "Associate the checkbox with its label",
+    "Support Space to toggle and show keyboard focus",
+    "Use fieldset and legend for related choices"
+  ],
+  "tags": [
+    "input"
+  ]
+}

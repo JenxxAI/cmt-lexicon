@@ -1,0 +1,62 @@
+{
+  "id": "tooltip",
+  "name": "Tooltip",
+  "category": "overlay",
+  "aliases": [
+    "hover hint",
+    "help tip"
+  ],
+  "looksLike": [
+    "small text label that appears when I hover",
+    "tiny explanation beside an icon",
+    "hint that appears when a button gets focus"
+  ],
+  "definition": "A short, non-interactive hint shown beside a control on hover or keyboard focus.",
+  "whenToUse": [
+    "Explaining an unfamiliar action",
+    "Providing optional context for a control"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "popover",
+      "difference": "Can contain richer content and interactive controls; a tooltip contains only a short hint."
+    }
+  ],
+  "related": [
+    "popover",
+    "button"
+  ],
+  "prompts": {
+    "short": "Add a tooltip on hover and keyboard focus. Dismiss it with Escape.",
+    "detailed": "Add a short tooltip that opens on hover and focus, remains available while hovered, and closes on Escape. Associate it with its trigger, keep focus on the trigger, and include no interactive content. Keep essential instructions visible outside the tooltip."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "// Requires the shadcn/ui tooltip component in the consuming project.",
+      "import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from \"@/components/ui/tooltip\";",
+      "",
+      "export function SaveHint({ onSave }: { onSave: () => void }) {",
+      "  return (",
+      "    <TooltipProvider>",
+      "      <Tooltip>",
+      "        <TooltipTrigger type=\"button\" onClick={onSave} className=\"min-h-11 min-w-11 px-4 focus-visible:outline-2 focus-visible:outline-offset-2\">Save</TooltipTrigger>",
+      "        <TooltipContent>Store your changes for later.</TooltipContent>",
+      "      </Tooltip>",
+      "    </TooltipProvider>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Tooltip"
+  },
+  "a11yNotes": [
+    "Show on keyboard focus as well as hover",
+    "Allow Escape dismissal and hovering over the hint",
+    "Keep essential information visible and omit interactive content"
+  ],
+  "tags": [
+    "overlay"
+  ]
+}

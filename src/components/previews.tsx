@@ -161,6 +161,156 @@ function Toggle() {
   );
 }
 
+function Tabs() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[10%] inset-y-[16%] rounded-lg bg-surface p-[5%]">
+        <div className="flex h-[30%] gap-[6%] border-b border-rule">
+          <div className="w-[28%] border-b-2 border-accent bg-accent-soft" />
+          <div className="w-[28%] rounded-t-md bg-stage" />
+          <div className="w-[28%] rounded-t-md bg-stage" />
+        </div>
+        <div className="mt-[8%] flex h-[45%] flex-col gap-[20%]">
+          <Bar w={65} tone="ink" />
+          <Bar w={90} />
+          <Bar w={75} />
+        </div>
+      </div>
+    </Page>
+  );
+}
+
+function Breadcrumb() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[8%] top-[25%] flex h-[12%] items-center gap-[6%]">
+        <div className="h-[35%] w-[20%] rounded-full bg-accent" />
+        <div className="aspect-square h-[40%] rotate-45 border-r-2 border-t-2 border-skel" />
+        <div className="h-[35%] w-[25%] rounded-full bg-accent" />
+        <div className="aspect-square h-[40%] rotate-45 border-r-2 border-t-2 border-skel" />
+        <div className="h-[35%] w-[20%] rounded-full bg-ink" />
+      </div>
+      <div className="absolute left-[8%] top-[55%] h-[8%] w-[56%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
+function Tooltip() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[25%] top-[19%] flex h-[24%] w-[50%] items-center justify-center rounded-lg bg-ink">
+        <div className="h-[15%] w-[66%] rounded-full bg-surface" />
+        <div className="absolute -bottom-[12%] left-[47%] aspect-square w-[6%] rotate-45 bg-ink" />
+      </div>
+      <div className="absolute left-[35%] top-[55%] h-[24%] w-[30%] rounded-lg bg-accent" />
+    </Page>
+  );
+}
+
+function Accordion() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[12%] inset-y-[12%] flex flex-col gap-[6%]">
+        <div className="relative flex h-[56%] flex-col gap-[14%] rounded-lg bg-surface p-[5%]">
+          <Bar w={60} tone="ink" />
+          <div className="absolute right-[8%] top-[20%] aspect-square w-[5%] rotate-45 border-l-2 border-t-2 border-accent" />
+          <Bar w={82} />
+          <Bar w={70} />
+        </div>
+        {[0, 1].map((row) => (
+          <div key={row} className="flex h-[18%] items-center justify-between rounded-md bg-surface px-[5%]">
+            <div className="h-[20%] w-[55%] rounded-full bg-skel" />
+            <div className="aspect-square w-[5%] rotate-45 border-b-2 border-r-2 border-muted" />
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
+
+function DropdownMenu() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[24%] top-[10%] flex h-[17%] w-[44%] items-center justify-between rounded-md bg-accent px-[5%]">
+        <div className="h-[20%] w-[65%] rounded-full bg-surface" />
+        <div className="aspect-square w-[12%] rotate-45 border-b-2 border-r-2 border-surface" />
+      </div>
+      <div className="absolute left-[24%] top-[32%] flex h-[57%] w-[52%] flex-col gap-[12%] rounded-lg border border-rule bg-surface p-[4%]">
+        <div className="flex h-[28%] items-center rounded-sm bg-accent-soft px-[8%]">
+          <div className="h-[20%] w-[65%] rounded-full bg-accent" />
+        </div>
+        <Bar w={64} />
+        <Bar w={78} />
+      </div>
+    </Page>
+  );
+}
+
+function Card() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[25%] inset-y-[10%] flex flex-col gap-[9%] rounded-lg border border-rule bg-surface p-[4%]">
+        <div className="h-[38%] rounded-md bg-accent-soft" />
+        <Bar w={70} tone="ink" />
+        <Bar w={90} />
+        <div className="mt-auto h-[14%] w-[48%] rounded-md bg-accent" />
+      </div>
+    </Page>
+  );
+}
+
+function Button() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[23%] top-[33%] flex h-[34%] items-center justify-center rounded-lg bg-accent">
+        <div className="h-[14%] w-[48%] rounded-full bg-surface" />
+      </div>
+    </Page>
+  );
+}
+
+function TextInput() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[13%] top-[24%] h-[6%] w-[27%] rounded-full bg-ink" />
+      <div className="absolute inset-x-[13%] top-[39%] flex h-[30%] items-center gap-[4%] rounded-md border-2 border-accent bg-surface px-[5%]">
+        <div className="h-[15%] w-[40%] rounded-full bg-skel" />
+        <div className="h-[48%] w-[1%] bg-ink" />
+      </div>
+      <div className="absolute left-[13%] top-[77%] h-[4%] w-[45%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
+function Checkbox() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[20%] inset-y-[22%] flex flex-col gap-[22%]">
+        {[true, false].map((checked) => (
+          <div key={String(checked)} className="flex h-[38%] items-center gap-[12%]">
+            <div className={`flex aspect-square h-full items-center justify-center rounded-sm ${checked ? "bg-accent" : "border-2 border-skel bg-surface"}`}>
+              {checked && <div className="mb-[15%] h-[52%] w-[28%] rotate-45 border-b-2 border-r-2 border-surface" />}
+            </div>
+            <div className="h-[18%] flex-1 rounded-full bg-skel" />
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
+
+function ProgressBar() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[14%] top-[30%] h-[6%] w-[34%] rounded-full bg-ink" />
+      <div className="absolute inset-x-[14%] top-[47%] h-[13%] overflow-hidden rounded-full bg-surface">
+        <div className="h-full w-[65%] rounded-full bg-accent" />
+      </div>
+      <div className="absolute right-[14%] top-[70%] h-[5%] w-[15%] rounded-full bg-skel" />
+    </Page>
+  );
+}
+
 function Generic() {
   return (
     <div className="absolute inset-0 grid place-items-center bg-stage">
@@ -170,6 +320,16 @@ function Generic() {
 }
 
 const PREVIEWS: Record<string, () => ReactNode> = {
+  tabs: Tabs,
+  breadcrumb: Breadcrumb,
+  tooltip: Tooltip,
+  accordion: Accordion,
+  "dropdown-menu": DropdownMenu,
+  card: Card,
+  button: Button,
+  "text-input": TextInput,
+  checkbox: Checkbox,
+  "progress-bar": ProgressBar,
   drawer: Drawer,
   modal: Modal,
   popover: Popover,
