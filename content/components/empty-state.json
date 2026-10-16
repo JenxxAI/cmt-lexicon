@@ -1,0 +1,55 @@
+{
+  "id": "empty-state",
+  "name": "Empty state",
+  "category": "feedback",
+  "aliases": [
+    "no-results state",
+    "zero state",
+    "blank slate"
+  ],
+  "looksLike": [
+    "message saying there is nothing here yet",
+    "empty list with a suggestion to add something",
+    "no results found with advice to change my search"
+  ],
+  "definition": "A helpful message shown when a view has no items, explaining why it is empty and what the person can do next.",
+  "whenToUse": [
+    "A new account with no projects",
+    "Searches with no matching results"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "skeleton-loader",
+      "difference": "Represents content still loading; an empty state appears after loading confirms there are no items."
+    }
+  ],
+  "related": [
+    "alert",
+    "button",
+    "skeleton-loader"
+  ],
+  "prompts": {
+    "short": "Add an empty state explaining why no items appear and offering a next step.",
+    "detailed": "Add a clear empty-state heading, a short explanation, and a relevant next action. Distinguish no content from loading or errors. Use a real link or button with visible focus and a 44px target; hide any decorative illustration from screen readers."
+  },
+  "snippets": {
+    "html": [
+      "<section aria-labelledby=\"empty-title\">",
+      "  <h2 id=\"empty-title\">No projects yet</h2>",
+      "  <p>Create a project to start organizing your work.</p>",
+      "  <a href=\"/projects/new/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Create your first project</a>",
+      "</section>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Empty"
+  },
+  "a11yNotes": [
+    "Use a meaningful heading and clear next step",
+    "Hide decorative artwork from assistive technology",
+    "Announce dynamically updated result counts politely"
+  ],
+  "tags": [
+    "feedback"
+  ]
+}

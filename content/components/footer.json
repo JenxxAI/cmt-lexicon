@@ -1,0 +1,56 @@
+{
+  "id": "footer",
+  "name": "Footer",
+  "category": "navigation",
+  "aliases": [
+    "site footer",
+    "page footer"
+  ],
+  "looksLike": [
+    "links and copyright at the bottom of the page",
+    "bottom section with contact and privacy links",
+    "last strip of the website below the main content"
+  ],
+  "definition": "The closing section of a page, often containing secondary navigation, contact information, and copyright details.",
+  "whenToUse": [
+    "Site-wide support and legal links",
+    "Contact information below the main content"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "navbar",
+      "difference": "Usually provides primary navigation near the top of a page."
+    }
+  ],
+  "related": [
+    "navbar",
+    "sidebar",
+    "hero-section"
+  ],
+  "prompts": {
+    "short": "Add a footer with labeled secondary navigation and readable contact information.",
+    "detailed": "Add a top-level footer after main content with grouped secondary links and contact information. Label its navigation distinctly, allow links to wrap on small screens, and provide visible focus and 44px link targets. Keep the reading order logical."
+  },
+  "snippets": {
+    "html": [
+      "<!-- Place this top-level footer after the page main element. -->",
+      "<footer>",
+      "  <nav aria-label=\"Footer links\" style=\"display:flex; flex-wrap:wrap; gap:16px\">",
+      "    <a href=\"/contact/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Contact</a>",
+      "    <a href=\"/privacy/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Privacy</a>",
+      "    <a href=\"/accessibility/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Accessibility</a>",
+      "  </nav>",
+      "  <p>Copyright UI Lexicon contributors</p>",
+      "</footer>"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Use a top-level footer for the page contentinfo landmark",
+    "Label navigation groups and use descriptive links",
+    "Keep targets large and links readable at narrow widths"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}

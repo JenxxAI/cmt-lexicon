@@ -1,0 +1,52 @@
+{
+  "id": "file-upload",
+  "name": "File upload",
+  "category": "input",
+  "aliases": [
+    "file picker",
+    "upload field",
+    "file input"
+  ],
+  "looksLike": [
+    "choose file button beside a filename",
+    "box where I attach a document",
+    "area asking me to drop a file or browse"
+  ],
+  "definition": "A control for selecting files to send to an application. It may include a drop area, but must also offer a keyboard-operable file picker.",
+  "whenToUse": [
+    "Attaching a document",
+    "Selecting a profile photo"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "text-input",
+      "difference": "Accepts typed text rather than a file selected from the device."
+    }
+  ],
+  "related": [
+    "button",
+    "progress-bar",
+    "alert"
+  ],
+  "prompts": {
+    "short": "Add a labeled file upload with a file picker and clear file-type guidance.",
+    "detailed": "Add a native file input with a visible label and associated help text. Explain accepted types and size limits, report validation errors beside the field, and show upload progress separately from selection. Keep a keyboard-operable picker even if drag and drop is offered; validate uploads on the server."
+  },
+  "snippets": {
+    "html": [
+      "<label for=\"attachment\">Attach a PDF document</label>",
+      "<input id=\"attachment\" name=\"attachment\" type=\"file\" accept=\".pdf,application/pdf\" aria-describedby=\"attachment-help\" style=\"min-height:44px; width:100%; box-sizing:border-box\">",
+      "<p id=\"attachment-help\">Choose a PDF. Selecting a file does not upload it yet.</p>",
+      "<!-- Submit using your application's upload flow and validate the file on the server; accept is only a picker hint. -->"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Associate a visible label and file requirements",
+    "Offer keyboard file selection, not drag and drop alone",
+    "Announce validation errors and upload status without moving focus unexpectedly"
+  ],
+  "tags": [
+    "input"
+  ]
+}

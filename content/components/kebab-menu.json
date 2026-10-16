@@ -1,0 +1,70 @@
+{
+  "id": "kebab-menu",
+  "name": "Kebab menu",
+  "category": "icons-assets",
+  "aliases": [
+    "vertical ellipsis",
+    "three-dot menu",
+    "more actions menu"
+  ],
+  "looksLike": [
+    "three vertical dots that open extra actions",
+    "stack of three dots at the end of a row",
+    "small dotted control beside an item"
+  ],
+  "definition": "A three-vertical-dot control that opens secondary actions for an item, usually in a dropdown menu.",
+  "whenToUse": [
+    "Secondary actions on a table row",
+    "Compact actions on a card"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "hamburger-icon",
+      "difference": "Three horizontal lines usually open navigation; three vertical dots usually reveal item actions."
+    }
+  ],
+  "related": [
+    "dropdown-menu",
+    "button",
+    "data-table"
+  ],
+  "prompts": {
+    "short": "Add a kebab menu with a labeled three-dot trigger and keyboard-operable actions.",
+    "detailed": "Add a three-vertical-dot button labeled for the item it affects. Open an accessible dropdown menu with 44px action targets, keyboard navigation, and Escape dismissal. Keep the dots decorative, expose expanded state, and return focus to the trigger when the menu closes."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "// Requires the Base UI variant of shadcn/ui dropdown-menu in the consuming project.",
+      "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from \"@/components/ui/dropdown-menu\";",
+      "",
+      "export function MoreActions({ name, onRename }: { name: string; onRename: () => void }) {",
+      "  return (",
+      "    <DropdownMenu>",
+      "      <DropdownMenuTrigger aria-label={`More actions for ${name}`} className=\"grid min-h-11 min-w-11 place-items-center focus-visible:outline-2 focus-visible:outline-offset-2\">",
+      "        <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"currentColor\" aria-hidden=\"true\">",
+      "          <circle cx=\"10\" cy=\"4\" r=\"2\" />",
+      "          <circle cx=\"10\" cy=\"10\" r=\"2\" />",
+      "          <circle cx=\"10\" cy=\"16\" r=\"2\" />",
+      "        </svg>",
+      "      </DropdownMenuTrigger>",
+      "      <DropdownMenuContent>",
+      "        <DropdownMenuItem onClick={onRename} className=\"min-h-11\">Rename</DropdownMenuItem>",
+      "      </DropdownMenuContent>",
+      "    </DropdownMenu>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Dropdown Menu"
+  },
+  "a11yNotes": [
+    "Give the icon-only trigger an item-specific accessible name",
+    "Use 44px targets, visible focus, and menu keyboard behavior",
+    "Hide the dots from screen readers and restore focus on dismissal"
+  ],
+  "tags": [
+    "icons-assets"
+  ]
+}

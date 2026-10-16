@@ -460,6 +460,165 @@ function Alert() {
   );
 }
 
+function DatePicker() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[25%] inset-y-[10%] flex flex-col gap-[12%] rounded-lg bg-surface p-[4%]">
+        <div className="h-[10%] w-[55%] rounded-full bg-ink" />
+        <div className="grid flex-1 grid-cols-7 grid-rows-4 gap-[8%]">
+          {Array.from({ length: 28 }, (_, index) => <div key={index} className={`rounded-sm ${index === 16 ? "bg-accent" : "bg-stage"}`} />)}
+        </div>
+      </div>
+    </Page>
+  );
+}
+
+function EmptyState() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[42%] top-[16%] aspect-square w-[16%] rounded-lg border-2 border-skel bg-surface" />
+      <div className="absolute inset-x-[28%] top-[59%] h-[6%] rounded-full bg-skel" />
+      <div className="absolute inset-x-[38%] bottom-[12%] h-[14%] rounded-md bg-accent" />
+    </Page>
+  );
+}
+
+function HeroSection() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[8%] top-[20%] h-[10%] w-[40%] rounded-full bg-ink" />
+      <div className="absolute left-[8%] top-[36%] h-[10%] w-[32%] rounded-full bg-ink" />
+      <div className="absolute left-[8%] top-[57%] h-[5%] w-[37%] rounded-full bg-skel" />
+      <div className="absolute left-[8%] bottom-[13%] h-[14%] w-[21%] rounded-md bg-accent" />
+      <div className="absolute inset-y-[16%] right-[8%] flex w-[35%] items-center justify-center rounded-xl bg-accent-soft">
+        <div className="aspect-square w-[55%] rotate-12 rounded-lg bg-accent" />
+      </div>
+    </Page>
+  );
+}
+
+function Footer() {
+  return (
+    <Page>
+      <div className="absolute inset-x-0 bottom-0 flex h-[35%] items-center justify-between border-t border-rule bg-surface px-[6%]">
+        <div className="h-[16%] w-[25%] rounded-full bg-ink" />
+        <div className="flex h-[60%] w-[45%] items-center gap-[10%]">
+          {[0, 1, 2].map((index) => <div key={index} className="h-[16%] flex-1 rounded-full bg-skel" />)}
+        </div>
+      </div>
+    </Page>
+  );
+}
+
+function StickyHeader() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-0 top-0 flex h-[27%] items-center justify-between border-b-2 border-accent bg-surface px-[6%]">
+        <div className="h-[25%] w-[22%] rounded-full bg-accent" />
+        <div className="h-[16%] w-[33%] rounded-full bg-skel" />
+      </div>
+      <div className="absolute left-[8%] top-[43%] h-[7%] w-[42%] rounded-full bg-skel" />
+      <div className="absolute left-[8%] top-[61%] h-[5%] w-[60%] rounded-full bg-skel-soft" />
+      <div className="absolute left-[8%] top-[77%] h-[5%] w-[53%] rounded-full bg-skel-soft" />
+      <div className="absolute right-[5%] top-[37%] h-[48%] w-[2%] rounded-full bg-skel-soft">
+        <div className="absolute top-[32%] h-[35%] w-full rounded-full bg-muted" />
+      </div>
+    </Page>
+  );
+}
+
+function BentoGrid() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-[10%] grid grid-cols-3 grid-rows-2 gap-[7%]">
+        <div className="col-span-2 rounded-lg bg-accent-soft" />
+        <div className="rounded-lg bg-surface" />
+        <div className="rounded-lg bg-surface" />
+        <div className="col-span-2 rounded-lg bg-accent" />
+      </div>
+    </Page>
+  );
+}
+
+function CommandPalette() {
+  return (
+    <Page dim>
+      <div className="absolute inset-x-[18%] inset-y-[12%] flex flex-col gap-[10%] rounded-lg bg-surface p-[4%]">
+        <div className="flex h-[25%] items-center gap-[8%] border-b border-rule">
+          <svg viewBox="0 0 24 24" className="h-[70%] w-[14%] shrink-0 stroke-muted" fill="none" strokeWidth="2" aria-hidden="true">
+            <circle cx="10" cy="10" r="6" /><path d="m15 15 5 5" />
+          </svg>
+          <div className="h-[18%] w-[55%] rounded-full bg-skel" />
+        </div>
+        <div className="flex h-[23%] items-center rounded-sm bg-accent-soft px-[5%]">
+          <div className="h-[20%] w-[65%] rounded-full bg-accent" />
+        </div>
+        <Bar w={70} />
+        <Bar w={55} />
+      </div>
+    </Page>
+  );
+}
+
+function Stepper() {
+  return (
+    <Page lines={false}>
+      <svg viewBox="0 0 100 45" className="absolute inset-x-[10%] inset-y-[15%] h-[70%] w-[80%]" aria-hidden="true">
+        <path d="M18 18H82" className="stroke-skel" strokeWidth="2" />
+        <path d="M18 18H50" className="stroke-accent" strokeWidth="2" />
+        <circle cx="18" cy="18" r="8" className="fill-accent" />
+        <circle cx="50" cy="18" r="8" className="fill-accent-soft stroke-accent" strokeWidth="2" />
+        <circle cx="82" cy="18" r="8" className="fill-surface stroke-skel" strokeWidth="2" />
+        <path d="m14 18 3 3 5-6" fill="none" className="stroke-surface" strokeWidth="2" />
+        {[10, 42, 74].map((x) => <rect key={x} x={x} y="33" width="16" height="3" rx="1.5" className="fill-skel" />)}
+      </svg>
+    </Page>
+  );
+}
+
+function DataTable() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[10%] inset-y-[15%] flex flex-col overflow-hidden rounded-lg border border-rule bg-surface">
+        {[0, 1, 2, 3].map((row) => (
+          <div key={row} className={`grid h-[25%] grid-cols-3 items-center gap-[10%] px-[6%] ${row === 0 ? "bg-accent-soft" : "border-t border-line"}`}>
+            {[0, 1, 2].map((col) => <div key={col} className={`h-[15%] rounded-full ${row === 0 ? "bg-accent" : "bg-skel"}`} />)}
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
+
+function KebabMenu() {
+  return (
+    <Page lines={false}>
+      <div className="absolute left-[16%] top-[25%] flex h-[45%] w-[15%] flex-col items-center justify-center gap-[12%] rounded-lg bg-surface">
+        {[0, 1, 2].map((index) => <div key={index} className="aspect-square w-[12%] rounded-full bg-ink" />)}
+      </div>
+      <div className="absolute left-[37%] top-[25%] flex h-[55%] w-[47%] flex-col gap-[16%] rounded-lg border border-rule bg-surface p-[5%]">
+        <Bar w={68} tone="ink" />
+        <Bar w={85} />
+        <Bar w={60} />
+      </div>
+    </Page>
+  );
+}
+
+function FileUpload() {
+  return (
+    <Page lines={false}>
+      <div className="absolute inset-x-[14%] inset-y-[14%] rounded-lg border-2 border-dashed border-skel bg-surface">
+        <svg viewBox="0 0 24 24" className="absolute left-[40%] top-[12%] h-[40%] w-[20%] stroke-accent" fill="none" strokeWidth="2" aria-hidden="true">
+          <path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5" />
+        </svg>
+        <div className="absolute inset-x-[24%] top-[62%] h-[5%] rounded-full bg-skel" />
+        <div className="absolute inset-x-[36%] bottom-[10%] h-[13%] rounded-sm bg-accent" />
+      </div>
+    </Page>
+  );
+}
+
 function Generic() {
   return (
     <div className="absolute inset-0 grid place-items-center bg-stage">
@@ -469,6 +628,17 @@ function Generic() {
 }
 
 const PREVIEWS: Record<string, () => ReactNode> = {
+  "date-picker": DatePicker,
+  "empty-state": EmptyState,
+  "hero-section": HeroSection,
+  footer: Footer,
+  "sticky-header": StickyHeader,
+  "bento-grid": BentoGrid,
+  "command-palette": CommandPalette,
+  stepper: Stepper,
+  "data-table": DataTable,
+  "kebab-menu": KebabMenu,
+  "file-upload": FileUpload,
   pagination: Pagination,
   sidebar: Sidebar,
   carousel: Carousel,
