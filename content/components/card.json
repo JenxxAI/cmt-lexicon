@@ -1,0 +1,53 @@
+{
+  "id": "card",
+  "name": "Card",
+  "category": "layout",
+  "aliases": [
+    "content card",
+    "content tile"
+  ],
+  "looksLike": [
+    "box with a picture title and description",
+    "separate rectangle containing one item",
+    "small bordered block with a heading and a link"
+  ],
+  "definition": "A container that groups related information about one item, often with a title, image, description, or action.",
+  "whenToUse": [
+    "Product summaries",
+    "Article previews"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "modal",
+      "difference": "Appears over the page and blocks interaction; a card stays in the page layout."
+    }
+  ],
+  "related": [
+    "button",
+    "skeleton-loader"
+  ],
+  "prompts": {
+    "short": "Add a card grouping a title and description with a clear action link.",
+    "detailed": "Add a responsive card with a semantic heading, description, and descriptive action link. Keep the heading order logical, avoid nesting interactive controls inside links, and provide a visible focus ring and 44px link target."
+  },
+  "snippets": {
+    "html": [
+      "<article>",
+      "  <h2>Planning a garden</h2>",
+      "  <p>A practical guide to choosing your first plants.</p>",
+      "  <a href=\"/guides/garden/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Read the garden guide</a>",
+      "</article>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Card"
+  },
+  "a11yNotes": [
+    "Use a heading that fits the page hierarchy",
+    "Use descriptive links instead of a clickable div",
+    "Do not nest buttons inside links"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

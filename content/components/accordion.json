@@ -1,0 +1,56 @@
+{
+  "id": "accordion",
+  "name": "Accordion",
+  "category": "layout",
+  "aliases": [
+    "expandable sections",
+    "disclosure list"
+  ],
+  "looksLike": [
+    "sections that expand when you click",
+    "stack of questions that reveal answers",
+    "rows with arrows that open more text underneath"
+  ],
+  "definition": "A stack of headings that expand or collapse their own content in place.",
+  "whenToUse": [
+    "Frequently asked questions",
+    "Optional details in a long page"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "tabs",
+      "difference": "Switches between panels instead of expanding content under each heading."
+    }
+  ],
+  "related": [
+    "tabs",
+    "card"
+  ],
+  "prompts": {
+    "short": "Add an accordion with keyboard-operable headings that expand and collapse content.",
+    "detailed": "Add an accordion using native details and summary elements. Let each section open independently. Give each summary a visible focus indicator and at least a 44px target; keep collapsed content out of keyboard navigation."
+  },
+  "snippets": {
+    "html": [
+      "<details>",
+      "  <summary style=\"min-height:44px; cursor:pointer\">When will my order arrive?</summary>",
+      "  <p>Delivery takes three to five business days.</p>",
+      "</details>",
+      "<details>",
+      "  <summary style=\"min-height:44px; cursor:pointer\">Can I return my order?</summary>",
+      "  <p>Unused items can be returned within 30 days.</p>",
+      "</details>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Accordion"
+  },
+  "a11yNotes": [
+    "Use native details/summary or buttons with aria-expanded",
+    "Keep headings operable with Enter and Space",
+    "Keep collapsed content out of the tab order"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "id": "tabs",
+  "name": "Tabs",
+  "category": "navigation",
+  "aliases": [
+    "tabbed interface",
+    "tab strip"
+  ],
+  "looksLike": [
+    "row of labels that switch the content below",
+    "one highlighted label above a changing panel",
+    "click a heading to swap between views"
+  ],
+  "definition": "A row of controls that switches between related panels, showing one panel at a time without leaving the page.",
+  "whenToUse": [
+    "Related settings sections",
+    "Different views of the same information"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "accordion",
+      "difference": "Expands sections in place and can show several sections at once."
+    }
+  ],
+  "related": [
+    "accordion",
+    "navbar"
+  ],
+  "prompts": {
+    "short": "Add tabs that show one panel at a time and support arrow-key navigation.",
+    "detailed": "Add labeled tabs with one visible panel. Support arrow keys, Home and End, expose the selected tab, connect each tab to its panel, and keep a visible focus ring. Use 44px targets and allow the row to wrap on narrow screens."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "// Requires the shadcn/ui tabs component in the consuming project.",
+      "import { Tabs, TabsList, TabsTrigger, TabsContent } from \"@/components/ui/tabs\";",
+      "",
+      "export function ProjectTabs() {",
+      "  return (",
+      "    <Tabs defaultValue=\"summary\">",
+      "      <TabsList aria-label=\"Project views\" className=\"h-auto flex-wrap\">",
+      "        <TabsTrigger value=\"summary\" className=\"min-h-11 min-w-11\">Summary</TabsTrigger>",
+      "        <TabsTrigger value=\"activity\" className=\"min-h-11 min-w-11\">Activity</TabsTrigger>",
+      "      </TabsList>",
+      "      <TabsContent value=\"summary\">Project summary</TabsContent>",
+      "      <TabsContent value=\"activity\">Recent activity</TabsContent>",
+      "    </Tabs>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Tabs"
+  },
+  "a11yNotes": [
+    "Label the tab list and associate tabs with panels",
+    "Support arrow keys, Home and End",
+    "Expose selected state and keep keyboard focus visible"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}

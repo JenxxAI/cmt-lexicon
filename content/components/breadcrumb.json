@@ -1,0 +1,57 @@
+{
+  "id": "breadcrumb",
+  "name": "Breadcrumb",
+  "category": "navigation",
+  "aliases": [
+    "breadcrumbs",
+    "location trail"
+  ],
+  "looksLike": [
+    "trail of links showing where I am",
+    "home then category then current page",
+    "small links separated by arrows above the title"
+  ],
+  "definition": "A trail of parent-page links that shows where the current page sits in a site hierarchy.",
+  "whenToUse": [
+    "Nested documentation pages",
+    "Product category navigation"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "navbar",
+      "difference": "Shows the main destinations rather than the current page hierarchy."
+    }
+  ],
+  "related": [
+    "navbar",
+    "tabs"
+  ],
+  "prompts": {
+    "short": "Add a breadcrumb with linked parent pages and a marked current page.",
+    "detailed": "Add a labeled breadcrumb navigation with an ordered list of parent links and aria-current on the current page. Hide separators from assistive technology, allow wrapping, and give links 44px touch targets."
+  },
+  "snippets": {
+    "html": [
+      "<nav aria-label=\"Breadcrumb\">",
+      "  <ol style=\"display:flex; flex-wrap:wrap; align-items:center; gap:8px; list-style:none; padding:0\">",
+      "    <li><a href=\"/\" style=\"display:inline-flex; align-items:center; min-height:44px; min-width:44px\">Home</a></li>",
+      "    <li aria-hidden=\"true\">/</li>",
+      "    <li><a href=\"/guides/\" style=\"display:inline-flex; align-items:center; min-height:44px; min-width:44px\">Guides</a></li>",
+      "    <li aria-hidden=\"true\">/</li>",
+      "    <li><span aria-current=\"page\">Getting started</span></li>",
+      "  </ol>",
+      "</nav>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Breadcrumb"
+  },
+  "a11yNotes": [
+    "Label the navigation landmark",
+    "Mark the current page with aria-current=\"page\"",
+    "Hide separators from screen readers and let links wrap"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}
