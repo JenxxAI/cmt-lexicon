@@ -38,6 +38,9 @@ function matchQuality(queryToken: string, docToken: string): number {
   return 0;
 }
 
+// Keep plausible alternatives while dropping incidental word matches.
+const MIN_RELATIVE_SCORE = 0.6;
+
 type Field = { weight: number; phrases: string[]; tokens: string[] };
 
 function fieldsOf(entry: EntrySummary): Field[] {
@@ -55,7 +58,7 @@ function fieldsOf(entry: EntrySummary): Field[] {
   ];
 }
 
-function scoreEntry(entry: EntrySummary, rawQuery: string, queryTokens: string[]): number {
+function scoreEntry(entry: EntrySummary, phrasePattern: RegExp | null, queryTokens: string[]): number {
   const fields = fieldsOf(entry);
   let score = 0;
 
@@ -70,15 +73,15 @@ function scoreEntry(entry: EntrySummary, rawQuery: string, queryTokens: string[]
     score += best;
   }
 
-  // Bonus when the whole query appears inside a name, alias, or description phrase.
-  if (rawQuery.length >= 3 && fields.some((field) => field.phrases.some((phrase) => phrase.includes(rawQuery)))) {
+  // Bonus for a whole phrase, not a substring inside a word ("form" in "information").
+  if (phrasePattern && fields.some((field) => field.phrases.some((phrase) => phrasePattern.test(phrase)))) {
     score += 10;
   }
 
   return score;
 }
 
-/** Best matches first. An empty query returns everything in its original order. */
+/** Best matches and close alternatives first. Empty queries preserve the original entries and order. */
 export function search(entries: EntrySummary[], query: string): EntrySummary[] {
   const rawQuery = query.toLowerCase().trim().replace(/\s+/g, " ");
   if (!rawQuery) return entries;
@@ -86,9 +89,18 @@ export function search(entries: EntrySummary[], query: string): EntrySummary[] {
   const queryTokens = tokenize(rawQuery, true);
   if (queryTokens.length === 0) return [];
 
-  return entries
-    .map((entry) => ({ entry, score: scoreEntry(entry, rawQuery, queryTokens) }))
+  // Escape punctuation before building a literal phrase match with token boundaries.
+  const escapedQuery = rawQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const phrasePattern = rawQuery.length >= 3 ? new RegExp(`(^|[^a-z0-9])${escapedQuery}($|[^a-z0-9])`) : null;
+  const ranked = entries
+    .map((entry) => ({ entry, score: scoreEntry(entry, phrasePattern, queryTokens) }))
     .filter((result) => result.score > 0)
-    .sort((a, b) => b.score - a.score || a.entry.name.localeCompare(b.entry.name))
+    .sort((a, b) => b.score - a.score || a.entry.name.localeCompare(b.entry.name));
+
+  const bestScore = ranked[0]?.score;
+  if (bestScore === undefined) return [];
+
+  return ranked
+    .filter((result) => result.score >= bestScore * MIN_RELATIVE_SCORE)
     .map((result) => result.entry);
 }
