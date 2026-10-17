@@ -1,0 +1,82 @@
+{
+  "id": "command-palette",
+  "name": "Command palette",
+  "category": "overlay",
+  "aliases": [
+    "command launcher",
+    "quick action search"
+  ],
+  "looksLike": [
+    "search box floating over the page for actions",
+    "type a command to find something to do",
+    "popup list of commands filtered as I type"
+  ],
+  "definition": "A searchable panel for finding and running application actions or navigating to destinations without browsing menus.",
+  "whenToUse": [
+    "Quick access to many commands",
+    "Keyboard-friendly navigation in complex apps"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "select",
+      "difference": "Chooses a field value; a command palette runs actions or opens destinations."
+    }
+  ],
+  "related": [
+    "modal",
+    "dropdown-menu",
+    "text-input"
+  ],
+  "prompts": {
+    "short": "Add a command palette that filters actions as I type and closes with Escape.",
+    "detailed": "Add a labeled dialog containing a search field and filtered command buttons. Keep focus inside while open, support keyboard access to results, close on Escape or selection, and return focus to the trigger. Include a close button and a clear no-results message. Do not override browser keyboard shortcuts."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "\"use client\";",
+      "import { useId, useRef, useState } from \"react\";",
+      "",
+      "export function CommandPalette({ onAction }: { onAction: (id: string) => void }) {",
+      "  const dialog = useRef<HTMLDialogElement>(null);",
+      "  const titleId = useId();",
+      "  const searchId = useId();",
+      "  const [query, setQuery] = useState(\"\");",
+      "  const commands = [",
+      "    { id: \"new-project\", label: \"Create a project\" },",
+      "    { id: \"settings\", label: \"Open settings\" },",
+      "  ];",
+      "  const matches = commands.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));",
+      "  return (",
+      "    <>",
+      "      <button type=\"button\" className=\"min-h-11 min-w-11 px-3\" onClick={() => { setQuery(\"\"); dialog.current?.showModal(); }}>Open commands</button>",
+      "      <dialog ref={dialog} aria-labelledby={titleId} className=\"m-auto w-full max-w-md rounded-xl p-4 backdrop:bg-black/40\">",
+      "        <h2 id={titleId}>Commands</h2>",
+      "        <label htmlFor={searchId}>Find an action</label>",
+      "        <input id={searchId} type=\"search\" value={query} onChange={(event) => setQuery(event.target.value)} className=\"min-h-11 w-full border p-2\" />",
+      "        <ul aria-label=\"Matching commands\">",
+      "          {matches.map((item) => (",
+      "            <li key={item.id}>",
+      "              <button type=\"button\" className=\"min-h-11 w-full p-2 text-left\" onClick={() => { dialog.current?.close(); onAction(item.id); }}>{item.label}</button>",
+      "            </li>",
+      "          ))}",
+      "        </ul>",
+      "        <p role=\"status\">{matches.length ? `${matches.length} actions available` : \"No matching actions\"}</p>",
+      "        <button type=\"button\" className=\"min-h-11 min-w-11 px-3\" onClick={() => dialog.current?.close()}>Close</button>",
+      "      </dialog>",
+      "    </>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Command"
+  },
+  "a11yNotes": [
+    "Label the dialog and search input",
+    "Trap focus in the open dialog and restore it when dismissed",
+    "Keep results keyboard reachable and announce no matches"
+  ],
+  "tags": [
+    "overlay"
+  ]
+}

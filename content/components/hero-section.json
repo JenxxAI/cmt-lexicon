@@ -1,0 +1,53 @@
+{
+  "id": "hero-section",
+  "name": "Hero section",
+  "category": "layout",
+  "aliases": [
+    "hero",
+    "hero banner",
+    "intro section"
+  ],
+  "looksLike": [
+    "big headline and main button at the start of a page",
+    "large introduction area above everything else",
+    "opening section with a bold message and a picture"
+  ],
+  "definition": "A prominent introductory section near the top of a page, usually containing a headline, supporting text, and a main action.",
+  "whenToUse": [
+    "Introducing a product",
+    "Explaining a service on a landing page"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "navbar",
+      "difference": "Provides navigation links rather than the main introductory message."
+    }
+  ],
+  "related": [
+    "button",
+    "navbar",
+    "bento-grid"
+  ],
+  "prompts": {
+    "short": "Add a hero section with a clear headline and a prominent action link.",
+    "detailed": "Add a responsive hero section with the page heading, brief supporting text, and a descriptive action link. Keep text readable over any imagery, hide decorative visuals from screen readers, and stack content on narrow screens. Give the action visible focus and a 44px target."
+  },
+  "snippets": {
+    "html": [
+      "<section aria-labelledby=\"hero-title\">",
+      "  <h1 id=\"hero-title\">Find the right words for your interface</h1>",
+      "  <p>Learn component names and turn your ideas into clear requests.</p>",
+      "  <a href=\"/components/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Explore UI components</a>",
+      "</section>"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Use a heading that fits the page hierarchy",
+    "Keep text contrast at least 4.5:1",
+    "Use descriptive action text and accessible image alternatives"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

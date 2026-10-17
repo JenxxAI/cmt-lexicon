@@ -1,0 +1,52 @@
+{
+  "id": "date-picker",
+  "name": "Date picker",
+  "category": "input",
+  "aliases": [
+    "date field",
+    "calendar picker"
+  ],
+  "looksLike": [
+    "small calendar where I choose a day",
+    "field that opens a grid of dates",
+    "month and numbered days with one day highlighted"
+  ],
+  "definition": "A field for choosing a date, often with a calendar popup and a way to enter the date directly.",
+  "whenToUse": [
+    "Booking a date",
+    "Choosing a deadline"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "select",
+      "difference": "Chooses from general options rather than calendar dates."
+    }
+  ],
+  "related": [
+    "text-input",
+    "select",
+    "popover"
+  ],
+  "prompts": {
+    "short": "Add a labeled date picker with keyboard input and a visible selected date.",
+    "detailed": "Add a native date input with an associated label and visible focus. Explain any date limits and show errors beside the field. Preserve keyboard entry, give the input a 44px target, and avoid forcing users to navigate a custom calendar for distant dates."
+  },
+  "snippets": {
+    "html": [
+      "<label for=\"due-date\">Due date</label>",
+      "<input id=\"due-date\" name=\"dueDate\" type=\"date\" aria-describedby=\"due-date-help\" style=\"min-height:44px; width:100%; box-sizing:border-box\">",
+      "<p id=\"due-date-help\">Choose the day this task should be finished.</p>"
+    ]
+  },
+  "libraries": {
+    "shadcn/ui": "Calendar + Popover (Date Picker composition)"
+  },
+  "a11yNotes": [
+    "Associate a visible label and any help or error text",
+    "Allow keyboard entry and preserve visible focus",
+    "For custom calendars, manage focus and announce dates and month changes"
+  ],
+  "tags": [
+    "input"
+  ]
+}

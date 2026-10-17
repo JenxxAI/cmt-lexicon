@@ -1,0 +1,60 @@
+{
+  "id": "data-table",
+  "name": "Data table",
+  "category": "layout",
+  "aliases": [
+    "table",
+    "tabular data",
+    "records table"
+  ],
+  "looksLike": [
+    "information lined up in rows and columns",
+    "spreadsheet-like list with headings above each column",
+    "names dates and amounts arranged in a grid"
+  ],
+  "definition": "A structured view of records in rows and fields in columns, with headers explaining how to read the values.",
+  "whenToUse": [
+    "Comparing records",
+    "Displaying orders or account activity"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "bento-grid",
+      "difference": "Arranges content tiles for emphasis rather than aligning fields across records."
+    }
+  ],
+  "related": [
+    "pagination",
+    "checkbox",
+    "select"
+  ],
+  "prompts": {
+    "short": "Add a data table with a descriptive caption and associated column headers.",
+    "detailed": "Add a semantic table with a caption, column headers, and row headers where helpful. Keep cell relationships intact on small screens. If horizontal scrolling is necessary, provide a labeled keyboard-focusable scroll region. If sorting is added, use header buttons and expose the sorted column with aria-sort."
+  },
+  "snippets": {
+    "html": [
+      "<div role=\"region\" aria-label=\"Recent orders table\" tabindex=\"0\" style=\"max-width:100%; overflow:auto\">",
+      "  <table style=\"width:100%; border-collapse:collapse\">",
+      "    <caption>Recent orders</caption>",
+      "    <thead>",
+      "      <tr><th scope=\"col\">Order</th><th scope=\"col\">Status</th><th scope=\"col\">Total</th></tr>",
+      "    </thead>",
+      "    <tbody>",
+      "      <tr><th scope=\"row\">A104</th><td>Delivered</td><td>$24.00</td></tr>",
+      "      <tr><th scope=\"row\">A105</th><td>Processing</td><td>$18.00</td></tr>",
+      "    </tbody>",
+      "  </table>",
+      "</div>"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Use table, caption, and scoped header cells",
+    "Keep overflow regions keyboard accessible with visible focus",
+    "Use real buttons and aria-sort if sorting is implemented"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

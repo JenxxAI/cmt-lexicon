@@ -1,0 +1,56 @@
+{
+  "id": "stepper",
+  "name": "Stepper",
+  "category": "navigation",
+  "aliases": [
+    "step indicator",
+    "wizard steps",
+    "form steps"
+  ],
+  "looksLike": [
+    "numbered circles connected by a line",
+    "steps showing where I am in a signup process",
+    "row of stages with the current stage highlighted"
+  ],
+  "definition": "An ordered sequence showing progress through a multi-step task, with the current step and often completed and upcoming steps.",
+  "whenToUse": [
+    "Multi-step forms",
+    "Checkout stages"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "progress-bar",
+      "difference": "Shows an amount completed rather than named stages in a workflow."
+    }
+  ],
+  "related": [
+    "progress-bar",
+    "tabs",
+    "button"
+  ],
+  "prompts": {
+    "short": "Add a stepper with named stages and a clearly marked current step.",
+    "detailed": "Add an ordered list of task stages with aria-current=\"step\" on the active stage. Include visible text for completed, current, and upcoming states. Use links only for stages users can revisit, keep reading order logical, and let the list wrap or stack on narrow screens."
+  },
+  "snippets": {
+    "html": [
+      "<section aria-labelledby=\"steps-title\">",
+      "  <h2 id=\"steps-title\">Checkout progress</h2>",
+      "  <ol>",
+      "    <li>Contact details \u2014 completed</li>",
+      "    <li aria-current=\"step\">Delivery \u2014 current step</li>",
+      "    <li>Payment \u2014 upcoming</li>",
+      "  </ol>",
+      "</section>"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Mark the active stage with aria-current=\"step\"",
+    "Use text as well as color for stage status",
+    "When advancing a form, move focus to its new heading or first relevant field"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}

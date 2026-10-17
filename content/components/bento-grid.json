@@ -1,0 +1,65 @@
+{
+  "id": "bento-grid",
+  "name": "Bento grid",
+  "category": "layout",
+  "aliases": [
+    "bento layout",
+    "mixed-size card grid"
+  ],
+  "looksLike": [
+    "tiles of different sizes arranged like a collage",
+    "one large box next to several smaller boxes",
+    "dashboard of uneven rectangles fitted neatly together"
+  ],
+  "definition": "A layout of differently sized tiles arranged into a tidy grid to highlight related features or information.",
+  "whenToUse": [
+    "Feature summaries",
+    "Dashboard highlights"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "card",
+      "difference": "Groups one item; a bento grid arranges several containers with different visual emphasis."
+    }
+  ],
+  "related": [
+    "card",
+    "hero-section",
+    "data-table"
+  ],
+  "prompts": {
+    "short": "Add a bento grid with varied tile sizes that stacks on small screens.",
+    "detailed": "Add a responsive grid of related tiles with one featured tile spanning extra columns on larger screens. Stack tiles on small screens, keep DOM order aligned with the visual reading order, and use meaningful headings. Avoid fixed heights that clip text when zoomed."
+  },
+  "snippets": {
+    "reactTailwind": [
+      "export function FeatureGrid() {",
+      "  return (",
+      "    <section aria-label=\"Product features\" className=\"grid grid-cols-1 gap-4 md:grid-cols-3\">",
+      "      <article className=\"rounded-xl border p-6 md:col-span-2\">",
+      "        <h2>Plan together</h2>",
+      "        <p>Keep shared plans in one place.</p>",
+      "      </article>",
+      "      <article className=\"rounded-xl border p-6\">",
+      "        <h2>Stay informed</h2>",
+      "        <p>See the latest changes.</p>",
+      "      </article>",
+      "      <article className=\"rounded-xl border p-6 md:col-span-3\">",
+      "        <h2>Find your next task</h2>",
+      "        <p>Explore upcoming work across your projects.</p>",
+      "      </article>",
+      "    </section>",
+      "  );",
+      "}"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Keep visual order consistent with DOM and keyboard order",
+    "Use meaningful headings and semantic controls",
+    "Let content grow and stack at narrow widths"
+  ],
+  "tags": [
+    "layout"
+  ]
+}

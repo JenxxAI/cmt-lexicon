@@ -1,0 +1,55 @@
+{
+  "id": "sticky-header",
+  "name": "Sticky header",
+  "category": "navigation",
+  "aliases": [
+    "sticky navigation",
+    "pinned header"
+  ],
+  "looksLike": [
+    "top strip that stays visible while I scroll",
+    "page heading stuck to the top as content moves",
+    "navigation that follows me down the page"
+  ],
+  "definition": "A header that stays at the top of its scroll container after reaching a specified position while the page continues scrolling beneath it.",
+  "whenToUse": [
+    "Keeping navigation available on long pages",
+    "Retaining important page actions during scrolling"
+  ],
+  "notConfusedWith": [
+    {
+      "id": "navbar",
+      "difference": "Describes a navigation component; it may scroll away or be placed inside a sticky header."
+    }
+  ],
+  "related": [
+    "navbar",
+    "hero-section",
+    "sidebar"
+  ],
+  "prompts": {
+    "short": "Add a sticky header that stays visible on scroll without hiding focused content.",
+    "detailed": "Add a compact header using position: sticky and top: 0, with an opaque background and suitable stacking order. Keep its links keyboard accessible with 44px targets. Account for its height with scroll padding or target scroll margins so anchor destinations and focused controls remain visible."
+  },
+  "snippets": {
+    "html": [
+      "<!-- Add this header near the start of body, outside a short or overflow-clipped ancestor. -->",
+      "<header style=\"position:sticky; top:0; z-index:10; background:Canvas; color:CanvasText\">",
+      "  <nav aria-label=\"Primary\" style=\"display:flex; flex-wrap:wrap; gap:16px\">",
+      "    <a href=\"/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Home</a>",
+      "    <a href=\"/guides/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Guides</a>",
+      "  </nav>",
+      "</header>",
+      "<!-- Set page scroll-padding-top to the rendered header height, including when links wrap. -->"
+    ]
+  },
+  "libraries": {},
+  "a11yNotes": [
+    "Do not obscure keyboard focus or anchor destinations",
+    "Keep navigation targets at least 44px high",
+    "Avoid large sticky regions that consume the screen when zoomed"
+  ],
+  "tags": [
+    "navigation"
+  ]
+}
