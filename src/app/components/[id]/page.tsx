@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CodeTabs, type CodeTab } from "@/components/CodeTabs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { LivePreview } from "@/components/LivePreview";
 import { Preview } from "@/components/previews";
 import { PromptPanel } from "@/components/PromptPanel";
 import { CATEGORIES } from "@/lib/categories";
@@ -167,11 +168,15 @@ export default async function ComponentPage({ params }: { params: Promise<Params
 
           {/* Right: see it, prompt it, code it */}
           <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5">
-            <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[18px] border border-rule bg-surface">
-              <div role="img" aria-label={`Illustration of a ${entry.name.toLowerCase()}`} className="h-80">
-                <Preview id={entry.id} />
-              </div>
-            </section>
+            {entry.id === "drawer" || entry.id === "modal" || entry.id === "popover" || entry.id === "toast" ? (
+              <LivePreview id={entry.id} />
+            ) : (
+              <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[18px] border border-rule bg-surface">
+                <div role="img" aria-label={`Illustration of a ${entry.name.toLowerCase()}`} className="h-80">
+                  <Preview id={entry.id} />
+                </div>
+              </section>
+            )}
             <PromptPanel short={entry.prompts.short} detailed={entry.prompts.detailed} />
             <CodeTabs tabs={tabs} />
           </div>
