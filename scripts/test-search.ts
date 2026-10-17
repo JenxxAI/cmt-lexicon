@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { getAllEntries, toSummary } from "../src/lib/content";
 import { search } from "../src/lib/search";
+import type { EntrySummary } from "../src/lib/schema";
 
 const entries = getAllEntries().map(toSummary);
 
@@ -94,6 +95,53 @@ for (const [query, expected] of cases) {
 assert.equal(search(entries, "").length, entries.length, "empty query returns everything");
 assert.equal(search(entries, "the").length, 0, "stopwords alone return nothing");
 assert.equal(search(entries, "zzzxqj").length, 0, "nonsense returns nothing");
+
+// Check the returned set as well as the winner: weak matches should disappear,
+// but genuinely ambiguous searches must retain useful alternatives.
+const idsFor = (query: string) => search(entries, query).map((entry) => entry.id);
+assert.deepEqual(idsFor("a panel that slides in from the side"), ["drawer", "bottom-sheet"]);
+assert.deepEqual(idsFor("side panel"), ["drawer"]);
+assert.deepEqual(idsFor("three lines icon"), ["hamburger-icon"]);
+assert.deepEqual(idsFor("gray loading boxes"), ["skeleton-loader"]);
+assert.deepEqual(idsFor("loading"), ["skeleton-loader", "spinner", "progress-bar"]);
+for (const id of ["dropdown-menu", "kebab-menu", "drawer", "navbar"]) {
+  assert.ok(idsFor("menu").includes(id), `broad menu query keeps ${id}`);
+}
+assert.ok(!idsFor("form").includes("data-table"), "form must not match the middle of information");
+assert.equal(idsFor("accord")[0], "accordion", "typing a prefix still finds the component");
+assert.deepEqual(idsFor("  SIDE   PANEL  "), idsFor("side panel"), "case and whitespace are normalized");
+assert.strictEqual(search(entries, " \t\n "), entries, "whitespace preserves the browse list and order");
+assert.deepEqual(search([], "drawer"), [], "an empty corpus has no matches");
+assert.deepEqual(search(entries, "?!..."), [], "punctuation alone has no matches");
+
+function fixture(id: string, name: string, fields: Partial<EntrySummary> = {}): EntrySummary {
+  return {
+    id, name, category: "layout", aliases: [], looksLike: [], definition: "",
+    whenToUse: [], tags: [], shortPrompt: "", ...fields,
+  };
+}
+
+// For "alpha beta", separate fields give the strongest match a score of 10.
+// Name-only matches score 6 (the inclusive cutoff); an alias-only match scores 5.
+const boundaryEntries = [
+  fixture("below", "Below", { aliases: ["alpha"] }),
+  fixture("boundary-z", "Beta Z"),
+  fixture("strongest", "Alpha", { looksLike: ["beta"] }),
+  fixture("boundary-a", "Beta A"),
+  fixture("unrelated", "Unrelated"),
+];
+const originalOrder = boundaryEntries.map((entry) => entry.id);
+const expectedOrder = ["strongest", "boundary-a", "boundary-z"];
+assert.deepEqual(search(boundaryEntries, "alpha beta").map((entry) => entry.id), expectedOrder);
+assert.deepEqual(search([...boundaryEntries].reverse(), "alpha beta").map((entry) => entry.id), expectedOrder,
+  "ties sort alphabetically regardless of input order");
+assert.deepEqual(boundaryEntries.map((entry) => entry.id), originalOrder, "search does not mutate the input");
+assert.deepEqual(search([fixture("none", "Unrelated")], "alpha"), [], "zero scores never survive the cutoff");
+assert.deepEqual(search([fixture("only", "Alpha")], "alpha").map((entry) => entry.id), ["only"],
+  "a lone positive match is retained");
+assert.deepEqual(search([fixture("literal", "C++"), fixture("plain", "C")], "c++").map((entry) => entry.id),
+  ["literal"], "phrase matching treats regex punctuation literally");
+console.log("✓ Relevance, cutoff boundary, and search edge-case checks passed");
 
 if (failed > 0) {
   console.error(`\n${failed} search case(s) failed`);
