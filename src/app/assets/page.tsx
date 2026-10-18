@@ -51,8 +51,8 @@ export default function AssetsPage() {
         <section id="icon-names" aria-labelledby="icon-names-heading" className="mt-12">
           <h2 id="icon-names-heading" className="font-display text-3xl font-semibold">One idea, different icon names</h2>
           <p className="mt-3 max-w-2xl text-body">These are React component names, including the Icon suffix where required. The small drawings represent each idea; each library has its own artwork.</p>
-          <div className="mt-5 overflow-hidden rounded-[18px] border border-rule bg-surface">
-            <table className="w-full table-fixed border-collapse text-left text-xs sm:text-sm">
+          <div tabIndex={0} role="region" aria-label="Icon names by library, horizontally scrollable" className="mt-5 overflow-x-auto rounded-[18px] border border-rule bg-surface">
+            <table className="w-full min-w-[720px] sm:min-w-0 table-fixed border-collapse text-left text-xs sm:text-sm">
               <caption className="border-b border-rule p-4 text-left text-sm text-muted">Common icon names. Verified against official documentation and source on {assets.verifiedOn}.</caption>
               <thead className="bg-paper">
                 <tr>
@@ -68,7 +68,7 @@ export default function AssetsPage() {
                       <span className="mt-2 block font-semibold">{icon.name}</span>
                       <span className="mt-1 block text-muted">{icon.looksLike}</span>
                     </th>
-                    {assets.libraries.map((library) => <td key={library.id} className="break-all p-2 font-mono sm:p-4">{icon.names[library.id]}</td>)}
+                    {assets.libraries.map((library) => <td key={library.id} className="whitespace-nowrap p-2 font-mono sm:p-4">{icon.names[library.id]}</td>)}
                   </tr>
                 ))}
               </tbody>
