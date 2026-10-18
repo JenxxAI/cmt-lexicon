@@ -12,7 +12,7 @@ import { Preview } from "./previews";
 
 const EXAMPLES = ["popup with dark background", "three lines icon", "gray loading boxes"];
 
-const chip = "min-h-11 rounded-full border px-[18px] text-[15px] font-medium";
+const chip = "max-sm:shrink-0 max-sm:whitespace-nowrap min-h-11 rounded-full border px-[18px] text-[15px] font-medium";
 
 export function Explorer({ entries }: { entries: EntrySummary[] }) {
   const [query, setQuery] = useState("");
@@ -161,7 +161,7 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
           <h2 id="browse-heading" className="font-display text-[32px] font-bold tracking-tight">
             Browse the basics
           </h2>
-          <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2 max-sm:w-full max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:p-1">
             {(["all", ...categories] as const).map((id) => {
               const active = category === id;
               return (
@@ -187,7 +187,7 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
         </p>
 
         {visible.length > 0 ? (
-          <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-5 grid grid-cols-1 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((entry) => (
               <li key={entry.id}>
                 <ComponentCard entry={entry} />

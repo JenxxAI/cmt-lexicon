@@ -10,6 +10,7 @@ type Props = {
   /** Show only the icon (the label is still the accessible name). */
   iconOnly?: boolean;
   className?: string;
+  compactOnMobile?: boolean;
 };
 
 const VARIANTS = {
@@ -18,7 +19,7 @@ const VARIANTS = {
   ghost: "border-transparent text-rule hover:bg-ink px-3 text-sm",
 } as const;
 
-export function CopyButton({ text, label = "Copy prompt", variant = "outline", iconOnly = false, className = "" }: Props) {
+export function CopyButton({ text, label = "Copy prompt", variant = "outline", iconOnly = false, compactOnMobile = false, className = "" }: Props) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
@@ -50,11 +51,11 @@ export function CopyButton({ text, label = "Copy prompt", variant = "outline", i
       <button
         type="button"
         onClick={copy}
-        aria-label={iconOnly ? label : undefined}
-        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border ${VARIANTS[variant]} ${iconOnly ? "min-w-11" : ""} ${className}`}
+        aria-label={iconOnly || compactOnMobile ? label : undefined}
+        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border ${VARIANTS[variant]} ${iconOnly ? "min-w-11" : ""} ${compactOnMobile ? "max-sm:min-w-11 max-sm:px-0" : ""} ${className}`}
       >
         <Icon className="size-4" />
-        {iconOnly ? null : copied ? "Copied" : label}
+        {iconOnly ? null : <span className={compactOnMobile ? "max-sm:hidden" : undefined}>{copied ? "Copied" : label}</span>}
       </button>
       <span role="status" className="sr-only">
         {copied ? "Copied to clipboard" : ""}
