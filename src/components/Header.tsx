@@ -21,6 +21,9 @@ export function Header() {
         <Link href="/#browse" className={navLink}>
           Components
         </Link>
+        <Link href="/assets/" className={navLink}>
+          Icons &amp; assets
+        </Link>
         <a href="/llms.txt" className={navLink}>
           Cheat sheet
         </a>

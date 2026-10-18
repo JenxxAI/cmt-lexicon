@@ -1,0 +1,147 @@
+{
+  "verifiedOn": "2026-10-18",
+  "topics": [
+    {
+      "id": "icon",
+      "name": "Icon",
+      "definition": "A small symbol that suggests an action, object, or status. An icon is what the picture means; SVG is one way to draw it.",
+      "looksLike": "a tiny magnifying glass beside a search box",
+      "whenToUse": "Use familiar symbols for common actions, ideally beside a text label.",
+      "note": "A picture alone is not a button. Put actions in a real button and give icon-only buttons an accessible name.",
+      "prompt": "Add a search icon beside the Search label. Hide the decorative icon from screen readers.",
+      "source": "https://lucide.dev/guide/accessibility"
+    },
+    {
+      "id": "svg",
+      "name": "SVG",
+      "definition": "A text-based image format that describes shapes and paths. Vector shapes stay sharp when resized; an SVG can contain an icon, logo, or illustration.",
+      "looksLike": "a logo that stays crisp when I zoom in",
+      "whenToUse": "Use for scalable logos, diagrams, and interface graphics.",
+      "note": "Hide decorative SVGs from screen readers. Give meaningful standalone images an accessible text alternative.",
+      "prompt": "Use an SVG logo that scales without distortion and has a meaningful text alternative.",
+      "source": "https://developer.mozilla.org/en-US/docs/Web/SVG"
+    },
+    {
+      "id": "favicon",
+      "name": "Favicon",
+      "definition": "The small image identifying a site in browser tabs and bookmarks. Favicon describes its job, not a single file format.",
+      "looksLike": "the tiny picture beside a browser tab title",
+      "whenToUse": "Use a simple, recognizable mark that works at a very small size.",
+      "note": "A detailed full-size logo may become unreadable in a tab. Keep the page title meaningful too.",
+      "prompt": "Add a simple favicon that stays recognizable in browser tabs and bookmarks.",
+      "source": "https://developer.mozilla.org/en-US/docs/Glossary/Favicon"
+    },
+    {
+      "id": "sprite",
+      "name": "Sprite",
+      "definition": "A collection of graphics stored together for reuse. A raster sprite sheet uses regions of one image; an SVG sprite stores reusable symbols.",
+      "looksLike": "a sheet of little pictures reused around a page",
+      "whenToUse": "Use when many graphics share a source. Reference an SVG symbol with a use element.",
+      "note": "A sprite is a way to organize assets, not an animation format. Each visible use still needs the right accessible name or decorative treatment.",
+      "prompt": "Group repeated icons in an SVG sprite. Give each icon instance appropriate accessible text or mark it decorative.",
+      "source": "https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/symbol"
+    },
+    {
+      "id": "lottie",
+      "name": "Lottie",
+      "definition": "An animation format based on JSON, played by a compatible player. It can describe animated vector artwork; it is different from a video or an SVG file.",
+      "looksLike": "a little illustration that moves after a task finishes",
+      "whenToUse": "Use for a small, purposeful animation such as a success illustration.",
+      "note": "Provide a static alternative for reduced motion, and never rely on motion alone to communicate a result.",
+      "prompt": "Add a Lottie success animation with a static reduced-motion fallback and visible confirmation text.",
+      "source": "https://lottiefiles.com/what-is-lottie"
+    },
+    {
+      "id": "og-image",
+      "name": "Open Graph image",
+      "definition": "The image a service may show when someone shares a page link. The page points to it through og:image metadata; the sharing service controls the final preview.",
+      "looksLike": "the large picture attached to a shared link",
+      "whenToUse": "Use a clear title and recognizable artwork that still make sense when cropped.",
+      "note": "This is a social preview asset, not the favicon. Use a publicly reachable absolute image URL and provide og:image:alt text.",
+      "prompt": "Add an Open Graph image for link previews with a readable title, an absolute URL, and descriptive image alt metadata.",
+      "source": "https://ogp.me/"
+    }
+  ],
+  "libraries": [
+    {
+      "id": "lucide",
+      "name": "Lucide",
+      "importFrom": "lucide-react",
+      "docs": "https://lucide.dev/guide/react/getting-started"
+    },
+    {
+      "id": "heroicons",
+      "name": "Heroicons",
+      "importFrom": "@heroicons/react/24/outline",
+      "docs": "https://github.com/tailwindlabs/heroicons#react"
+    },
+    {
+      "id": "phosphor",
+      "name": "Phosphor",
+      "importFrom": "@phosphor-icons/react",
+      "docs": "https://github.com/phosphor-icons/react#usage"
+    }
+  ],
+  "icons": [
+    {
+      "id": "menu",
+      "name": "Menu",
+      "looksLike": "three horizontal lines",
+      "names": {
+        "lucide": "Menu",
+        "heroicons": "Bars3Icon",
+        "phosphor": "ListIcon"
+      }
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "looksLike": "a magnifying glass",
+      "names": {
+        "lucide": "Search",
+        "heroicons": "MagnifyingGlassIcon",
+        "phosphor": "MagnifyingGlassIcon"
+      }
+    },
+    {
+      "id": "close",
+      "name": "Close",
+      "looksLike": "an X or cross",
+      "names": {
+        "lucide": "X",
+        "heroicons": "XMarkIcon",
+        "phosphor": "XIcon"
+      }
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "looksLike": "a cog or gear",
+      "names": {
+        "lucide": "Settings",
+        "heroicons": "Cog6ToothIcon",
+        "phosphor": "GearIcon"
+      }
+    },
+    {
+      "id": "check",
+      "name": "Check",
+      "looksLike": "a tick beside a completed item",
+      "names": {
+        "lucide": "Check",
+        "heroicons": "CheckIcon",
+        "phosphor": "CheckIcon"
+      }
+    },
+    {
+      "id": "delete",
+      "name": "Delete",
+      "looksLike": "a rubbish bin or trash can",
+      "names": {
+        "lucide": "Trash",
+        "heroicons": "TrashIcon",
+        "phosphor": "TrashIcon"
+      }
+    }
+  ]
+}
