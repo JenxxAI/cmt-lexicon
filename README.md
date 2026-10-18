@@ -16,6 +16,7 @@ Vibe coders often can't prompt well because they lack the words. "That thing tha
 - **Copy-ready prompts**: a short and a detailed version per component, with a rough token count.
 - **Look-alike guidance**: "Don't mix it up with" (Drawer vs Modal vs Popover).
 - **Library cheat sheet**: what shadcn/ui, MUI, Chakra, Mantine, and Radix each call it.
+- **Icons & assets**: a [beginner guide](src/app/assets/page.tsx) to icons, SVGs, favicons, sprites, Lottie, and Open Graph images, with verified React icon names across three libraries. Browse `/assets/`; edit the guide data in `content/assets.json`.
 - **Exports**: `glossary.min.json` and a compact `llms.txt` you can paste into `CLAUDE.md` / `AGENTS.md`.
 
 ## Quick start

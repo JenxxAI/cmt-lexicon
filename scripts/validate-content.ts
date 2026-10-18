@@ -1,3 +1,4 @@
+import { assets } from "../src/lib/assets";
 import { loadEntries } from "../src/lib/content";
 import { estimateTokens } from "../src/lib/tokens";
 
@@ -35,6 +36,12 @@ for (const entry of entries) {
   }
 }
 
+for (const topic of assets.topics) {
+  if (estimateTokens(topic.prompt) >= MAX_SHORT_PROMPT_TOKENS) {
+    errors.push(`assets.json: ${topic.id} prompt must stay under ${MAX_SHORT_PROMPT_TOKENS} estimated tokens`);
+  }
+}
+
 if (errors.length > 0) {
   console.error(`\n✗ Content has ${errors.length} problem(s):\n`);
   for (const error of errors) console.error(`  - ${error}`);
@@ -43,3 +50,5 @@ if (errors.length > 0) {
 }
 
 console.log(`✓ ${entries.length} entries valid`);
+
+console.log(`✓ ${assets.topics.length} asset terms and ${assets.icons.length} icon mappings valid`);
