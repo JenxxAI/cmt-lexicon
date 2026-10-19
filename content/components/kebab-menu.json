@@ -54,6 +54,29 @@
       "    </DropdownMenu>",
       "  );",
       "}"
+    ],
+    "vue": [
+      "<template>",
+      "  <!-- A disclosure of links uses native Tab navigation, not ARIA menu semantics. -->",
+      "  <details>",
+      "    <summary aria-label=\"More actions\">⋮</summary>",
+      "    <nav aria-label=\"More actions\">",
+      "      <a href=\"/projects/edit/\">Edit project</a>",
+      "      <a href=\"/projects/share/\">Share project</a>",
+      "    </nav>",
+      "  </details>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "summary { cursor: pointer; min-width: 44px; }",
+      "nav { display: grid; border: 1px solid currentColor; padding: 8px; }",
+      "</style>"
     ]
   },
   "libraries": {

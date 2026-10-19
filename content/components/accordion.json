@@ -40,6 +40,27 @@
       "  <summary style=\"min-height:44px; cursor:pointer\">Can I return my order?</summary>",
       "  <p>Unused items can be returned within 30 days.</p>",
       "</details>"
+    ],
+    "vue": [
+      "<template>",
+      "  <details>",
+      "    <summary style=\"min-height:44px; cursor:pointer\">When will my order arrive?</summary>",
+      "    <p>Delivery takes three to five business days.</p>",
+      "  </details>",
+      "  <details>",
+      "    <summary style=\"min-height:44px; cursor:pointer\">Can I return my order?</summary>",
+      "    <p>Unused items can be returned within 30 days.</p>",
+      "  </details>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {

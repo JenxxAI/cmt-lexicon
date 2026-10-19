@@ -2,7 +2,11 @@
   "id": "popover",
   "name": "Popover",
   "category": "overlay",
-  "aliases": ["floating panel", "flyout", "info bubble"],
+  "aliases": [
+    "floating panel",
+    "flyout",
+    "info bubble"
+  ],
   "looksLike": [
     "small box that appears next to a button when you click it",
     "floating card with an arrow pointing at its trigger",
@@ -15,10 +19,20 @@
     "Mini forms such as a rename field"
   ],
   "notConfusedWith": [
-    { "id": "modal", "difference": "Centered, blocks the page, and has a dimmed backdrop." },
-    { "id": "drawer", "difference": "Slides in from a screen edge instead of sitting next to its trigger." }
+    {
+      "id": "modal",
+      "difference": "Centered, blocks the page, and has a dimmed backdrop."
+    },
+    {
+      "id": "drawer",
+      "difference": "Slides in from a screen edge instead of sitting next to its trigger."
+    }
   ],
-  "related": ["modal", "drawer", "toast"],
+  "related": [
+    "modal",
+    "drawer",
+    "toast"
+  ],
   "prompts": {
     "short": "Add a popover anchored to this button. Close on outside click and Esc.",
     "detailed": "Add a popover anchored below the trigger button with a small arrow, flipping above when there's no room. Close on outside click or Esc, return focus to the trigger, and set aria-expanded on the button."
@@ -39,6 +53,27 @@
       "    </div>",
       "  )}",
       "</div>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId } from \"vue\";",
+      "",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <button type=\"button\" :popovertarget=\"uid + '-info'\">More info</button>",
+      "  <div :id=\"uid + '-info'\" popover>Changes are saved automatically.</div>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {
@@ -53,5 +88,9 @@
     "Close on Esc and on outside click",
     "Keep the focus order logical"
   ],
-  "tags": ["overlay", "anchored", "floating"]
+  "tags": [
+    "overlay",
+    "anchored",
+    "floating"
+  ]
 }

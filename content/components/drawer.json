@@ -2,7 +2,13 @@
   "id": "drawer",
   "name": "Drawer",
   "category": "overlay",
-  "aliases": ["off-canvas", "side sheet", "slide-over", "side panel", "flyout menu"],
+  "aliases": [
+    "off-canvas",
+    "side sheet",
+    "slide-over",
+    "side panel",
+    "flyout menu"
+  ],
   "looksLike": [
     "panel that slides in from the side",
     "menu that covers part of the screen",
@@ -16,11 +22,25 @@
     "Cart or detail previews"
   ],
   "notConfusedWith": [
-    { "id": "modal", "difference": "Centered and blocks the page. Best for confirmations." },
-    { "id": "popover", "difference": "Small, anchored to a button, no backdrop." },
-    { "id": "bottom-sheet", "difference": "Slides up from below. Mostly mobile." }
+    {
+      "id": "modal",
+      "difference": "Centered and blocks the page. Best for confirmations."
+    },
+    {
+      "id": "popover",
+      "difference": "Small, anchored to a button, no backdrop."
+    },
+    {
+      "id": "bottom-sheet",
+      "difference": "Slides up from below. Mostly mobile."
+    }
   ],
-  "related": ["hamburger-icon", "modal", "bottom-sheet", "navbar"],
+  "related": [
+    "hamburger-icon",
+    "modal",
+    "bottom-sheet",
+    "navbar"
+  ],
   "prompts": {
     "short": "Add a right-side drawer. Close on overlay click and Esc.",
     "detailed": "Add a right-side drawer (320px wide) with a dimmed backdrop and a slide-in animation. Trap focus inside it, close on Esc or backdrop click, return focus to the trigger on close, and mark it aria-modal."
@@ -56,6 +76,36 @@
       "    </>",
       "  );",
       "}"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId, ref } from \"vue\";",
+      "const dialog = ref(null);",
+      "const trigger = ref(null);",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <button ref=\"trigger\" type=\"button\" @click=\"dialog.showModal()\">Open drawer</button>",
+      "  <dialog ref=\"dialog\" :aria-labelledby=\"uid + '-title'\" @close=\"trigger?.focus()\">",
+      "    <h2 :id=\"uid + '-title'\">Navigation</h2>",
+      "    <p>Review the available options.</p>",
+      "    <a href=\"/guides/\">Browse guides</a>",
+      "    <form method=\"dialog\"><button autofocus>Close</button></form>",
+      "  </dialog>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "dialog { box-sizing: border-box; max-width: min(100%, 28rem); overflow: auto; background: Canvas; color: CanvasText; }",
+      "dialog::backdrop { background: rgb(0 0 0 / 50%); }",
+      "dialog { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; }",
+      "</style>"
     ]
   },
   "libraries": {
@@ -70,5 +120,9 @@
     "Close on Esc and on backdrop click",
     "Return focus to the button that opened it"
   ],
-  "tags": ["navigation", "mobile", "overlay"]
+  "tags": [
+    "navigation",
+    "mobile",
+    "overlay"
+  ]
 }

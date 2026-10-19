@@ -2,7 +2,11 @@
   "id": "bottom-sheet",
   "name": "Bottom sheet",
   "category": "overlay",
-  "aliases": ["bottom drawer", "action sheet", "slide-up panel"],
+  "aliases": [
+    "bottom drawer",
+    "action sheet",
+    "slide-up panel"
+  ],
   "looksLike": [
     "panel that slides up from the bottom of the screen",
     "mobile menu that rises from the bottom",
@@ -15,10 +19,19 @@
     "Detail previews such as a map pin card"
   ],
   "notConfusedWith": [
-    { "id": "drawer", "difference": "Slides in from the side instead of the bottom." },
-    { "id": "modal", "difference": "Centered, and not swipe-to-dismiss." }
+    {
+      "id": "drawer",
+      "difference": "Slides in from the side instead of the bottom."
+    },
+    {
+      "id": "modal",
+      "difference": "Centered, and not swipe-to-dismiss."
+    }
   ],
-  "related": ["drawer", "modal"],
+  "related": [
+    "drawer",
+    "modal"
+  ],
   "prompts": {
     "short": "Add a bottom sheet with a drag handle. Swipe down or tap outside to close.",
     "detailed": "Add a mobile bottom sheet that slides up from the bottom with a drag handle, rounded top corners, and a dimmed backdrop. Support swipe-down and backdrop tap to close, cap its height at 85vh with internal scroll, and respect the safe-area inset."
@@ -29,6 +42,36 @@
       "  <div className=\"mx-auto mb-3 h-1.5 w-10 rounded-full bg-gray-300\" />",
       "  {children}",
       "</div>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId, ref } from \"vue\";",
+      "const dialog = ref(null);",
+      "const trigger = ref(null);",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <button ref=\"trigger\" type=\"button\" @click=\"dialog.showModal()\">Open bottom sheet</button>",
+      "  <dialog ref=\"dialog\" :aria-labelledby=\"uid + '-title'\" @close=\"trigger?.focus()\">",
+      "    <h2 :id=\"uid + '-title'\">Quick actions</h2>",
+      "    <p>Review the available options.</p>",
+      "    <a href=\"/guides/\">Browse guides</a>",
+      "    <form method=\"dialog\"><button autofocus>Close</button></form>",
+      "  </dialog>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "dialog { box-sizing: border-box; max-width: min(100%, 28rem); overflow: auto; background: Canvas; color: CanvasText; }",
+      "dialog::backdrop { background: rgb(0 0 0 / 50%); }",
+      "dialog { margin: auto 0 0; width: 100%; border-radius: 16px 16px 0 0; }",
+      "</style>"
     ]
   },
   "libraries": {
@@ -42,5 +85,9 @@
     "Trap focus while it is open",
     "Use the dialog role and give it a name"
   ],
-  "tags": ["mobile", "overlay", "gesture"]
+  "tags": [
+    "mobile",
+    "overlay",
+    "gesture"
+  ]
 }

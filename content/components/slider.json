@@ -37,6 +37,28 @@
       "<input id=\"volume\" name=\"volume\" type=\"range\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" aria-describedby=\"volume-unit\" style=\"min-height:44px; width:100%; margin:0\" oninput=\"document.getElementById('volume-value').textContent = this.value\">",
       "<output id=\"volume-value\" for=\"volume\">50</output>",
       "<span id=\"volume-unit\">percent</span>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId, ref } from \"vue\";",
+      "const volume = ref(50);",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <label :for=\"uid + '-volume'\">Volume</label>",
+      "  <input :id=\"uid + '-volume'\" v-model.number=\"volume\" type=\"range\" min=\"0\" max=\"100\" step=\"1\" :aria-describedby=\"uid + '-unit'\">",
+      "  <output :for=\"uid + '-volume'\">{{ volume }}</output><span :id=\"uid + '-unit'\"> percent</span>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {

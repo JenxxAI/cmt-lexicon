@@ -36,6 +36,28 @@
       "<label for=\"due-date\">Due date</label>",
       "<input id=\"due-date\" name=\"dueDate\" type=\"date\" aria-describedby=\"due-date-help\" style=\"min-height:44px; width:100%; box-sizing:border-box\">",
       "<p id=\"due-date-help\">Choose the day this task should be finished.</p>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId, ref } from \"vue\";",
+      "const date = ref(\"\");",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <label :for=\"uid + '-date'\">Due date</label>",
+      "  <input :id=\"uid + '-date'\" v-model=\"date\" name=\"dueDate\" type=\"date\" :aria-describedby=\"uid + '-help'\">",
+      "  <p :id=\"uid + '-help'\">Choose the day this task should be finished.</p>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {

@@ -2,7 +2,13 @@
   "id": "modal",
   "name": "Modal",
   "category": "overlay",
-  "aliases": ["dialog", "dialog box", "popup", "pop-up", "lightbox"],
+  "aliases": [
+    "dialog",
+    "dialog box",
+    "popup",
+    "pop-up",
+    "lightbox"
+  ],
   "looksLike": [
     "popup with a dark background behind it",
     "box in the middle of the screen that blocks everything else",
@@ -16,11 +22,25 @@
     "Showing a single important message"
   ],
   "notConfusedWith": [
-    { "id": "drawer", "difference": "Slides in from an edge and usually holds more content." },
-    { "id": "popover", "difference": "Small and anchored to a button; the page stays usable." },
-    { "id": "toast", "difference": "Appears briefly and doesn't block anything." }
+    {
+      "id": "drawer",
+      "difference": "Slides in from an edge and usually holds more content."
+    },
+    {
+      "id": "popover",
+      "difference": "Small and anchored to a button; the page stays usable."
+    },
+    {
+      "id": "toast",
+      "difference": "Appears briefly and doesn't block anything."
+    }
   ],
-  "related": ["drawer", "popover", "toast", "bottom-sheet"],
+  "related": [
+    "drawer",
+    "popover",
+    "toast",
+    "bottom-sheet"
+  ],
   "prompts": {
     "short": "Add a centered modal with title, body, Cancel and Confirm buttons. Trap focus.",
     "detailed": "Add a centered modal (max-width 480px) with a title, body text, and Cancel/Confirm buttons over a dimmed backdrop. Trap focus, close on Esc, lock page scroll while open, and use the dialog role with aria-modal and aria-labelledby."
@@ -61,6 +81,35 @@
       "    </div>",
       "  );",
       "}"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId, ref } from \"vue\";",
+      "const dialog = ref(null);",
+      "const trigger = ref(null);",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <button ref=\"trigger\" type=\"button\" @click=\"dialog.showModal()\">Open modal</button>",
+      "  <dialog ref=\"dialog\" :aria-labelledby=\"uid + '-title'\" @close=\"trigger?.focus()\">",
+      "    <h2 :id=\"uid + '-title'\">Project details</h2>",
+      "    <p>Review the available options.</p>",
+      "    <a href=\"/guides/\">Browse guides</a>",
+      "    <form method=\"dialog\"><button autofocus>Close</button></form>",
+      "  </dialog>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "dialog { box-sizing: border-box; max-width: min(100%, 28rem); overflow: auto; background: Canvas; color: CanvasText; }",
+      "dialog::backdrop { background: rgb(0 0 0 / 50%); }",
+      "</style>"
     ]
   },
   "libraries": {
@@ -76,5 +125,9 @@
     "Return focus to the trigger on close",
     "Give it an accessible name (aria-labelledby)"
   ],
-  "tags": ["overlay", "confirmation", "blocking"]
+  "tags": [
+    "overlay",
+    "confirmation",
+    "blocking"
+  ]
 }

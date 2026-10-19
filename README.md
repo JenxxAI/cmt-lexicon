@@ -53,3 +53,9 @@ See [AGENTS.md](AGENTS.md#roadmap-in-order).
 ## License
 
 [MIT](LICENSE)
+
+### Vue snippets
+
+All 40 component pages include a **Vue** code tab. Paste an example into a `.vue` single-file component in a Vue 3.5+ project. Examples use native HTML, scoped CSS, and Vue state where needed; no Tailwind or UI library is required. Replace example links and connect application actions (such as uploads) to your own app.
+
+Examples follow Vue’s [script setup](https://vuejs.org/api/sfc-script-setup.html), [form bindings](https://vuejs.org/guide/essentials/forms.html), and [useId](https://vuejs.org/api/composition-api-helpers.html#useid) APIs. Dialog examples use native `showModal()` for modal focus handling and Escape dismissal; disclosure menus use normal Tab navigation.

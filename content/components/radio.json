@@ -45,6 +45,31 @@
       "    Express delivery",
       "  </label>",
       "</fieldset>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { ref, useId } from \"vue\";",
+      "const group = useId();",
+      "const delivery = ref(\"standard\");",
+      "</script>",
+      "",
+      "<template>",
+      "  <fieldset>",
+      "    <legend>Delivery method</legend>",
+      "    <label><input v-model=\"delivery\" type=\"radio\" :name=\"group\" value=\"standard\"> Standard</label>",
+      "    <label><input v-model=\"delivery\" type=\"radio\" :name=\"group\" value=\"express\"> Express</label>",
+      "  </fieldset>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "label { display: flex; align-items: center; gap: 8px; }",
+      "</style>"
     ]
   },
   "libraries": {
