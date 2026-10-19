@@ -47,12 +47,17 @@ public/glossary.min.json    GENERATED (gitignored). So is public/llms.txt.
 
 ## Roadmap (in order)
 
-1. **Grow the content to ~40 components.** Suggested next: tabs, breadcrumb, pagination, sidebar, dropdown menu, tooltip, accordion, carousel, card, badge, avatar, button, text input, checkbox, radio, slider, select/combobox, date picker, progress bar, spinner, alert/banner, empty state, hero section, footer, sticky header, bento grid, command palette, stepper, data table, kebab menu. Add a preview illustration in `previews.tsx` for each (the fallback is only a placeholder). Add a case to `scripts/test-search.ts` for each new beginner phrase.
-2. **Search quality.** Today any word match scores above zero, so weak matches appear (e.g. 5 results for "a panel that slides in from the side"). Add a relative score cutoff and keep `npm test` green. Consider typo tolerance.
-3. **Interactive live previews.** The detail page shows a static illustration. Add a real Closed/Open demo for Drawer, Modal, Popover, and Toast (client component, respect `prefers-reduced-motion`).
-4. **Icons & assets section.** Cover icon vs SVG vs favicon, sprites, Lottie, OG images, and a name-to-icon table for Lucide, Heroicons, and Phosphor.
-5. **Vue snippets** (`snippets.vue` is already supported by the schema and UI).
-6. **Dark mode** (tokens are in `globals.css`).
-7. **Deploy** to Vercel (static output, no config needed) and add the live URL to the README and the portfolio.
-8. **Reverse lookup:** upload a screenshot, get the component name (AI-assisted, opt-in, keep the core site static).
-9. **Later, separate package:** a browser inspector extension. Click an element, see what it is, its icon and CSS, and (with a build plugin) its source file and line. Reuse `glossary.min.json` for naming. Expose it to coding agents via an MCP server. Do not start this before items 1 to 7 are done.
+Completed original roadmap items:
+
+- **1. DONE — Grow content:** 40 components with previews and beginner search cases.
+- **2. DONE — Search quality:** relative score cutoff and regression coverage.
+- **3. DONE — Interactive live previews:** Drawer, Modal, Popover, and Toast, with reduced-motion support.
+- **4. DONE — Icons & assets:** icon, SVG, favicon, sprite, Lottie, Open Graph image, and library name table.
+
+Remaining roadmap (renumbered):
+
+1. **Vue snippets** (`snippets.vue` is already supported by the schema and UI).
+2. **Dark mode** (tokens are in `globals.css`).
+3. **Deploy** to Vercel (static output, no config needed) and add the live URL to the README and the portfolio.
+4. **Reverse lookup:** upload a screenshot, get the component name (AI-assisted, opt-in, keep the core site static).
+5. **Later, separate package:** a browser inspector extension. Click an element, see what it is, its icon and CSS, and (with a build plugin) its source file and line. Reuse `glossary.min.json` for naming. Expose it to coding agents via an MCP server. Do not start this before remaining items 1 to 3 are done.

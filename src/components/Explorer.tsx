@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CATEGORIES, type CategoryId } from "@/lib/categories";
 import type { EntrySummary } from "@/lib/schema";
 import { search } from "@/lib/search";
@@ -14,9 +14,50 @@ const EXAMPLES = ["popup with dark background", "three lines icon", "gray loadin
 
 const chip = "max-sm:shrink-0 max-sm:whitespace-nowrap min-h-11 rounded-full border px-[18px] text-[15px] font-medium";
 
-export function Explorer({ entries }: { entries: EntrySummary[] }) {
+export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; assetGuide: ReactNode }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryId | "all">("all");
+
+  const input = useRef<HTMLInputElement>(null);
+  const [urlReady, setUrlReady] = useState(false);
+
+  useEffect(() => {
+    function readUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("cat");
+      setQuery(params.get("q") ?? "");
+      setCategory(cat && Object.hasOwn(CATEGORIES, cat) ? cat as CategoryId : "all");
+      setUrlReady(true);
+    }
+    readUrl();
+    window.addEventListener("popstate", readUrl);
+    return () => window.removeEventListener("popstate", readUrl);
+  }, []);
+
+  useEffect(() => {
+    if (!urlReady) return;
+    const timer = window.setTimeout(() => {
+      const url = new URL(window.location.href);
+      if (query) url.searchParams.set("q", query);
+      else url.searchParams.delete("q");
+      if (category !== "all") url.searchParams.set("cat", category);
+      else url.searchParams.delete("cat");
+      if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url);
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [query, category, urlReady]);
+
+  useEffect(() => {
+    function focusSearch(event: KeyboardEvent) {
+      const target = event.target;
+      if (event.key !== "/" || event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
+      if (target instanceof HTMLElement && (target.closest("input, textarea") || target.isContentEditable)) return;
+      event.preventDefault();
+      input.current?.focus();
+    }
+    window.addEventListener("keydown", focusSearch);
+    return () => window.removeEventListener("keydown", focusSearch);
+  }, []);
 
   const trimmed = query.trim();
   const matches = useMemo(() => search(entries, query), [entries, query]);
@@ -77,6 +118,8 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
             </label>
             <input
               id="q"
+              ref={input}
+              aria-keyshortcuts="/"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -84,6 +127,7 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
               autoComplete="off"
               className="min-h-11 min-w-0 flex-[1_1_12rem] bg-transparent text-[17px] outline-none placeholder:text-muted"
             />
+            <kbd aria-hidden="true" className="hidden rounded border border-rule px-2 font-mono text-sm text-muted sm:block">/</kbd>
             <button
               type="submit"
               className="min-h-11 rounded-[11px] bg-accent px-[22px] text-[15px] font-semibold text-white hover:bg-accent-deep"
@@ -155,6 +199,8 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
         </div>
       </section>
 
+      {assetGuide}
+
       {/* Browse */}
       <section id="browse" aria-labelledby="browse-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -181,10 +227,16 @@ export function Explorer({ entries }: { entries: EntrySummary[] }) {
           </div>
         </div>
 
-        <p className="mt-3 text-sm text-muted" aria-live="polite">
-          Showing {visible.length} of {entries.length}
-          {trimmed ? ` for “${trimmed}”` : ""}
-        </p>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <p className="text-sm text-muted" aria-live="polite">
+            Showing {visible.length} of {entries.length}
+            {trimmed ? ` for “${trimmed}”` : ""}
+          </p>
+
+          {(query || category !== "all") && (
+            <button type="button" onClick={clearAll} className="min-h-11 rounded-lg border border-rule bg-surface px-4 text-sm hover:border-ink">Clear</button>
+          )}
+        </div>
 
         {visible.length > 0 ? (
           <ul className="mt-5 grid grid-cols-1 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">

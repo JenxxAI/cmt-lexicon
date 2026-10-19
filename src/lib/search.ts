@@ -41,6 +41,37 @@ function matchQuality(queryToken: string, docToken: string): number {
 // Keep plausible alternatives while dropping incidental word matches.
 const MIN_RELATIVE_SCORE = 0.6;
 
+// Query-only equivalents. Each group has a hub and bidirectional alternatives.
+// Do not expand transitively: "mouse over" means hover, not a text-entry cursor.
+// Alternatives share the original phrase’s token budget and never add extra votes.
+const SYNONYM_WEIGHT = 0.8;
+const SYNONYMS = [
+  ["hover", "mouse over", "mouseover", "cursor", "mouse on top"],
+  ["popup", "pop up"],
+  ["dropdown", "drop down"],
+  ["navbar", "nav bar"],
+  ["burger", "hamburger"],
+].map((group) => group.map((phrase) => tokenize(phrase, true)));
+
+type QueryTerm = { direct: string[]; alternatives: string[][] };
+
+function queryTerms(tokens: string[]): QueryTerm[] {
+  const terms: QueryTerm[] = [];
+  for (let index = 0; index < tokens.length;) {
+    const match = SYNONYMS.flatMap((group) => group.map((phrase) => ({ group, phrase })))
+      .filter(({ phrase }) => phrase.every((token, offset) => tokens[index + offset] === token))
+      .sort((a, b) => b.phrase.length - a.phrase.length)[0];
+    if (match) {
+      terms.push({ direct: match.phrase, alternatives: match.phrase === match.group[0] ? match.group.slice(1) : [match.group[0]] });
+      index += match.phrase.length;
+    } else {
+      terms.push({ direct: [tokens[index]], alternatives: [] });
+      index += 1;
+    }
+  }
+  return terms;
+}
+
 type Field = { weight: number; phrases: string[]; tokens: string[] };
 
 function fieldsOf(entry: EntrySummary): Field[] {
@@ -58,16 +89,28 @@ function fieldsOf(entry: EntrySummary): Field[] {
   ];
 }
 
-function scoreEntry(entry: EntrySummary, phrasePattern: RegExp | null, queryTokens: string[]): number {
+function scoreEntry(entry: EntrySummary, phrasePattern: RegExp | null, terms: QueryTerm[]): number {
   const fields = fieldsOf(entry);
   let score = 0;
 
-  for (const queryToken of queryTokens) {
+  function tokenScore(token: string): number {
     let best = 0;
     for (const field of fields) {
-      for (const docToken of field.tokens) {
-        const quality = matchQuality(queryToken, docToken);
-        if (quality > 0) best = Math.max(best, field.weight * quality);
+      for (const docToken of field.tokens) best = Math.max(best, field.weight * matchQuality(token, docToken));
+    }
+    return best;
+  }
+
+  for (const term of terms) {
+    let best = term.direct.reduce((sum, token) => sum + tokenScore(token), 0);
+    for (const alternative of term.alternatives) {
+      for (const field of fields) {
+        // Require adjacent words in a single phrase; never join unrelated fields.
+        const matches = field.phrases.some((phrase) => {
+          const tokens = tokenize(phrase, true);
+          return tokens.some((_, index) => alternative.every((token, offset) => tokens[index + offset] === token));
+        });
+        if (matches) best = Math.max(best, field.weight * SYNONYM_WEIGHT * term.direct.length);
       }
     }
     score += best;
@@ -92,8 +135,9 @@ export function search(entries: EntrySummary[], query: string): EntrySummary[] {
   // Escape punctuation before building a literal phrase match with token boundaries.
   const escapedQuery = rawQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const phrasePattern = rawQuery.length >= 3 ? new RegExp(`(^|[^a-z0-9])${escapedQuery}($|[^a-z0-9])`) : null;
+  const terms = queryTerms(queryTokens);
   const ranked = entries
-    .map((entry) => ({ entry, score: scoreEntry(entry, phrasePattern, queryTokens) }))
+    .map((entry) => ({ entry, score: scoreEntry(entry, phrasePattern, terms) }))
     .filter((result) => result.score > 0)
     .sort((a, b) => b.score - a.score || a.entry.name.localeCompare(b.entry.name));
 
