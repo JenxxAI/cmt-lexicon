@@ -23,6 +23,13 @@ const cases: [string, string][] = [
   ["home then category then current page", "breadcrumb"],
   ["small text label that appears when I hover", "tooltip"],
   ["tiny explanation beside an icon", "tooltip"],
+  ["gray text when mouse is on top of it", "tooltip"],
+  ["mouse over hint", "tooltip"],
+  ["mouseover hint", "tooltip"],
+  ["pop up with dark background", "modal"],
+  ["drop down actions", "dropdown-menu"],
+  ["nav bar", "navbar"],
+  ["burger", "hamburger-icon"],
   ["sections that expand when you click", "accordion"],
   ["stack of questions that reveal answers", "accordion"],
   ["list of actions that opens below a button", "dropdown-menu"],
@@ -148,3 +155,16 @@ if (failed > 0) {
   process.exit(1);
 }
 console.log(`\n✓ ${cases.length} search cases passed`);
+
+// Query expansion is bidirectional, discounted, and respects word/phrase boundaries.
+for (const [left, right] of [["hover", "mouse over"], ["hover", "mouseover"], ["hover", "cursor"], ["popup", "pop up"], ["dropdown", "drop down"], ["navbar", "nav bar"], ["burger", "hamburger"]]) {
+  for (const [query, name] of [[left, right], [right, left]]) {
+    assert.equal(search([fixture("synonym", name)], query)[0]?.id, "synonym", `${query} finds ${name}`);
+  }
+}
+assert.deepEqual(search([fixture("direct", "Hover"), fixture("synonym", "Cursor")], "hover").map(e => e.id),
+  ["direct"], "a discounted synonym cannot displace an exact name with a phrase bonus");
+assert.equal(search([fixture("prefix", "Pop music goes up"), fixture("adjacent", "Pop up")], "popup")[0]?.id,
+  "adjacent", "adjacent synonyms outrank an ordinary prefix match");
+assert.deepEqual(search([fixture("unrelated", "Hamburger")], "burgerish"), [], "synonyms match complete query words");
+assert.deepEqual(idsFor("login form field"), ["text-input", "date-picker", "file-upload", "select", "stepper"]);
