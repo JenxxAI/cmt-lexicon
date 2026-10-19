@@ -54,7 +54,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
       <Header />
       <main id="main">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 pb-2 pt-5 text-sm text-muted">
-          <Link href="/#browse" className="hover:text-accent">
+          <Link href="/#browse" className="hover:text-accent-deep">
             Components
           </Link>
           <span aria-hidden="true">/</span>
@@ -92,7 +92,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
               <h2 className="mt-9 font-display text-[22px] font-semibold">How people describe it</h2>
               <ul className="mt-3 flex flex-wrap gap-2.5">
                 {entry.looksLike.map((phrase) => (
-                  <li key={phrase} className="rounded-xl border border-rule bg-surface px-3.5 py-2 text-[15px]">
+                  <li key={phrase} className="rounded-2xl bg-surface px-3.5 py-2 text-[15px]">
                     “{phrase}”
                   </li>
                 ))}
@@ -112,10 +112,10 @@ export default async function ComponentPage({ params }: { params: Promise<Params
                     {entry.notConfusedWith.map((item) => {
                       const other = byId.get(item.id);
                       return (
-                        <li key={item.id} className="min-w-0 flex-[1_1_170px] rounded-[14px] border border-rule bg-surface p-4">
+                        <li key={item.id} className="min-w-0 flex-[1_1_170px] rounded-[20px] bg-surface p-4">
                           <div className="font-display text-lg font-semibold">
                             {other ? (
-                              <Link href={`/components/${other.id}/`} className="hover:text-accent">
+                              <Link href={`/components/${other.id}/`} className="hover:text-accent-deep">
                                 {other.name}
                               </Link>
                             ) : (
@@ -133,10 +133,10 @@ export default async function ComponentPage({ params }: { params: Promise<Params
               {libraries.length > 0 && (
                 <>
                   <h2 className="mt-9 font-display text-[22px] font-semibold">What your library calls it</h2>
-                  <div className="mt-3 overflow-x-auto rounded-[14px] border border-rule bg-surface">
+                  <div className="mt-3 overflow-x-auto rounded-[20px] bg-surface">
                     <table className="w-full border-collapse text-[15px]">
                       <thead>
-                        <tr className="bg-[#f9fafb] text-left font-mono text-[13px] text-muted">
+                        <tr className="bg-paper text-left font-mono text-[13px] text-muted">
                           <th scope="col" className="px-4 py-3 font-semibold">
                             LIBRARY
                           </th>
@@ -179,7 +179,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
               {entry.id === "drawer" || entry.id === "modal" || entry.id === "popover" || entry.id === "toast" ? (
                 <LivePreview id={entry.id} />
               ) : (
-                <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[18px] border border-rule bg-surface">
+                <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[28px] bg-surface">
                   <div role="img" aria-label={`Illustration of a ${entry.name.toLowerCase()}`} className="h-80">
                     <Preview id={entry.id} />
                   </div>

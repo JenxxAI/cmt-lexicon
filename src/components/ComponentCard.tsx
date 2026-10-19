@@ -7,7 +7,7 @@ import { Preview } from "./previews";
 
 export function ComponentCard({ entry }: { entry: EntrySummary }) {
   return (
-    <article className="relative flex h-full flex-col max-sm:flex-row max-sm:items-center max-sm:gap-3 max-sm:p-3 overflow-hidden rounded-[18px] border border-rule bg-surface transition-shadow focus-within:shadow-md hover:shadow-md">
+    <article className="relative flex h-full flex-col max-sm:flex-row max-sm:items-center max-sm:gap-3 max-sm:p-3 overflow-hidden rounded-[28px] bg-surface transition-shadow focus-within:shadow-md hover:shadow-md">
       <div className="h-[152px] max-sm:size-16 max-sm:shrink-0 max-sm:overflow-hidden max-sm:rounded-xl" aria-hidden="true">
         <Preview id={entry.id} />
       </div>

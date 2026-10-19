@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import styles from "./LivePreview.module.css";
 
-const button = "min-h-11 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-surface hover:bg-accent-deep";
+const button = "min-h-11 rounded-full bg-ink px-5 py-2 text-sm font-medium text-surface hover:bg-body";
 const secondary = "min-h-11 rounded-lg border border-rule bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper";
 
 export type LivePreviewId = "drawer" | "modal" | "popover" | "toast";
@@ -54,7 +54,7 @@ export function LivePreview({ id }: { id: LivePreviewId }) {
   }, [open, id]);
 
   return (
-    <section aria-label={`${label} interactive preview`} className="rounded-[18px] border border-rule bg-surface">
+    <section aria-label={`${label} interactive preview`} className="rounded-[28px] bg-surface">
       <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-3">
         <h2 className="font-display text-lg font-semibold">Try it</h2>
         <span className="font-mono text-xs text-muted">{open ? "Open" : "Closed"}</span>

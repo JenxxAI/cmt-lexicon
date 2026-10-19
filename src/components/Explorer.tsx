@@ -95,9 +95,9 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
           <div className="inline-flex items-center rounded-full bg-hi px-3.5 py-1.5 font-mono text-[13px] font-medium">
             Free · open source · MIT
           </div>
-          <h1 className="mt-5 font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-[64px]">
+          <h1 className="mt-5 font-display text-5xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-[64px]">
             <span className="block">Can’t name it?</span>
-            <span className="block text-accent">Describe it.</span>
+            <span className="block text-accent-deep">Describe it.</span>
           </h1>
           <p className="mt-5 max-w-[520px] text-lg text-muted">
             Search UI components by what they look like. Get the real name, the library equivalents, and a short
@@ -110,7 +110,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
               event.preventDefault();
               jumpToResults();
             }}
-            className="mt-7 flex max-w-[560px] flex-wrap items-center gap-2 rounded-2xl border border-rule bg-surface py-2 pl-4 pr-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent"
+            className="mt-7 flex max-w-[560px] flex-wrap items-center gap-2 rounded-3xl border border-rule bg-surface py-2 pl-4 pr-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent-deep"
           >
             <SearchIcon className="size-5 text-muted" />
             <label htmlFor="q" className="sr-only">
@@ -130,7 +130,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
             <kbd aria-hidden="true" className="hidden rounded border border-rule px-2 font-mono text-sm text-muted sm:block">/</kbd>
             <button
               type="submit"
-              className="min-h-11 rounded-[11px] bg-accent px-[22px] text-[15px] font-semibold text-white hover:bg-accent-deep"
+              className="min-h-11 rounded-full bg-ink px-6 text-[15px] font-semibold text-white hover:bg-body"
             >
               Find it
             </button>
@@ -143,7 +143,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
                 key={example}
                 type="button"
                 onClick={() => setQuery(example)}
-                className="min-h-11 rounded-full border border-rule px-3.5 text-sm hover:border-ink"
+                className="min-h-11 rounded-full bg-surface px-3.5 text-sm hover:bg-line"
               >
                 {example}
               </button>
@@ -152,7 +152,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
         </div>
 
         {/* Live results card */}
-        <div className="min-w-0 flex-[1_1_440px] rounded-[20px] border border-rule bg-surface p-3">
+        <div className="min-w-0 flex-[1_1_440px] rounded-[28px] bg-surface p-3">
           <p className="px-3 pb-3 pt-2.5 text-sm text-muted" aria-live="polite">
             {trimmed
               ? matches.length > 0
@@ -234,7 +234,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
           </p>
 
           {(query || category !== "all") && (
-            <button type="button" onClick={clearAll} className="min-h-11 rounded-lg border border-rule bg-surface px-4 text-sm hover:border-ink">Clear</button>
+            <button type="button" onClick={clearAll} className="min-h-11 rounded-full bg-surface px-4 text-sm hover:bg-line">Clear</button>
           )}
         </div>
 
@@ -247,7 +247,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
             ))}
           </ul>
         ) : (
-          <div className="mt-5 rounded-[18px] border border-dashed border-rule bg-surface p-10 text-center">
+          <div className="mt-5 rounded-[28px] border border-dashed border-rule bg-surface p-10 text-center">
             <p className="font-display text-xl font-semibold">Nothing here yet</p>
             <p className="mx-auto mt-1 max-w-md text-muted">
               Try describing what it looks like or what it does, not what it’s called.
@@ -255,7 +255,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
             <button
               type="button"
               onClick={clearAll}
-              className="mt-4 min-h-11 rounded-xl border border-ink px-5 text-sm font-medium hover:bg-paper"
+              className="mt-4 min-h-11 rounded-full border border-ink px-5 text-sm font-medium hover:bg-paper"
             >
               Clear search and filters
             </button>

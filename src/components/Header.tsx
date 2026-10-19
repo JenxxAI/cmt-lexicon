@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { StarIcon } from "./icons";
 
-const navLink = "inline-flex min-h-11 items-center hover:text-accent";
+const navLink = "inline-flex min-h-11 items-center hover:text-accent-deep";
 
 export function Header() {
   return (
@@ -10,7 +10,7 @@ export function Header() {
       <Link href="/" className="flex items-center gap-2.5 max-sm:min-h-11" aria-label={`${SITE.name} home`}>
         <span
           aria-hidden="true"
-          className="grid size-8 place-items-center rounded-[9px] bg-accent font-mono text-sm font-medium text-white"
+          className="grid size-8 place-items-center rounded-[10px] bg-accent font-mono text-sm font-semibold text-ink"
         >
           Aa
         </span>
@@ -35,7 +35,7 @@ export function Header() {
       <a
         href={SITE.repoUrl}
         aria-label="Star on GitHub"
-        className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-rule bg-surface px-4 text-[15px] font-medium hover:border-ink max-sm:col-start-2 max-sm:row-start-1 max-sm:w-11 max-sm:justify-center max-sm:px-0"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 text-[15px] font-medium hover:bg-line max-sm:col-start-2 max-sm:row-start-1 max-sm:w-11 max-sm:justify-center max-sm:px-0"
       >
         <StarIcon className="size-[18px]" />
         <span className="max-sm:hidden">Star on GitHub</span>

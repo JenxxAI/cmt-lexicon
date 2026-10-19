@@ -30,7 +30,7 @@ function Bar({ w, tone = "rule" }: { w: number; tone?: "ink" | "rule" | "stage" 
 function Drawer() {
   return (
     <Page dim>
-      <div className="absolute inset-y-0 right-0 flex w-[46%] flex-col gap-[7%] bg-surface p-[5%] shadow-[-8px_0_24px_rgba(16,24,40,0.18)]">
+      <div className="absolute inset-y-0 right-0 flex w-[46%] flex-col gap-[7%] bg-surface p-[5%] shadow-[-8px_0_24px_rgba(17,17,17,0.18)]">
         <Bar w={60} tone="ink" />
         <Bar w={90} />
         <Bar w={75} />

@@ -14,8 +14,8 @@ type Props = {
 };
 
 const VARIANTS = {
-  outline: "border-ink bg-surface text-ink hover:bg-paper px-4 text-sm font-medium",
-  solid: "border-transparent bg-accent text-white px-5 text-[15px] font-semibold hover:bg-accent-deep",
+  outline: "border-transparent bg-line text-ink hover:bg-rule px-4 text-sm font-medium",
+  solid: "border-transparent bg-ink text-white px-5 text-[15px] font-semibold hover:bg-body",
   ghost: "border-transparent text-rule hover:bg-ink px-3 text-sm",
 } as const;
 
@@ -52,7 +52,7 @@ export function CopyButton({ text, label = "Copy prompt", variant = "outline", i
         type="button"
         onClick={copy}
         aria-label={iconOnly || compactOnMobile ? label : undefined}
-        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border ${VARIANTS[variant]} ${iconOnly ? "min-w-11" : ""} ${compactOnMobile ? "max-sm:min-w-11 max-sm:px-0" : ""} ${className}`}
+        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full border ${VARIANTS[variant]} ${iconOnly ? "min-w-11" : ""} ${compactOnMobile ? "max-sm:min-w-11 max-sm:px-0" : ""} ${className}`}
       >
         <Icon className="size-4" />
         {iconOnly ? null : <span className={compactOnMobile ? "max-sm:hidden" : undefined}>{copied ? "Copied" : label}</span>}
