@@ -51,6 +51,27 @@
       "    </section>",
       "  );",
       "}"
+    ],
+    "vue": [
+      "<template>",
+      "  <section aria-label=\"Product highlights\" class=\"grid\">",
+      "    <article class=\"featured\"><h2>Everything in one place</h2><p>Organize your projects and notes.</p></article>",
+      "    <article><h2>Quick search</h2><p>Find what you need.</p></article>",
+      "    <article><h2>Team updates</h2><p>Stay up to date.</p></article>",
+      "  </section>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      ".grid { display: grid; gap: 16px; }",
+      "article { padding: 24px; border: 1px solid currentColor; border-radius: 16px; }",
+      "@media (min-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .featured { grid-row: span 2; } }",
+      "</style>"
     ]
   },
   "libraries": {},

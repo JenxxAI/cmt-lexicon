@@ -2,18 +2,33 @@
   "id": "navbar",
   "name": "Navbar",
   "category": "navigation",
-  "aliases": ["top bar", "header nav", "menu bar", "navigation bar", "app bar"],
+  "aliases": [
+    "top bar",
+    "header nav",
+    "menu bar",
+    "navigation bar",
+    "app bar"
+  ],
   "looksLike": [
     "bar across the top of the page with links",
     "logo on the left and menu links on the right",
     "header with a button on the far right"
   ],
   "definition": "A horizontal bar at the top of the page holding the logo, the main navigation links, and often a call-to-action button.",
-  "whenToUse": ["Primary site navigation", "Marketing and app headers"],
-  "notConfusedWith": [
-    { "id": "drawer", "difference": "Slides in on demand; the navbar is always visible." }
+  "whenToUse": [
+    "Primary site navigation",
+    "Marketing and app headers"
   ],
-  "related": ["hamburger-icon", "drawer"],
+  "notConfusedWith": [
+    {
+      "id": "drawer",
+      "difference": "Slides in on demand; the navbar is always visible."
+    }
+  ],
+  "related": [
+    "hamburger-icon",
+    "drawer"
+  ],
   "prompts": {
     "short": "Add a sticky top navbar: logo left, links center, CTA right.",
     "detailed": "Add a sticky top navbar with the logo on the left, centered nav links with a clear active state, and a primary CTA button on the right. Collapse to a hamburger menu that opens a drawer below 768px, and use a nav landmark with an aria-label."
@@ -40,6 +55,27 @@
       "    <a href=\"/signup\" className=\"rounded-lg bg-black px-4 py-2 text-white\">Sign up</a>",
       "  </nav>",
       "</header>"
+    ],
+    "vue": [
+      "<template>",
+      "  <header>",
+      "    <nav aria-label=\"Main\">",
+      "      <a href=\"/\">Logo</a>",
+      "      <a href=\"/docs\">Docs</a>",
+      "      <a href=\"/pricing\">Pricing</a>",
+      "      <a href=\"/signup\">Sign up</a>",
+      "    </nav>",
+      "  </header>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {
@@ -54,5 +90,9 @@
     "Mark the current page with aria-current",
     "Keep the hamburger button labelled"
   ],
-  "tags": ["navigation", "header", "layout"]
+  "tags": [
+    "navigation",
+    "header",
+    "layout"
+  ]
 }

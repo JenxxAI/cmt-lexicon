@@ -39,6 +39,30 @@
       "  <p>Create a project to start organizing your work.</p>",
       "  <a href=\"/projects/new/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Create your first project</a>",
       "</section>"
+    ],
+    "vue": [
+      "<script setup>",
+      "import { useId } from \"vue\";",
+      "",
+      "const uid = useId();",
+      "</script>",
+      "",
+      "<template>",
+      "  <section :aria-labelledby=\"uid + '-empty-title'\">",
+      "    <h2 :id=\"uid + '-empty-title'\">No projects yet</h2>",
+      "    <p>Create a project to start organizing your work.</p>",
+      "    <a href=\"/projects/new/\" style=\"display:inline-flex; align-items:center; min-height:44px\">Create your first project</a>",
+      "  </section>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "button, input, select, summary { min-height: 44px; }",
+      "button { min-width: 44px; }",
+      "button, a { touch-action: manipulation; }",
+      "a { display: inline-flex; align-items: center; min-height: 44px; }",
+      ":focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }",
+      "input, select { max-width: 100%; box-sizing: border-box; }",
+      "</style>"
     ]
   },
   "libraries": {

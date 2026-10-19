@@ -54,10 +54,11 @@ Completed original roadmap items:
 - **3. DONE — Interactive live previews:** Drawer, Modal, Popover, and Toast, with reduced-motion support.
 - **4. DONE — Icons & assets:** icon, SVG, favicon, sprite, Lottie, Open Graph image, and library name table.
 
+- **5. DONE — Vue snippets:** all 40 components include standalone Vue 3.5+ single-file examples.
+
 Remaining roadmap (renumbered):
 
-1. **Vue snippets** (`snippets.vue` is already supported by the schema and UI).
-2. **Dark mode** (tokens are in `globals.css`).
-3. **Deploy** to Vercel (static output, no config needed) and add the live URL to the README and the portfolio.
-4. **Reverse lookup:** upload a screenshot, get the component name (AI-assisted, opt-in, keep the core site static).
-5. **Later, separate package:** a browser inspector extension. Click an element, see what it is, its icon and CSS, and (with a build plugin) its source file and line. Reuse `glossary.min.json` for naming. Expose it to coding agents via an MCP server. Do not start this before remaining items 1 to 3 are done.
+1. **Dark mode** (tokens are in `globals.css`).
+2. **Deploy** to Vercel (static output, no config needed) and add the live URL to the README and the portfolio.
+3. **Reverse lookup:** upload a screenshot, get the component name (AI-assisted, opt-in, keep the core site static).
+4. **Later, separate package:** a browser inspector extension. Click an element, see what it is, its icon and CSS, and (with a build plugin) its source file and line. Reuse `glossary.min.json` for naming. Expose it to coding agents via an MCP server. Do not start this before remaining items 1 to 2 are done.
