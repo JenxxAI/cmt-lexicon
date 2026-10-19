@@ -13,7 +13,7 @@ export function PromptPanel({ short, detailed }: { short: string; detailed: stri
   const otherText = mode === "short" ? detailed : short;
 
   return (
-    <section aria-labelledby="prompt-heading" className="rounded-[18px] border border-rule bg-surface p-4">
+    <section aria-labelledby="prompt-heading" className="rounded-[28px] bg-surface p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="prompt-heading" className="font-mono text-[13px] font-normal uppercase tracking-wide text-muted">
           Prompt

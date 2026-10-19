@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import "@fontsource-variable/geist";
+import "@fontsource-variable/inter";
 import "@fontsource-variable/geist-mono";
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/nunito";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 

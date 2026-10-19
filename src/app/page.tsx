@@ -14,8 +14,8 @@ export default function HomePage() {
       <Header />
       <main id="main">
         <Explorer entries={entries} assetGuide={
-          <aside aria-label="Icons and assets guide" className="mb-8 rounded-[18px] border border-rule bg-surface p-5">
-            <Link href="/assets/" className="inline-flex min-h-11 items-center font-display text-xl font-semibold text-accent underline underline-offset-4">
+          <aside aria-label="Icons and assets guide" className="mb-8 rounded-[28px] bg-surface p-5">
+            <Link href="/assets/" className="inline-flex min-h-11 items-center font-display text-xl font-semibold text-accent-deep underline underline-offset-4">
               Looking for an icon or image? Explore icons &amp; assets
             </Link>
             <p className="mt-2 text-sm text-muted">{assets.topics.map((topic) => topic.name).join(" · ")}</p>

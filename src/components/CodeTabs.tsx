@@ -46,7 +46,7 @@ export function CodeTabs({ tabs }: { tabs: CodeTab[] }) {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveId(tab.id)}
                 className={`min-h-11 rounded-t-[10px] px-3.5 font-mono text-[13px] ${
-                  selected ? "bg-code text-white" : "text-[#98a2b3] hover:text-white"
+                  selected ? "bg-code text-white" : "text-dim hover:text-white"
                 }`}
               >
                 {tab.label}

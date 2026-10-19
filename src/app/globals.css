@@ -2,25 +2,27 @@
 
 /* Design tokens from the mockup. Use these names in components instead of raw hex values. */
 @theme {
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito Variable", ui-rounded, ui-sans-serif, system-ui, sans-serif;
 
-  --color-paper: #f2f4f7; /* page background */
+  /* Warm-neutral palette inspired by getkeeby.com: soft gray canvas, white cards, orange accent. */
+  --color-paper: #f5f5f5; /* page background */
   --color-surface: #ffffff; /* cards, inputs */
-  --color-ink: #101828; /* main text, dark bands */
-  --color-body: #344054; /* long-form text */
-  --color-muted: #475467; /* secondary text */
-  --color-line: #eaecf0; /* hairlines */
-  --color-rule: #d0d5dd; /* borders */
-  --color-accent: #3730f0;
-  --color-accent-deep: #2b24c9;
-  --color-accent-soft: #ecebfe;
-  --color-hi: #ffe14d; /* token-count badges, highlights */
-  --color-stage: #e4e8ef; /* preview backgrounds */
-  --color-skel: #b7bfcc;
-  --color-skel-soft: #c9d0db;
-  --color-code: #1d2939;
+  --color-ink: #111111; /* main text, primary buttons, dark bands */
+  --color-body: #3a3a3c; /* long-form text */
+  --color-muted: #5f5f63; /* secondary text */
+  --color-dim: #8e8e93; /* borders and inactive text on dark surfaces */
+  --color-line: #e8e8e8; /* hairlines, hover fills */
+  --color-rule: #d4d4d4; /* borders */
+  --color-accent: #f28c28; /* orange fills and illustrations. Never text or focus rings: 2.25:1 on paper. */
+  --color-accent-deep: #b54708; /* orange text, links, focus rings (4.98:1 on paper) */
+  --color-accent-soft: #fdebd9; /* orange tint backgrounds */
+  --color-hi: #ffc58a; /* token-count badges, highlights */
+  --color-stage: #ededed; /* preview backgrounds */
+  --color-skel: #bebebe;
+  --color-skel-soft: #d6d6d6;
+  --color-code: #1c1c1e;
 }
 
 @layer base {
@@ -37,8 +39,14 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-deep);
     outline-offset: 2px;
   }
 }

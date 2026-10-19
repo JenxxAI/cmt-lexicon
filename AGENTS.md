@@ -41,7 +41,7 @@ public/glossary.min.json    GENERATED (gitignored). So is public/llms.txt.
 - **Client bundle stays small.** Client components may `import type` from `schema.ts` but must not import `zod` or `content.ts`.
 - **Accessibility is not optional.** Real `<button>` / `<a>`, visible focus, 44px touch targets, `aria-label` on icon-only buttons, 4.5:1 text contrast, works at 390px wide with no horizontal scroll.
 - **No new runtime dependency** unless it clearly earns its weight. Search is intentionally dependency-free.
-- **Match the design.** Light theme, indigo accent, Bricolage Grotesque (display), Geist (body), Geist Mono (prompts/labels). Keep the existing look.
+- **Match the design.** Light theme inspired by getkeeby.com: soft gray canvas, borderless white cards with large radius, dark pill buttons, orange accent. Nunito (display), Inter (body), Geist Mono (prompts/labels). Orange `accent` is for fills and illustrations only; use `accent-deep` for orange text and focus rings (4.5:1 contrast). Keep the existing look.
 - Short prompts must stay under 40 estimated tokens (enforced by `validate`).
 - Don't commit `out/`, `.next/`, or the generated files in `public/`.
 
