@@ -24,7 +24,7 @@ export function Footer() {
             <ul>
               <li><Link href="/#browse" className={footerLink}>Components</Link></li>
               <li><Link href="/assets/" className={footerLink}>Icons &amp; assets</Link></li>
-              <li><a href="/llms.txt" className={footerLink}>Prompt cheat sheet</a></li>
+              <li><Link href="/cheat-sheet/" className={footerLink}>Prompt cheat sheet</Link></li>
             </ul>
           </nav>
           <nav aria-label="Footer resources">

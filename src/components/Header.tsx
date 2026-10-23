@@ -24,9 +24,9 @@ export function Header() {
         <Link href="/assets/" className={navLink}>
           Icons &amp; assets
         </Link>
-        <a href="/llms.txt" className={navLink}>
+        <Link href="/cheat-sheet/" className={navLink}>
           Cheat sheet
-        </a>
+        </Link>
         <a href={`${SITE.repoUrl}/blob/main/CONTRIBUTING.md`} className={navLink}>
           Contribute
         </a>
