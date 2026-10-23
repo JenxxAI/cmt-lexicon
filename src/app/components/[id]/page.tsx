@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { CodeTabs, type CodeTab } from "@/components/CodeTabs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { LivePreview } from "@/components/LivePreview";
 import { Preview } from "@/components/previews";
 import { PromptPanel } from "@/components/PromptPanel";
 import { Playground } from "@/components/playground/Playground";
@@ -178,9 +177,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
           {/* Right: see it, prompt it, code it */}
           <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5 max-lg:contents">
             <div className="max-lg:order-3 max-lg:min-w-0 max-lg:w-full">
-              {entry.id === "drawer" || entry.id === "modal" || entry.id === "popover" || entry.id === "toast" ? (
-                <LivePreview id={entry.id} />
-              ) : hasSample(entry.id) ? (
+              {hasSample(entry.id) ? (
                 <Playground id={entry.id} name={entry.name} />
               ) : (
                 <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[28px] bg-surface">

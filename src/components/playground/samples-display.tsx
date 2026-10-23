@@ -14,6 +14,7 @@ function TabsDemo({ v }: { v: Values }) {
   const current = Math.min(active, count - 1);
   const style = str(v, "style");
   const fill = bool(v, "fill");
+  const t = tone(str(v, "color"));
 
   function onKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     let next = current;
@@ -29,9 +30,9 @@ function TabsDemo({ v }: { v: Values }) {
 
   const list = style === "underline" ? "border-b border-rule" : style === "boxed" ? "gap-1 rounded-2xl bg-line p-1" : "gap-1";
   const tab = (selected: boolean) =>
-    style === "underline" ? `-mb-px border-b-2 ${selected ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink"}`
-    : style === "boxed" ? `rounded-xl ${selected ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"}`
-    : `rounded-full ${selected ? "bg-ink text-white" : "text-ink hover:bg-line"}`;
+    style === "underline" ? `-mb-px border-b-2 ${selected ? `border-current ${t.text}` : "border-transparent text-muted hover:text-ink"}`
+    : style === "boxed" ? `rounded-xl ${selected ? `bg-surface shadow-sm ${t.text}` : "text-muted hover:text-ink"}`
+    : `rounded-full ${selected ? t.solid : "text-ink hover:bg-line"}`;
 
   return (
     <div className="w-full max-w-md">
@@ -305,6 +306,7 @@ function PaginationDemo({ v }: { v: Values }) {
   const page = Math.min(picked, total);
   const radius = RADIUS[str(v, "radius")];
   const outline = str(v, "style") === "outline";
+  const t = tone(str(v, "color"));
   const item = "grid min-h-11 min-w-11 place-items-center px-2 text-sm font-semibold transition-colors motion-reduce:transition-none";
   const idle = outline ? "border border-rule bg-surface hover:bg-line" : "hover:bg-line";
   const arrow = (label: string, to: number, disabled: boolean, glyph: string) => (
@@ -324,7 +326,7 @@ function PaginationDemo({ v }: { v: Values }) {
             <li key={`gap-${index}`} aria-hidden="true" className="grid min-h-11 min-w-8 place-items-center text-muted">…</li>
           ) : (
             <li key={entry}>
-              <button type="button" aria-label={`Page ${entry}`} aria-current={entry === page ? "page" : undefined} onClick={() => setPicked(entry)} className={`${item} ${radius} ${entry === page ? "bg-ink text-white" : idle}`}>
+              <button type="button" aria-label={`Page ${entry}`} aria-current={entry === page ? "page" : undefined} onClick={() => setPicked(entry)} className={`${item} ${radius} ${entry === page ? t.solid : idle}`}>
                 {entry}
               </button>
             </li>
@@ -342,6 +344,7 @@ export const DISPLAY_SAMPLES = {
     hint: "Click a tab, or use the arrow keys, Home, and End.",
     controls: [
       { type: "choice", key: "style", label: "Style", default: "underline", options: [{ value: "underline", label: "Underline" }, { value: "pill", label: "Pill" }, { value: "boxed", label: "Boxed" }] },
+      colorControl("ink"),
       { type: "range", key: "count", label: "Number of tabs", min: 2, max: 5, step: 1, default: 3 },
       { type: "toggle", key: "fill", label: "Stretch to full width", default: false },
     ],
@@ -409,6 +412,7 @@ export const DISPLAY_SAMPLES = {
       { type: "range", key: "pages", label: "Total pages", min: 3, max: 50, step: 1, default: 12 },
       { type: "choice", key: "siblings", label: "Pages next to current", default: "1", options: [{ value: "1", label: "1" }, { value: "2", label: "2" }] },
       { type: "choice", key: "style", label: "Style", default: "outline", options: [{ value: "outline", label: "Outline" }, { value: "plain", label: "Plain" }] },
+      colorControl("ink"),
       radiusControl("soft"),
       { type: "toggle", key: "arrows", label: "Prev / next arrows", default: true },
     ],
