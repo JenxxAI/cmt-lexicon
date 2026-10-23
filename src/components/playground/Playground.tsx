@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useId, useState, type CSSProperties } from "react";
 import { ColorLab } from "./ColorLab";
 import { Controls } from "./Controls";
 import { cssVars } from "./color";
@@ -12,6 +12,8 @@ import type { SampleId } from "./sample-ids";
 export function Playground({ id, name }: { id: SampleId; name: string }) {
   const sample = SAMPLES[id];
   const palette = usePalette();
+  const [showSettings, setShowSettings] = useState(false);
+  const panel = useId();
   const hasColor = sample.controls.some((control) => control.key === "color");
   const [values, setValues] = useState<Values>(() => defaultsFor(sample.controls));
   const defaults: Values = { ...defaultsFor(sample.controls), ...(hasColor && palette.all ? { color: "custom" } : {}) };
@@ -28,12 +30,22 @@ export function Playground({ id, name }: { id: SampleId; name: string }) {
     <section aria-label={`${name} interactive playground`} style={cssVars(palette) as CSSProperties} className="overflow-hidden rounded-[28px] bg-surface">
       <div className="flex items-center justify-between gap-3 border-b border-rule py-1.5 pl-5 pr-3">
         <h2 className="font-display text-lg font-semibold">Try it</h2>
-        <span className="font-mono text-xs text-muted">Interactive</span>
+        <button
+          type="button"
+          aria-expanded={showSettings}
+          aria-controls={panel}
+          onClick={() => setShowSettings((open) => !open)}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors motion-reduce:transition-none ${showSettings ? "bg-ink text-white hover:bg-body" : "bg-line hover:bg-rule"}`}
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" /><circle cx="16" cy="7" r="2" /><circle cx="8" cy="17" r="2" /></svg>
+          Settings
+        </button>
       </div>
 
       <div className="flex min-h-64 flex-col items-center justify-center gap-3 bg-stage p-5 sm:p-8">{sample.render(values)}</div>
       <p className="px-5 pt-3 text-xs text-muted">{sample.hint}</p>
 
+      <div id={panel} hidden={!showSettings}>
       <div className="p-5 pt-3">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h3 className="font-display text-lg font-semibold">Settings</h3>
@@ -50,6 +62,7 @@ export function Playground({ id, name }: { id: SampleId; name: string }) {
       </div>
 
       {hasColor && <ColorLab palette={palette} onUse={() => setValues((current) => ({ ...current, color: "custom" }))} />}
+      </div>
     </section>
   );
 }
