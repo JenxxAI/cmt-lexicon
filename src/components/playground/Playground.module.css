@@ -1,0 +1,60 @@
+/* Native <dialog> backdrop; --dim is set inline (0 to 80). */
+.backdrop::backdrop {
+  background: color-mix(in srgb, var(--color-ink) calc(var(--dim, 40) * 1%), transparent);
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--color-skel-soft) 25%, var(--color-line) 50%, var(--color-skel-soft) 75%);
+  background-size: 200% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shimmer {
+    animation: shimmer 1.4s linear infinite;
+  }
+
+  .rise:not([hidden]) {
+    animation: rise 200ms ease-out;
+  }
+
+  .fade:not([hidden]) {
+    animation: fade 160ms ease-out;
+  }
+
+  .slideRight[open] {
+    animation: slide-right 200ms ease-out;
+  }
+
+  .slideLeft[open] {
+    animation: slide-left 200ms ease-out;
+  }
+
+  .pop[open] {
+    animation: fade 160ms ease-out;
+  }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(0.25rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}

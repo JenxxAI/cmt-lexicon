@@ -23,6 +23,14 @@
   --color-skel: #bebebe;
   --color-skel-soft: #d6d6d6;
   --color-code: #1c1c1e;
+
+  /* Status and sample colors (contrast checked: white on blue/green/red >= 5:1, each on its soft tint >= 4.5:1). */
+  --color-blue: #1d4ed8;
+  --color-blue-soft: #dbeafe;
+  --color-green: #15803d;
+  --color-green-soft: #dcfce7;
+  --color-red: #b42318;
+  --color-red-soft: #fee4e2;
 }
 
 @layer base {
