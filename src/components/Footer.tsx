@@ -22,6 +22,7 @@ export function Footer() {
           <nav aria-label="Footer explore">
             <h2 className="mb-2 font-display text-base font-semibold">Explore</h2>
             <ul>
+              <li><Link href="/about/" className={footerLink}>About UI Lexicon</Link></li>
               <li><Link href="/#browse" className={footerLink}>Components</Link></li>
               <li><Link href="/assets/" className={footerLink}>Icons &amp; assets</Link></li>
               <li><Link href="/cheat-sheet/" className={footerLink}>Prompt cheat sheet</Link></li>
