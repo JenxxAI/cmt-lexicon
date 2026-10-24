@@ -6,7 +6,7 @@ import { CopyButton } from "./CopyButton";
 
 type Mode = "short" | "detailed";
 
-export function PromptPanel({ short, detailed }: { short: string; detailed: string }) {
+export function PromptPanel({ short, detailed, customized = 0, onReset }: { short: string; detailed: string; customized?: number; onReset?: () => void }) {
   const [mode, setMode] = useState<Mode>("short");
   const text = mode === "short" ? short : detailed;
   const otherLabel = mode === "short" ? "Detailed" : "Short";
@@ -35,6 +35,10 @@ export function PromptPanel({ short, detailed }: { short: string; detailed: stri
         </div>
       </div>
 
+      {customized > 0 && <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <span>Customized ({customized} settings)</span>
+        <button type="button" onClick={onReset} className="min-h-11 rounded-full bg-line px-4 hover:bg-rule">Reset to default prompt</button>
+      </div>}
       <p className="mt-3 rounded-xl bg-paper p-4 font-mono text-[15px] leading-relaxed">{text}</p>
 
       <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { PRESETS, cssFill, fixContrast, normalizeHex, pickOn, randomPalette, type Palette } from "./color";
 import { setPalette } from "./palette-store";
 
@@ -71,6 +71,7 @@ function ColorRow({ label, value, canPick, onChange }: { label: string; value: s
 }
 
 export function ColorLab({ palette, onUse }: { palette: Palette; onUse: () => void }) {
+  const angleId = useId();
   const [canPick, setCanPick] = useState(false);
   const [copied, setCopied] = useState(false);
   useEffect(() => setCanPick("EyeDropper" in window), []);
@@ -136,12 +137,12 @@ export function ColorLab({ palette, onUse }: { palette: Palette; onUse: () => vo
       </div>
 
       {gradient && (
-        <label className="mt-3 block">
+        <label htmlFor={angleId} className="mt-3 block">
           <span className="flex items-baseline justify-between text-sm font-medium">
             <span>Angle</span>
             <output className="font-mono text-muted">{Math.round(palette.angle)}°</output>
           </span>
-          <input type="range" min={0} max={360} step={15} value={palette.angle} onChange={(event) => update({ angle: Number(event.target.value) })} className="mt-1 h-11 w-full accent-ink" />
+          <input id={angleId} type="range" min={0} max={360} step={15} value={palette.angle} onChange={(event) => update({ angle: Number(event.target.value) })} className="mt-1 h-11 w-full accent-ink" />
         </label>
       )}
 

@@ -1,28 +1,21 @@
 "use client";
 
-import { useEffect, useId, useState, type CSSProperties } from "react";
+import { useId, useState, type CSSProperties } from "react";
 import { ColorLab } from "./ColorLab";
 import { Controls } from "./Controls";
 import { cssVars } from "./color";
-import { usePalette } from "./palette-store";
+import type { Palette } from "./color";
 import { SAMPLES } from "./samples";
 import { defaultsFor, type Values } from "./types";
 import type { SampleId } from "./sample-ids";
 
-export function Playground({ id, name }: { id: SampleId; name: string }) {
+export function Playground({ id, name, values, setValues, palette }: { id: SampleId; name: string; values: Values; setValues: React.Dispatch<React.SetStateAction<Values>>; palette: Palette }) {
   const sample = SAMPLES[id];
-  const palette = usePalette();
   const [showSettings, setShowSettings] = useState(false);
   const panel = useId();
   const hasColor = sample.controls.some((control) => control.key === "color");
-  const [values, setValues] = useState<Values>(() => defaultsFor(sample.controls));
   const defaults: Values = { ...defaultsFor(sample.controls), ...(hasColor && palette.all ? { color: "custom" } : {}) };
   const dirty = sample.controls.some((control) => values[control.key] !== defaults[control.key]);
-
-  // "Use my color on every component": switch this sample to Custom when the saved palette asks for it.
-  useEffect(() => {
-    if (hasColor && palette.all) setValues((current) => ({ ...current, color: "custom" }));
-  }, [hasColor, palette.all]);
 
   const reset = () => setValues(defaults);
 

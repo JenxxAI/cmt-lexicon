@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="mt-14 border-t border-rule pb-8 pt-8 sm:mt-20 sm:pt-10">
       <div className="grid gap-8 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:gap-12">
         <div>
-          <Link href="/" aria-label={`${SITE.name} home`} className="inline-flex min-h-11 items-center gap-2.5 rounded-sm">
+          <Link href="/" className="inline-flex min-h-11 items-center gap-2.5 rounded-sm">
             <span aria-hidden="true" className="grid size-8 place-items-center rounded-[10px] bg-accent font-mono text-sm font-semibold text-ink">Aa</span>
             <span className="font-display text-[22px] font-bold tracking-tight">{SITE.name}</span>
           </Link>

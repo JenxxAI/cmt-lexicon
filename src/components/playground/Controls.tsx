@@ -67,7 +67,7 @@ export function Controls({
 
         if (control.type === "range") {
           return (
-            <label key={control.key} className="block min-w-0">
+            <label key={control.key} htmlFor={name} className="block min-w-0">
               <span className="flex items-baseline justify-between gap-3 text-sm font-medium">
                 <span>{control.label}</span>
                 <output className="font-mono text-muted">
@@ -76,6 +76,7 @@ export function Controls({
                 </output>
               </span>
               <input
+                id={name}
                 type="range"
                 min={control.min}
                 max={control.max}
@@ -89,9 +90,10 @@ export function Controls({
         }
 
         return (
-          <label key={control.key} className="block min-w-0">
+          <label key={control.key} htmlFor={name} className="block min-w-0">
             <span className="text-sm font-medium">{control.label}</span>
             <input
+              id={name}
               type="text"
               value={String(value)}
               maxLength={control.maxLength}
