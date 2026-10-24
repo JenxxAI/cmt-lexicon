@@ -7,7 +7,7 @@ const navLink = "inline-flex min-h-11 items-center hover:text-accent-deep";
 export function Header() {
   return (
     <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-4 max-sm:grid max-sm:grid-cols-[1fr_auto] max-sm:gap-y-0 max-sm:py-2">
-      <Link href="/" className="flex items-center gap-2.5 max-sm:min-h-11" aria-label={`${SITE.name} home`}>
+      <Link href="/" className="flex items-center gap-2.5 max-sm:min-h-11">
         <span
           aria-hidden="true"
           className="grid size-8 place-items-center rounded-[10px] bg-accent font-mono text-sm font-semibold text-ink"

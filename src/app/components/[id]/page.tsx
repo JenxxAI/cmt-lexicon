@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Preview } from "@/components/previews";
 import { PromptPanel } from "@/components/PromptPanel";
-import { Playground } from "@/components/playground/Playground";
+import { ComponentWorkbench } from "@/components/playground/ComponentWorkbench";
 import { hasSample } from "@/components/playground/sample-ids";
 import { CATEGORIES } from "@/lib/categories";
 import { getAllEntries, getEntry } from "@/lib/content";
@@ -175,17 +175,15 @@ export default async function ComponentPage({ params }: { params: Promise<Params
           </div>
 
           {/* Right: see it, prompt it, code it */}
+          {hasSample(entry.id) ? <ComponentWorkbench id={entry.id} name={entry.name} prompts={entry.prompts} tabs={tabs} /> : (
           <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5 max-lg:contents">
             <div className="max-lg:order-3 max-lg:min-w-0 max-lg:w-full">
-              {hasSample(entry.id) ? (
-                <Playground id={entry.id} name={entry.name} />
-              ) : (
+
                 <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[28px] bg-surface">
                   <div role="img" aria-label={`Illustration of a ${entry.name.toLowerCase()}`} className="h-80">
                     <Preview id={entry.id} />
                   </div>
                 </section>
-              )}
             </div>
             <div className="max-lg:order-2 max-lg:min-w-0 max-lg:w-full">
               <PromptPanel short={entry.prompts.short} detailed={entry.prompts.detailed} />
@@ -194,6 +192,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
               <CodeTabs tabs={tabs} />
             </div>
           </div>
+          )}
         </div>
 
         {related.length > 0 && (

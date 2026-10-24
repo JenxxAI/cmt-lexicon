@@ -8,7 +8,7 @@
     "dev": "npm run exports && next dev",
     "build": "npm run validate && npm run exports && next build",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/test-search.ts",
+    "test": "tsx scripts/test-search.ts && tsx scripts/test-generators.ts",
     "validate": "tsx scripts/validate-content.ts",
     "exports": "tsx scripts/build-exports.ts"
   },

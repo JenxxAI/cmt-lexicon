@@ -5,7 +5,7 @@ import { CopyButton } from "./CopyButton";
 
 export type CodeTab = { id: string; label: string; code: string };
 
-export function CodeTabs({ tabs }: { tabs: CodeTab[] }) {
+export function CodeTabs({ tabs, customized = false }: { tabs: CodeTab[]; customized?: boolean }) {
   const [activeId, setActiveId] = useState(tabs[0]?.id);
   const baseId = useId();
   const buttons = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -28,6 +28,7 @@ export function CodeTabs({ tabs }: { tabs: CodeTab[] }) {
 
   return (
     <section aria-label="Code snippets" className="overflow-hidden rounded-[18px] bg-ink">
+      {customized && <p className="px-5 pt-3 text-sm text-white">{current.id === "vue" ? "Default Vue example" : "Reflects your settings"}</p>}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 pt-2">
         <div role="tablist" aria-label="Snippet language" onKeyDown={onKeyDown} className="flex flex-wrap gap-1">
           {tabs.map((tab) => {
