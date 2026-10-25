@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { entrySchema, type Entry, type EntrySummary } from "./schema";
+import { entrySchema, websiteTypeSchema, type Entry, type EntrySummary, type WebsiteType, type WebsiteTypeSummary } from "./schema";
 
 export const CONTENT_DIR = path.join(process.cwd(), "content", "components");
 
@@ -64,4 +64,48 @@ export function getEntry(id: string): Entry | undefined {
 export function toSummary(entry: Entry): EntrySummary {
   const { id, name, category, aliases, looksLike, definition, whenToUse, tags } = entry;
   return { id, name, category, aliases, looksLike, definition, whenToUse, tags, shortPrompt: entry.prompts.short };
+}
+
+export const WEBSITE_TYPES_DIR = path.join(process.cwd(), "content", "website-types");
+
+export function loadWebsiteTypes(dir = WEBSITE_TYPES_DIR): { entries: WebsiteType[]; errors: string[] } {
+  const entries: WebsiteType[] = [];
+  const errors: string[] = [];
+  if (!fs.existsSync(dir)) return { entries, errors: [`Website types folder not found: ${dir}`] };
+  for (const file of fs.readdirSync(dir).filter(file => file.endsWith(".json")).sort()) {
+    try {
+      const result = websiteTypeSchema.safeParse(JSON.parse(fs.readFileSync(path.join(dir, file), "utf8")));
+      if (!result.success) {
+        errors.push(...result.error.issues.map(issue => `website-types/${file}: ${issue.path.join(".")}: ${issue.message}`));
+        continue;
+      }
+      if (`${result.data.id}.json` !== file) errors.push(`website-types/${file}: id must match the file name`);
+      entries.push(result.data);
+    } catch (error) {
+      errors.push(`website-types/${file}: invalid JSON (${(error as Error).message})`);
+    }
+  }
+  return { entries, errors };
+}
+
+let websiteCache: WebsiteType[] | null = null;
+export function getAllWebsiteTypes(): WebsiteType[] {
+  if (websiteCache) return websiteCache;
+  const { entries, errors } = loadWebsiteTypes();
+  if (errors.length) throw new Error(`Invalid website types:\n${errors.join("\n")}`);
+  websiteCache = entries.sort((a, b) => a.name.localeCompare(b.name));
+  return websiteCache;
+}
+
+export function getWebsiteType(id: string): WebsiteType | undefined {
+  return getAllWebsiteTypes().find(entry => entry.id === id);
+}
+
+export function toWebsiteSummary(entry: WebsiteType): WebsiteTypeSummary {
+  const { id, name, aliases, looksLike, definition, goal, tags } = entry;
+  return { kind: "website", id, name, aliases, looksLike, definition, goal, tags, shortPrompt: entry.prompts.short };
+}
+
+export function getWebsiteTypesUsing(componentId: string): WebsiteType[] {
+  return getAllWebsiteTypes().filter(entry => entry.sections.some(section => section.componentIds.includes(componentId)));
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { StarIcon } from "./icons";
 
-const navLink = "inline-flex min-h-11 items-center hover:text-accent-deep";
+const navLink = "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap hover:text-accent-deep";
 
 export function Header() {
   return (
@@ -17,10 +17,11 @@ export function Header() {
         <span className="font-display text-[22px] font-bold tracking-tight">{SITE.name}</span>
       </Link>
 
-      <nav aria-label="Main" className="flex flex-wrap items-center gap-x-7 text-[15px] font-medium max-sm:col-span-2 max-sm:row-start-2 max-sm:flex-nowrap max-sm:justify-between max-sm:gap-x-2 max-sm:text-[13px]">
+      <nav aria-label="Main" className="flex flex-wrap items-center gap-x-7 text-[15px] font-medium max-sm:col-span-2 max-sm:row-start-2 max-sm:flex-nowrap max-sm:min-w-0 max-sm:overflow-x-auto max-sm:justify-start max-sm:gap-x-4 max-sm:text-[13px]">
         <Link href="/#browse" className={navLink}>
           Components
         </Link>
+        <Link href="/websites/" className={navLink}>Website types</Link>
         <Link href="/assets/" className={navLink}>
           Icons &amp; assets
         </Link>

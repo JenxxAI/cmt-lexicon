@@ -1,0 +1,78 @@
+{
+  "id": "restaurant",
+  "name": "Restaurant",
+  "aliases": [
+    "restaurant website",
+    "cafe website",
+    "dining website"
+  ],
+  "looksLike": [
+    "a site showing a menu opening hours and directions",
+    "a cafe page with food prices and table reservations",
+    "a website for finding somewhere to eat"
+  ],
+  "definition": "A website that helps guests decide whether and how to visit a food business by showing its menu, prices, opening hours, location, and booking or ordering options.",
+  "goal": "Help guests find practical dining information and plan a visit.",
+  "audience": "People choosing a place to eat",
+  "sections": [
+    {
+      "name": "Welcome and visit",
+      "purpose": "Show the food offering, location, and main guest action.",
+      "componentIds": [
+        "hero-section",
+        "button"
+      ]
+    },
+    {
+      "name": "Menu",
+      "purpose": "Present readable dishes, prices, and dietary information.",
+      "componentIds": [
+        "tabs",
+        "card"
+      ]
+    },
+    {
+      "name": "Hours and reservations",
+      "purpose": "Explain opening times and booking or ordering options.",
+      "componentIds": [
+        "card",
+        "date-picker",
+        "button"
+      ]
+    },
+    {
+      "name": "Contact and access",
+      "purpose": "Provide directions, accessibility details, and contact information.",
+      "componentIds": [
+        "footer",
+        "accordion"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Readable text menus with prices",
+    "Current hours and location",
+    "A clear way to ask about dietary needs"
+  ],
+  "avoid": [
+    "Image-only menus",
+    "Music that plays automatically"
+  ],
+  "examples": [
+    "A neighborhood cafe website",
+    "A family-run restaurant site"
+  ],
+  "related": [
+    "booking",
+    "directory"
+  ],
+  "prompts": {
+    "short": "Build a restaurant site with a readable menu, prices, current hours, location, and reservation options.",
+    "detailed": "Build a restaurant website for people choosing a place to eat. Help guests find practical dining information and plan a visit. Include welcome and visit, menu, hours and reservations, contact and access. Use responsive layouts, clear labels, keyboard access, and visible focus. Readable text menus with prices."
+  },
+  "tags": [
+    "business",
+    "food",
+    "local"
+  ]
+}

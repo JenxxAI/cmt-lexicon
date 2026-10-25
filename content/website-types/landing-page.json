@@ -1,0 +1,76 @@
+{
+  "id": "landing-page",
+  "name": "Landing page",
+  "aliases": [
+    "campaign page",
+    "conversion page",
+    "single-offer page"
+  ],
+  "looksLike": [
+    "one page asking me to sign up",
+    "a page selling one offer with a big action button",
+    "a focused page for an advertising campaign"
+  ],
+  "definition": "A focused page that explains one offer and guides visitors toward one main action, such as signing up, requesting a quote, or downloading a guide.",
+  "goal": "Help visitors understand one offer and take its next step.",
+  "audience": "People arriving from a campaign or referral",
+  "sections": [
+    {
+      "name": "Offer and action",
+      "purpose": "State the benefit and the single next step.",
+      "componentIds": [
+        "hero-section",
+        "button"
+      ]
+    },
+    {
+      "name": "Benefits",
+      "purpose": "Explain the value with a few concrete outcomes.",
+      "componentIds": [
+        "card"
+      ]
+    },
+    {
+      "name": "Proof and questions",
+      "purpose": "Offer genuine evidence and address common concerns.",
+      "componentIds": [
+        "accordion"
+      ]
+    },
+    {
+      "name": "Final action and details",
+      "purpose": "Repeat the action and provide contact and policy links.",
+      "componentIds": [
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "One clear primary action",
+    "Honest evidence for claims",
+    "A labelled form with a clear success state"
+  ],
+  "avoid": [
+    "Competing primary actions",
+    "Invented testimonials or scarcity"
+  ],
+  "examples": [
+    "A guide download campaign",
+    "A local service quote request"
+  ],
+  "related": [
+    "saas-marketing",
+    "event",
+    "portfolio"
+  ],
+  "prompts": {
+    "short": "Build a landing page with one clear offer, benefits, proof, FAQs, and a primary action.",
+    "detailed": "Build a landing page website for people arriving from a campaign or referral. Help visitors understand one offer and take its next step. Include offer and action, benefits, proof and questions, final action and details. Use responsive layouts, clear labels, keyboard access, and visible focus. One clear primary action."
+  },
+  "tags": [
+    "business",
+    "conversion",
+    "campaign"
+  ]
+}

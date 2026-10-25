@@ -1,0 +1,82 @@
+{
+  "id": "real-estate",
+  "name": "Real estate",
+  "aliases": [
+    "property website",
+    "property listings site",
+    "real estate website"
+  ],
+  "looksLike": [
+    "a website listing homes for sale or rent",
+    "a site with property photos prices and viewing requests",
+    "a place to filter houses by location and budget"
+  ],
+  "definition": "A website for discovering and comparing properties, with structured listing details, photographs, location context, and a clear way to ask questions or arrange a viewing.",
+  "goal": "Help visitors evaluate suitable properties and contact a representative.",
+  "audience": "People researching homes or other properties",
+  "sections": [
+    {
+      "name": "Property search",
+      "purpose": "Filter by location, budget, and practical requirements.",
+      "componentIds": [
+        "text-input",
+        "select",
+        "checkbox"
+      ]
+    },
+    {
+      "name": "Results",
+      "purpose": "Show price, location, and key facts consistently.",
+      "componentIds": [
+        "card",
+        "pagination",
+        "badge"
+      ]
+    },
+    {
+      "name": "Property details",
+      "purpose": "Present photographs, specifications, and important disclosures.",
+      "componentIds": [
+        "carousel",
+        "tabs",
+        "accordion"
+      ]
+    },
+    {
+      "name": "Enquiry and viewing",
+      "purpose": "Offer a contact route and viewing request.",
+      "componentIds": [
+        "text-input",
+        "date-picker",
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Accurate prices and listing status",
+    "Clear location and property facts",
+    "A visible contact and correction route"
+  ],
+  "avoid": [
+    "Misleading property photographs",
+    "Unexplained fees or outdated availability"
+  ],
+  "examples": [
+    "A rental property catalogue",
+    "A local home sales website"
+  ],
+  "related": [
+    "directory",
+    "booking"
+  ],
+  "prompts": {
+    "short": "Build a property site with search filters, clear listing facts, photo galleries, and viewing enquiries.",
+    "detailed": "Build a real estate website for people researching homes or other properties. Help visitors evaluate suitable properties and contact a representative. Include property search, results, property details, enquiry and viewing. Use responsive layouts, clear labels, keyboard access, and visible focus. Accurate prices and listing status."
+  },
+  "tags": [
+    "business",
+    "property",
+    "listings"
+  ]
+}

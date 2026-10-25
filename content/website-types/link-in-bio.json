@@ -1,0 +1,67 @@
+{
+  "id": "link-in-bio",
+  "name": "Link in bio",
+  "aliases": [
+    "bio link page",
+    "link hub",
+    "profile links page"
+  ],
+  "looksLike": [
+    "one small page with all my important links",
+    "a stack of links from a social profile",
+    "a simple page sending visitors to my other pages"
+  ],
+  "definition": "A compact page that introduces a person or organization and gathers a few important destinations, often reached from a social profile.",
+  "goal": "Help visitors quickly choose a useful destination.",
+  "audience": "People arriving from a profile or short shared link",
+  "sections": [
+    {
+      "name": "Identity",
+      "purpose": "Confirm whose page this is with a short introduction.",
+      "componentIds": [
+        "avatar"
+      ]
+    },
+    {
+      "name": "Priority links",
+      "purpose": "Put the most important current destinations first.",
+      "componentIds": [
+        "button",
+        "card"
+      ]
+    },
+    {
+      "name": "Contact and context",
+      "purpose": "Offer a contact route and any necessary disclosures.",
+      "componentIds": [
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Descriptive link labels",
+    "Current destinations",
+    "Comfortable mobile touch targets"
+  ],
+  "avoid": [
+    "Unclear labels such as click here",
+    "Too many equally emphasized links"
+  ],
+  "examples": [
+    "An artist’s release and contact links",
+    "A community group’s useful destinations"
+  ],
+  "related": [
+    "portfolio",
+    "landing-page"
+  ],
+  "prompts": {
+    "short": "Build a mobile-friendly link-in-bio page with an identity, prioritized descriptive links, and contact details.",
+    "detailed": "Build a link in bio website for people arriving from a profile or short shared link. Help visitors quickly choose a useful destination. Include identity, priority links, contact and context. Use responsive layouts, clear labels, keyboard access, and visible focus. Descriptive link labels."
+  },
+  "tags": [
+    "personal",
+    "links",
+    "profile"
+  ]
+}

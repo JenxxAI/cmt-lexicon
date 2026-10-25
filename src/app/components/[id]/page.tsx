@@ -9,7 +9,7 @@ import { PromptPanel } from "@/components/PromptPanel";
 import { ComponentWorkbench } from "@/components/playground/ComponentWorkbench";
 import { hasSample } from "@/components/playground/sample-ids";
 import { CATEGORIES } from "@/lib/categories";
-import { getAllEntries, getEntry } from "@/lib/content";
+import { getAllEntries, getEntry, getWebsiteTypesUsing } from "@/lib/content";
 
 type Params = { id: string };
 
@@ -47,6 +47,7 @@ export default async function ComponentPage({ params }: { params: Promise<Params
     entry.snippets.vue ? { id: "vue", label: "Vue", code: entry.snippets.vue } : null,
   ].filter((tab): tab is CodeTab => tab !== null);
 
+  const usedIn = getWebsiteTypesUsing(entry.id);
   const libraries = Object.entries(entry.libraries);
   const related = entry.related.flatMap((relatedId) => byId.get(relatedId) ?? []);
 
@@ -194,6 +195,16 @@ export default async function ComponentPage({ params }: { params: Promise<Params
           </div>
           )}
         </div>
+
+        {usedIn.length > 0 && (
+          <section aria-labelledby="used-in-heading" className="mt-12">
+            <h2 id="used-in-heading" className="font-display text-[22px] font-semibold">Used in</h2>
+            <p className="mt-2 text-sm text-muted">Explore website blueprints that use this component.</p>
+            <ul className="mt-3 flex flex-wrap gap-2.5">
+              {usedIn.map(website => <li key={website.id}><Link href={`/websites/${website.id}/`} className={pill}>{website.name}</Link></li>)}
+            </ul>
+          </section>
+        )}
 
         {related.length > 0 && (
           <section aria-labelledby="related-heading" className="mt-12">

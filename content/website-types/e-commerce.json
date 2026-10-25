@@ -1,0 +1,91 @@
+{
+  "id": "e-commerce",
+  "name": "E-commerce",
+  "aliases": [
+    "online store",
+    "web shop",
+    "shopping website"
+  ],
+  "looksLike": [
+    "page with products and cart",
+    "a website where I can buy things",
+    "a shop with prices baskets and checkout"
+  ],
+  "definition": "A website that lets people browse products, compare options, add items to a cart, and complete a purchase, with clear information about delivery and returns.",
+  "goal": "Help shoppers find suitable products and buy with confidence.",
+  "audience": "People researching and buying products",
+  "sections": [
+    {
+      "name": "Shop navigation",
+      "purpose": "Help shoppers browse and narrow the product range.",
+      "componentIds": [
+        "navbar",
+        "text-input",
+        "select"
+      ]
+    },
+    {
+      "name": "Product collection",
+      "purpose": "Show useful images, prices, and availability.",
+      "componentIds": [
+        "card",
+        "badge",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Product details",
+      "purpose": "Explain variants, specifications, and delivery.",
+      "componentIds": [
+        "carousel",
+        "radio",
+        "accordion",
+        "button"
+      ]
+    },
+    {
+      "name": "Cart and checkout",
+      "purpose": "Let shoppers review quantities and the complete cost before payment.",
+      "componentIds": [
+        "drawer",
+        "data-table",
+        "text-input",
+        "stepper"
+      ]
+    },
+    {
+      "name": "Support and policies",
+      "purpose": "Explain returns, delivery, and how to contact support.",
+      "componentIds": [
+        "footer",
+        "accordion"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Transparent total costs before payment",
+    "Clear availability and delivery information",
+    "Recoverable checkout errors"
+  ],
+  "avoid": [
+    "Hidden fees",
+    "Fake stock urgency"
+  ],
+  "examples": [
+    "A handmade stationery shop",
+    "A store selling bicycle parts"
+  ],
+  "related": [
+    "directory",
+    "booking"
+  ],
+  "prompts": {
+    "short": "Build an online store with product browsing, clear prices, a cart, and accessible checkout.",
+    "detailed": "Build a e-commerce website for people researching and buying products. Help shoppers find suitable products and buy with confidence. Include shop navigation, product collection, product details, cart and checkout, support and policies. Use responsive layouts, clear labels, keyboard access, and visible focus. Transparent total costs before payment."
+  },
+  "tags": [
+    "business",
+    "shopping",
+    "products"
+  ]
+}

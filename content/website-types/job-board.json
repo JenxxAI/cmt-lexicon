@@ -1,0 +1,81 @@
+{
+  "id": "job-board",
+  "name": "Job board",
+  "aliases": [
+    "jobs website",
+    "vacancy board",
+    "employment listings site"
+  ],
+  "looksLike": [
+    "a site with job openings and application links",
+    "a website to filter vacancies by location and role",
+    "a list of employers looking for new staff"
+  ],
+  "definition": "A website that organizes job opportunities so candidates can search by relevant criteria, review requirements and terms, and find a clear application route.",
+  "goal": "Help candidates find suitable openings and apply.",
+  "audience": "Job seekers and employers advertising roles",
+  "sections": [
+    {
+      "name": "Find a role",
+      "purpose": "Offer useful role, location, and work-arrangement filters.",
+      "componentIds": [
+        "text-input",
+        "select",
+        "checkbox"
+      ]
+    },
+    {
+      "name": "Vacancies",
+      "purpose": "Show consistent role and employer summaries.",
+      "componentIds": [
+        "card",
+        "badge",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Role details",
+      "purpose": "Explain responsibilities, requirements, and disclosed terms.",
+      "componentIds": [
+        "breadcrumb",
+        "accordion"
+      ]
+    },
+    {
+      "name": "Apply and follow up",
+      "purpose": "Make the application method and expected next step clear.",
+      "componentIds": [
+        "button",
+        "file-upload",
+        "text-input",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Current vacancies and clear employer identity",
+    "Transparent role location and work arrangement",
+    "An accessible application route"
+  ],
+  "avoid": [
+    "Expired roles presented as open",
+    "Collecting unnecessary sensitive information"
+  ],
+  "examples": [
+    "A regional trades vacancy board",
+    "A remote nonprofit jobs directory"
+  ],
+  "related": [
+    "directory",
+    "portfolio"
+  ],
+  "prompts": {
+    "short": "Build a job board with useful filters, clear vacancy details, employer information, and application links.",
+    "detailed": "Build a job board website for job seekers and employers advertising roles. Help candidates find suitable openings and apply. Include find a role, vacancies, role details, apply and follow up. Use responsive layouts, clear labels, keyboard access, and visible focus. Current vacancies and clear employer identity."
+  },
+  "tags": [
+    "tools",
+    "employment",
+    "listings"
+  ]
+}

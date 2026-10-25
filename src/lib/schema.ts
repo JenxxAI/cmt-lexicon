@@ -49,3 +49,31 @@ export type EntrySummary = Pick<
   Entry,
   "id" | "name" | "category" | "aliases" | "looksLike" | "definition" | "whenToUse" | "tags"
 > & { shortPrompt: string };
+
+/** Website blueprints reference existing components rather than duplicating their content. */
+export const websiteTypeSchema = z.object({
+  id: slug,
+  name: z.string().min(2).max(60),
+  aliases: z.array(z.string().min(2)).min(3),
+  looksLike: z.array(z.string().min(5)).min(3),
+  definition: z.string().min(20).max(240),
+  goal: z.string().min(10).max(240),
+  audience: z.string().min(5).max(240),
+  sections: z.array(z.object({
+    name: z.string().min(2).max(80),
+    purpose: z.string().min(10).max(240),
+    componentIds: z.array(slug).min(1),
+  })).min(1),
+  mustHave: z.array(z.string().min(5)).min(1),
+  avoid: z.array(z.string().min(5)).min(1),
+  examples: z.array(z.string().min(5)).min(1),
+  related: z.array(slug).default([]),
+  prompts: z.object({ short: z.string().min(10).max(156), detailed: z.string().min(20).max(500) }),
+  tags: z.array(slug).min(1),
+});
+
+export type WebsiteType = z.infer<typeof websiteTypeSchema>;
+export type WebsiteTypeSummary = Pick<WebsiteType, "id" | "name" | "aliases" | "looksLike" | "definition" | "goal" | "tags"> & {
+  kind: "website";
+  shortPrompt: string;
+};

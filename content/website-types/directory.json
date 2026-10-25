@@ -1,0 +1,82 @@
+{
+  "id": "directory",
+  "name": "Directory",
+  "aliases": [
+    "listing directory",
+    "resource directory",
+    "business directory"
+  ],
+  "looksLike": [
+    "a list of places or services I can filter",
+    "a website collecting useful resources by category",
+    "a searchable catalogue of organizations"
+  ],
+  "definition": "A website that organizes many listings, such as services, places, or resources, so people can search, filter, compare, and open a useful listing.",
+  "goal": "Help visitors find a relevant listing and its next action.",
+  "audience": "People comparing resources or providers",
+  "sections": [
+    {
+      "name": "Search and filters",
+      "purpose": "Let visitors narrow listings by useful criteria.",
+      "componentIds": [
+        "text-input",
+        "select",
+        "checkbox"
+      ]
+    },
+    {
+      "name": "Listings",
+      "purpose": "Present consistent facts for quick comparison.",
+      "componentIds": [
+        "card",
+        "badge",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Listing details",
+      "purpose": "Explain the offering, location, and contact options.",
+      "componentIds": [
+        "breadcrumb",
+        "tabs",
+        "button"
+      ]
+    },
+    {
+      "name": "Submit and maintain",
+      "purpose": "Let owners suggest updates and explain listing standards.",
+      "componentIds": [
+        "text-input",
+        "file-upload",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Consistent listing information",
+    "Useful filters and a helpful empty state",
+    "A clear correction or reporting route"
+  ],
+  "avoid": [
+    "Undisclosed sponsored ranking",
+    "Dead listings without maintenance"
+  ],
+  "examples": [
+    "A local repair service directory",
+    "A collection of learning resources"
+  ],
+  "related": [
+    "e-commerce",
+    "job-board",
+    "real-estate"
+  ],
+  "prompts": {
+    "short": "Build a directory with searchable listings, useful filters, consistent details, and contact links.",
+    "detailed": "Build a directory website for people comparing resources or providers. Help visitors find a relevant listing and its next action. Include search and filters, listings, listing details, submit and maintain. Use responsive layouts, clear labels, keyboard access, and visible focus. Consistent listing information."
+  },
+  "tags": [
+    "tools",
+    "discovery",
+    "listings"
+  ]
+}

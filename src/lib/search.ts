@@ -1,4 +1,9 @@
-import type { EntrySummary } from "./schema";
+import type { EntrySummary, WebsiteTypeSummary } from "./schema";
+
+export type SearchEntry = EntrySummary | WebsiteTypeSummary;
+export function isWebsiteType(entry: SearchEntry): entry is WebsiteTypeSummary {
+  return "kind" in entry && entry.kind === "website";
+}
 
 /**
  * Describe-it search. A beginner types "a panel that slides in from the side";
@@ -74,7 +79,7 @@ function queryTerms(tokens: string[]): QueryTerm[] {
 
 type Field = { weight: number; phrases: string[]; tokens: string[] };
 
-function fieldsOf(entry: EntrySummary): Field[] {
+function fieldsOf(entry: SearchEntry): Field[] {
   const make = (weight: number, phrases: string[]): Field => ({
     weight,
     phrases: phrases.map((phrase) => phrase.toLowerCase()),
@@ -85,11 +90,11 @@ function fieldsOf(entry: EntrySummary): Field[] {
     make(5, entry.aliases),
     make(4, entry.looksLike),
     make(2, entry.tags),
-    make(1, [entry.definition, ...entry.whenToUse]),
+    make(1, [entry.definition, ...(isWebsiteType(entry) ? [entry.goal] : entry.whenToUse)]),
   ];
 }
 
-function scoreEntry(entry: EntrySummary, phrasePattern: RegExp | null, terms: QueryTerm[]): number {
+function scoreEntry(entry: SearchEntry, phrasePattern: RegExp | null, terms: QueryTerm[]): number {
   const fields = fieldsOf(entry);
   let score = 0;
 
@@ -125,7 +130,7 @@ function scoreEntry(entry: EntrySummary, phrasePattern: RegExp | null, terms: Qu
 }
 
 /** Best matches and close alternatives first. Empty queries preserve the original entries and order. */
-export function search(entries: EntrySummary[], query: string): EntrySummary[] {
+export function search<T extends SearchEntry>(entries: T[], query: string): T[] {
   const rawQuery = query.toLowerCase().trim().replace(/\s+/g, " ");
   if (!rawQuery) return entries;
 
@@ -144,7 +149,24 @@ export function search(entries: EntrySummary[], query: string): EntrySummary[] {
   const bestScore = ranked[0]?.score;
   if (bestScore === undefined) return [];
 
+  // Website intent is explicit vocabulary or a complete curated beginner description.
+  // Generic words shared by a blueprint and a component do not promote the website.
+  const normalized = queryTokens.join(" ");
+  const containsPhrase = (phrase: string) => {
+    const words = tokenize(phrase, true).join(" ");
+    return words.length > 0 && ` ${normalized} `.includes(` ${words} `);
+  };
+  const websiteIntent = entries.some(entry => isWebsiteType(entry) && (
+    [entry.name, ...entry.aliases].some(containsPhrase) ||
+    (queryTokens.length >= 3 && entry.looksLike.some(phrase => tokenize(phrase, true).join(" ") === normalized))
+  ));
+
   return ranked
     .filter((result) => result.score >= bestScore * MIN_RELATIVE_SCORE)
+    .sort((a, b) => {
+      const aWebsite = isWebsiteType(a.entry), bWebsite = isWebsiteType(b.entry);
+      if (aWebsite === bWebsite) return b.score - a.score || a.entry.name.localeCompare(b.entry.name);
+      return aWebsite === websiteIntent ? -1 : 1;
+    })
     .map((result) => result.entry);
 }

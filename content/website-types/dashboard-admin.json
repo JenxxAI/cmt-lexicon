@@ -1,0 +1,83 @@
+{
+  "id": "dashboard-admin",
+  "name": "Dashboard / admin",
+  "aliases": [
+    "admin dashboard",
+    "admin panel website",
+    "management portal"
+  ],
+  "looksLike": [
+    "a website for managing users and records",
+    "a private screen with metrics tables and settings",
+    "an internal tool for updating business data"
+  ],
+  "definition": "An application interface for monitoring information and managing records, users, or settings. It prioritizes frequent tasks and accurate state over promotional storytelling.",
+  "goal": "Help authorized users monitor status and complete management tasks.",
+  "audience": "Staff and account administrators",
+  "sections": [
+    {
+      "name": "Workspace navigation",
+      "purpose": "Make sections, account context, and search easy to find.",
+      "componentIds": [
+        "sidebar",
+        "navbar",
+        "command-palette"
+      ]
+    },
+    {
+      "name": "Overview",
+      "purpose": "Summarize the current status and important exceptions.",
+      "componentIds": [
+        "card",
+        "alert"
+      ]
+    },
+    {
+      "name": "Records and actions",
+      "purpose": "Let users find records and act on the right selection.",
+      "componentIds": [
+        "data-table",
+        "pagination",
+        "checkbox",
+        "dropdown-menu"
+      ]
+    },
+    {
+      "name": "Edit and feedback",
+      "purpose": "Explain validation, confirm risky actions, and report outcomes.",
+      "componentIds": [
+        "text-input",
+        "select",
+        "modal",
+        "toast"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear loading empty and error states",
+    "Permission-aware actions",
+    "Confirmation for destructive changes"
+  ],
+  "avoid": [
+    "Decorative metrics without context",
+    "Destructive actions without recovery"
+  ],
+  "examples": [
+    "An inventory management portal",
+    "A volunteer administration tool"
+  ],
+  "related": [
+    "saas-marketing",
+    "membership",
+    "directory"
+  ],
+  "prompts": {
+    "short": "Build an admin dashboard with navigation, status summaries, searchable records, and safe editing.",
+    "detailed": "Build a dashboard / admin website for staff and account administrators. Help authorized users monitor status and complete management tasks. Include workspace navigation, overview, records and actions, edit and feedback. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear loading empty and error states."
+  },
+  "tags": [
+    "tools",
+    "management",
+    "data"
+  ]
+}

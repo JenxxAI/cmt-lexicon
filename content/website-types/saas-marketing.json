@@ -1,0 +1,78 @@
+{
+  "id": "saas-marketing",
+  "name": "SaaS marketing",
+  "aliases": [
+    "software marketing site",
+    "subscription software website",
+    "SaaS website"
+  ],
+  "looksLike": [
+    "a website explaining software plans and a free trial",
+    "a product site showing features pricing and demos",
+    "a page convincing teams to try an online tool"
+  ],
+  "definition": "A public website that explains subscription software, who it helps, how it works, and what it costs, guiding visitors toward a trial, demo, or purchase.",
+  "goal": "Help prospective customers evaluate the software and choose a next step.",
+  "audience": "People and teams evaluating subscription software",
+  "sections": [
+    {
+      "name": "Value proposition",
+      "purpose": "State the problem solved and offer a trial or demonstration.",
+      "componentIds": [
+        "hero-section",
+        "button"
+      ]
+    },
+    {
+      "name": "Features and use cases",
+      "purpose": "Explain concrete workflows and benefits.",
+      "componentIds": [
+        "tabs",
+        "card"
+      ]
+    },
+    {
+      "name": "Plans and proof",
+      "purpose": "Explain plan limits and show verifiable customer evidence.",
+      "componentIds": [
+        "card",
+        "data-table"
+      ]
+    },
+    {
+      "name": "Questions and support",
+      "purpose": "Answer purchase questions and link to help.",
+      "componentIds": [
+        "accordion",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear pricing terms and plan limits",
+    "A truthful product demonstration",
+    "Visible help and contact options"
+  ],
+  "avoid": [
+    "Vague claims without product detail",
+    "Hiding renewal terms"
+  ],
+  "examples": [
+    "A scheduling tool marketing site",
+    "A team document tool product site"
+  ],
+  "related": [
+    "landing-page",
+    "documentation",
+    "dashboard-admin"
+  ],
+  "prompts": {
+    "short": "Build a SaaS marketing site with benefits, product demos, transparent plans, and a trial action.",
+    "detailed": "Build a saas marketing website for people and teams evaluating subscription software. Help prospective customers evaluate the software and choose a next step. Include value proposition, features and use cases, plans and proof, questions and support. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear pricing terms and plan limits."
+  },
+  "tags": [
+    "business",
+    "software",
+    "subscription"
+  ]
+}

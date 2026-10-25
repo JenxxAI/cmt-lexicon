@@ -1,0 +1,78 @@
+{
+  "id": "nonprofit-church",
+  "name": "Nonprofit / church",
+  "aliases": [
+    "nonprofit website",
+    "church website",
+    "charity website"
+  ],
+  "looksLike": [
+    "a site with a mission donations and volunteer information",
+    "a church site with service times and directions",
+    "an organization explaining its cause and how to help"
+  ],
+  "definition": "A website that explains a community organization’s mission, activities, and practical ways to participate, volunteer, attend, or give support.",
+  "goal": "Help visitors understand the mission and take part.",
+  "audience": "Community members, supporters, volunteers, and visitors",
+  "sections": [
+    {
+      "name": "Mission and welcome",
+      "purpose": "Explain whom the organization serves and why it exists.",
+      "componentIds": [
+        "hero-section",
+        "button"
+      ]
+    },
+    {
+      "name": "Programs and gatherings",
+      "purpose": "Show activities, service times, and ways to participate.",
+      "componentIds": [
+        "card",
+        "tabs"
+      ]
+    },
+    {
+      "name": "Support and impact",
+      "purpose": "Explain volunteering and giving with transparent information.",
+      "componentIds": [
+        "button",
+        "accordion"
+      ]
+    },
+    {
+      "name": "Visit and contact",
+      "purpose": "Provide practical access, location, and contact details.",
+      "componentIds": [
+        "footer",
+        "card"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Current times and contact details",
+    "Transparent use of donations",
+    "Accessible participation and visiting information"
+  ],
+  "avoid": [
+    "Pressure-based donation messaging",
+    "Outdated gathering information"
+  ],
+  "examples": [
+    "A food support charity site",
+    "A local congregation website"
+  ],
+  "related": [
+    "event",
+    "membership",
+    "landing-page"
+  ],
+  "prompts": {
+    "short": "Build a nonprofit site with its mission, programs, ways to help, impact, and practical visit details.",
+    "detailed": "Build a nonprofit / church website for community members, supporters, volunteers, and visitors. Help visitors understand the mission and take part. Include mission and welcome, programs and gatherings, support and impact, visit and contact. Use responsive layouts, clear labels, keyboard access, and visible focus. Current times and contact details."
+  },
+  "tags": [
+    "community",
+    "mission",
+    "volunteering"
+  ]
+}

@@ -1,5 +1,5 @@
 import { assets } from "../src/lib/assets";
-import { loadEntries } from "../src/lib/content";
+import { loadEntries, loadWebsiteTypes } from "../src/lib/content";
 import { estimateTokens } from "../src/lib/tokens";
 
 const MAX_SHORT_PROMPT_TOKENS = 40;
@@ -42,6 +42,33 @@ for (const topic of assets.topics) {
   }
 }
 
+const websites = loadWebsiteTypes();
+errors.push(...websites.errors);
+const websiteIds = new Set<string>();
+for (const website of websites.entries) {
+  if (websiteIds.has(website.id)) errors.push(`website-types/${website.id}: duplicate id`);
+  if (ids.has(website.id)) errors.push(`website-types/${website.id}: id is already used by a component`);
+  websiteIds.add(website.id);
+}
+const websiteTerms = new Map<string, string>();
+for (const website of websites.entries) {
+  for (const term of [website.name, ...website.aliases]) {
+    const key = term.trim().toLowerCase();
+    const owner = websiteTerms.get(key);
+    if (owner && owner !== website.id) errors.push(`website-types/${website.id}: ambiguous name or alias "${term}"`);
+    websiteTerms.set(key, website.id);
+  }
+  if (estimateTokens(website.prompts.short) >= MAX_SHORT_PROMPT_TOKENS) errors.push(`website-types/${website.id}: short prompt must be under 40 tokens`);
+  for (const section of website.sections) {
+    for (const id of section.componentIds) {
+      if (!ids.has(id)) errors.push(`website-types/${website.id}: unknown component "${id}" in ${section.name}`);
+    }
+  }
+  for (const id of website.related) {
+    if (id === website.id || !websiteIds.has(id)) errors.push(`website-types/${website.id}: invalid related website "${id}"`);
+  }
+}
+
 if (errors.length > 0) {
   console.error(`\n✗ Content has ${errors.length} problem(s):\n`);
   for (const error of errors) console.error(`  - ${error}`);
@@ -52,3 +79,5 @@ if (errors.length > 0) {
 console.log(`✓ ${entries.length} entries valid`);
 
 console.log(`✓ ${assets.topics.length} asset terms and ${assets.icons.length} icon mappings valid`);
+
+console.log(`✓ ${websites.entries.length} website types and their component links valid`);

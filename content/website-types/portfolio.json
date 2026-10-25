@@ -1,0 +1,77 @@
+{
+  "id": "portfolio",
+  "name": "Portfolio",
+  "aliases": [
+    "work showcase",
+    "personal portfolio",
+    "creative portfolio"
+  ],
+  "looksLike": [
+    "a site showing projects someone has made",
+    "a collection of my best work and how to contact me",
+    "a designer website with case studies"
+  ],
+  "definition": "A site that presents a person’s or team’s selected work, explains their contribution, and helps potential clients or employers decide whether to get in touch.",
+  "goal": "Show relevant work and make contacting the creator easy.",
+  "audience": "Potential clients, collaborators, and employers",
+  "sections": [
+    {
+      "name": "Introduction",
+      "purpose": "Explain who you are and the work you do.",
+      "componentIds": [
+        "hero-section",
+        "avatar"
+      ]
+    },
+    {
+      "name": "Selected work",
+      "purpose": "Show a small selection with context and outcomes.",
+      "componentIds": [
+        "card",
+        "bento-grid"
+      ]
+    },
+    {
+      "name": "Case studies",
+      "purpose": "Explain the problem, your role, and the result.",
+      "componentIds": [
+        "breadcrumb",
+        "tabs"
+      ]
+    },
+    {
+      "name": "About and contact",
+      "purpose": "Provide background and a direct way to get in touch.",
+      "componentIds": [
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "A clear role and contribution for each project",
+    "Accessible project images with descriptions",
+    "A working contact route"
+  ],
+  "avoid": [
+    "Unexplained image galleries",
+    "Claiming team work as solo work"
+  ],
+  "examples": [
+    "A photographer’s selected projects",
+    "A developer’s case studies"
+  ],
+  "related": [
+    "landing-page",
+    "link-in-bio"
+  ],
+  "prompts": {
+    "short": "Build a portfolio with selected work, case studies, an introduction, and clear contact details.",
+    "detailed": "Build a portfolio website for potential clients, collaborators, and employers. Show relevant work and make contacting the creator easy. Include introduction, selected work, case studies, about and contact. Use responsive layouts, clear labels, keyboard access, and visible focus. A clear role and contribution for each project."
+  },
+  "tags": [
+    "personal",
+    "work",
+    "creative"
+  ]
+}

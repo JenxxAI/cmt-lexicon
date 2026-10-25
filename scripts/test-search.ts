@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { getAllEntries, toSummary } from "../src/lib/content";
+import { getAllEntries, toSummary, getAllWebsiteTypes, toWebsiteSummary } from "../src/lib/content";
 import { search } from "../src/lib/search";
 import type { EntrySummary } from "../src/lib/schema";
 
@@ -168,3 +168,64 @@ assert.equal(search([fixture("prefix", "Pop music goes up"), fixture("adjacent",
   "adjacent", "adjacent synonyms outrank an ordinary prefix match");
 assert.deepEqual(search([fixture("unrelated", "Hamburger")], "burgerish"), [], "synonyms match complete query words");
 assert.deepEqual(idsFor("login form field"), ["text-input", "date-picker", "file-upload", "select", "stepper"]);
+
+
+// Website descriptions work in both the dedicated glossary and combined home search.
+const websites = getAllWebsiteTypes().map(toWebsiteSummary);
+const combined = [...entries, ...websites];
+const websiteCases: [string, string][] = [
+  ["landing page", "landing-page"],
+  ["one page asking me to sign up", "landing-page"],
+  ["portfolio", "portfolio"],
+  ["a site showing projects someone has made", "portfolio"],
+  ["page with products and cart", "e-commerce"],
+  ["online store", "e-commerce"],
+  ["a website where I can buy things", "e-commerce"],
+  ["blog", "blog"],
+  ["a writer sharing stories and updates", "blog"],
+  ["SaaS marketing", "saas-marketing"],
+  ["a website explaining software plans and a free trial", "saas-marketing"],
+  ["admin dashboard", "dashboard-admin"],
+  ["a website for managing users and records", "dashboard-admin"],
+  ["docs website", "documentation"],
+  ["a searchable manual with step by step examples", "documentation"],
+  ["business directory", "directory"],
+  ["a list of places or services I can filter", "directory"],
+  ["booking website", "booking"],
+  ["a calendar of available appointments", "booking"],
+  ["news website", "news"],
+  ["a site with headlines and recent reporting", "news"],
+  ["social network", "social-network"],
+  ["profiles with a feed of friends posts", "social-network"],
+  ["discussion forum", "forum"],
+  ["church website", "nonprofit-church"],
+  ["a site with a mission donations and volunteer information", "nonprofit-church"],
+  ["conference website", "event"],
+  ["link hub", "link-in-bio"],
+  ["a stack of links from a social profile", "link-in-bio"],
+  ["learning website", "educational"],
+  ["a site with lessons and courses to study", "educational"],
+  ["restaurant website", "restaurant"],
+  ["a site showing a menu opening hours and directions", "restaurant"],
+  ["property listings site", "real-estate"],
+  ["a website listing homes for sale or rent", "real-estate"],
+  ["jobs website", "job-board"],
+  ["a site with job openings and application links", "job-board"],
+  ["membership portal", "membership"],
+  ["a site with content only members can access", "membership"],
+];
+for (const [query, expected] of websiteCases) {
+  assert.equal(search(websites, query)[0]?.id, expected, `website-only: ${query}`);
+  assert.equal(search(combined, query)[0]?.id, expected, `combined: ${query}`);
+}
+for (const [query, expected] of cases) {
+  assert.equal(search(combined, query)[0]?.id, expected, `component precedence: ${query}`);
+}
+assert.strictEqual(search(websites, ""), websites);
+assert.deepEqual(search(websites, "zzzxqj"), []);
+assert.deepEqual(search(websites, "the and"), []);
+assert.equal(search(combined, "card")[0]?.id, "card");
+assert.equal(search(combined, "button on my website")[0]?.id, "button");
+assert.equal(search(combined, "website card")[0]?.id, "card");
+assert.equal(search(combined, "login form field")[0]?.id, "text-input");
+console.log(`✓ ${websiteCases.length} website searches and ${cases.length} combined component regressions passed`);

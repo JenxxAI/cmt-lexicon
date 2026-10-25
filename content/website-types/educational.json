@@ -1,0 +1,79 @@
+{
+  "id": "educational",
+  "name": "Educational",
+  "aliases": [
+    "learning website",
+    "course website",
+    "education platform"
+  ],
+  "looksLike": [
+    "a site with lessons and courses to study",
+    "a website showing learning modules and progress",
+    "an online place to work through a course"
+  ],
+  "definition": "A website that organizes learning material into courses, lessons, or guided paths and helps learners understand prerequisites, track progress, and continue studying.",
+  "goal": "Help learners choose suitable material and progress through it.",
+  "audience": "People learning a subject or skill",
+  "sections": [
+    {
+      "name": "Course discovery",
+      "purpose": "Explain outcomes, level, and prerequisites.",
+      "componentIds": [
+        "card",
+        "select"
+      ]
+    },
+    {
+      "name": "Learning path",
+      "purpose": "Show lessons in an understandable order.",
+      "componentIds": [
+        "sidebar",
+        "accordion",
+        "stepper"
+      ]
+    },
+    {
+      "name": "Lesson workspace",
+      "purpose": "Present instructions, examples, and practice clearly.",
+      "componentIds": [
+        "tabs",
+        "alert",
+        "button"
+      ]
+    },
+    {
+      "name": "Progress and next steps",
+      "purpose": "Show completion and a clear route to continue.",
+      "componentIds": [
+        "progress-bar",
+        "card"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear outcomes and prerequisites",
+    "Accessible alternatives for media",
+    "Progress that does not rely on color alone"
+  ],
+  "avoid": [
+    "Unexplained locked lessons",
+    "Autoplay lessons without controls"
+  ],
+  "examples": [
+    "A language practice course",
+    "A free introductory coding curriculum"
+  ],
+  "related": [
+    "documentation",
+    "membership"
+  ],
+  "prompts": {
+    "short": "Build a learning site with course discovery, ordered lessons, accessible material, and progress indicators.",
+    "detailed": "Build a educational website for people learning a subject or skill. Help learners choose suitable material and progress through it. Include course discovery, learning path, lesson workspace, progress and next steps. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear outcomes and prerequisites."
+  },
+  "tags": [
+    "publishing",
+    "learning",
+    "courses"
+  ]
+}

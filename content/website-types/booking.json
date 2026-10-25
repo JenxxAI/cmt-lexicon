@@ -1,0 +1,81 @@
+{
+  "id": "booking",
+  "name": "Booking",
+  "aliases": [
+    "reservation website",
+    "appointment site",
+    "booking website"
+  ],
+  "looksLike": [
+    "a website where I choose a time and reserve it",
+    "a calendar of available appointments",
+    "a page for booking a service on a date"
+  ],
+  "definition": "A website that lets visitors choose a service, date, or time, review availability and terms, and make a reservation with a clear confirmation.",
+  "goal": "Help visitors reserve an available service or time slot.",
+  "audience": "People arranging an appointment or reservation",
+  "sections": [
+    {
+      "name": "Choose a service",
+      "purpose": "Explain the options, duration, and price.",
+      "componentIds": [
+        "card",
+        "select"
+      ]
+    },
+    {
+      "name": "Choose availability",
+      "purpose": "Show usable dates, times, and time zones.",
+      "componentIds": [
+        "date-picker",
+        "radio"
+      ]
+    },
+    {
+      "name": "Review and reserve",
+      "purpose": "Collect necessary details and show terms before submission.",
+      "componentIds": [
+        "stepper",
+        "text-input",
+        "checkbox",
+        "button"
+      ]
+    },
+    {
+      "name": "Confirmation and changes",
+      "purpose": "Provide a reference and a way to change or cancel.",
+      "componentIds": [
+        "alert",
+        "card",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Explicit time zone and availability",
+    "Clear cancellation and pricing terms",
+    "A confirmation and change route"
+  ],
+  "avoid": [
+    "Unavailable slots that look selectable",
+    "Asking for unnecessary personal information"
+  ],
+  "examples": [
+    "A tutoring appointment site",
+    "A studio room reservation site"
+  ],
+  "related": [
+    "event",
+    "restaurant",
+    "e-commerce"
+  ],
+  "prompts": {
+    "short": "Build a booking site with service selection, available times, clear terms, and reservation confirmation.",
+    "detailed": "Build a booking website for people arranging an appointment or reservation. Help visitors reserve an available service or time slot. Include choose a service, choose availability, review and reserve, confirmation and changes. Use responsive layouts, clear labels, keyboard access, and visible focus. Explicit time zone and availability."
+  },
+  "tags": [
+    "business",
+    "appointments",
+    "reservations"
+  ]
+}
