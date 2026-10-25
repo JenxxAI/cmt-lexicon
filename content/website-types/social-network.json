@@ -1,0 +1,82 @@
+{
+  "id": "social-network",
+  "name": "Social network",
+  "aliases": [
+    "social website",
+    "social media site",
+    "community feed site"
+  ],
+  "looksLike": [
+    "a site where people post updates and follow each other",
+    "profiles with a feed of friends posts",
+    "a community website with sharing and reactions"
+  ],
+  "definition": "A website centered on people’s profiles, updates, and connections, where members share content, follow others, and respond within clear privacy and moderation rules.",
+  "goal": "Help members share updates and connect safely.",
+  "audience": "Members who want ongoing social interaction",
+  "sections": [
+    {
+      "name": "Identity and navigation",
+      "purpose": "Show account context and access to connections and settings.",
+      "componentIds": [
+        "navbar",
+        "avatar",
+        "dropdown-menu"
+      ]
+    },
+    {
+      "name": "Share an update",
+      "purpose": "Provide a clear posting action and attachment options.",
+      "componentIds": [
+        "text-input",
+        "file-upload",
+        "button"
+      ]
+    },
+    {
+      "name": "Feed and interaction",
+      "purpose": "Present updates with authors, context, and response actions.",
+      "componentIds": [
+        "card",
+        "avatar",
+        "kebab-menu"
+      ]
+    },
+    {
+      "name": "Safety and preferences",
+      "purpose": "Make privacy, reporting, and blocking easy to find.",
+      "componentIds": [
+        "toggle-switch",
+        "modal",
+        "alert",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Visible privacy and audience controls",
+    "Reporting and blocking routes",
+    "Accessible controls with clear action names"
+  ],
+  "avoid": [
+    "Public posting without a clear audience",
+    "Engagement tricks that obscure user choices"
+  ],
+  "examples": [
+    "A neighborhood sharing network",
+    "A hobby photo-sharing community"
+  ],
+  "related": [
+    "forum",
+    "membership"
+  ],
+  "prompts": {
+    "short": "Build a social site with profiles, an update feed, sharing controls, privacy settings, and reporting.",
+    "detailed": "Build a social network website for members who want ongoing social interaction. Help members share updates and connect safely. Include identity and navigation, share an update, feed and interaction, safety and preferences. Use responsive layouts, clear labels, keyboard access, and visible focus. Visible privacy and audience controls."
+  },
+  "tags": [
+    "community",
+    "sharing",
+    "profiles"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "membership",
+  "name": "Membership",
+  "aliases": [
+    "members website",
+    "membership portal",
+    "subscriber community"
+  ],
+  "looksLike": [
+    "a site with content only members can access",
+    "a member area with account settings and resources",
+    "a club website with a private resource library"
+  ],
+  "definition": "A website that gives a defined group access to resources, services, or community features, with clear membership terms and an understandable account area.",
+  "goal": "Help members access benefits and manage their participation.",
+  "audience": "Current and prospective members of a group",
+  "sections": [
+    {
+      "name": "Membership overview",
+      "purpose": "Explain benefits, eligibility, and any costs.",
+      "componentIds": [
+        "hero-section",
+        "card",
+        "button"
+      ]
+    },
+    {
+      "name": "Join and account",
+      "purpose": "Make access, sign-in, and account recovery understandable.",
+      "componentIds": [
+        "text-input",
+        "checkbox",
+        "alert"
+      ]
+    },
+    {
+      "name": "Member resources",
+      "purpose": "Organize the materials and services available to the member.",
+      "componentIds": [
+        "sidebar",
+        "card",
+        "tabs"
+      ]
+    },
+    {
+      "name": "Manage membership",
+      "purpose": "Explain status, preferences, renewal, and leaving.",
+      "componentIds": [
+        "toggle-switch",
+        "accordion",
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear access and renewal terms",
+    "Account recovery and support",
+    "An understandable cancellation or exit route"
+  ],
+  "avoid": [
+    "Hidden auto-renewal terms",
+    "Public exposure of private member information"
+  ],
+  "examples": [
+    "A professional association member portal",
+    "A paid workshop resource library"
+  ],
+  "related": [
+    "social-network",
+    "educational",
+    "dashboard-admin"
+  ],
+  "prompts": {
+    "short": "Build a membership site with clear benefits, account access, member resources, and membership management.",
+    "detailed": "Build a membership website for current and prospective members of a group. Help members access benefits and manage their participation. Include membership overview, join and account, member resources, manage membership. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear access and renewal terms."
+  },
+  "tags": [
+    "community",
+    "access",
+    "resources"
+  ]
+}

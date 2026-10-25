@@ -2,7 +2,7 @@
 
 **Can't name it? Describe it.**
 
-Live demo: [PASTE LIVE URL]
+Live demo: [UI Lexicon](https://cmt-lexicon.vercel.app)
 
 A free, open-source glossary of UI components for people who build with AI. Search by what something *looks like* ("a panel that slides in from the side"), get the real name (**Drawer**), what your library calls it (shadcn `Sheet`, MUI `Drawer`), and a short prompt that keeps your token bill small.
 
@@ -60,3 +60,11 @@ See [AGENTS.md](AGENTS.md#roadmap-in-order).
 All 40 component pages include a **Vue** code tab. Paste an example into a `.vue` single-file component in a Vue 3.5+ project. Examples use native HTML, scoped CSS, and Vue state where needed; no Tailwind or UI library is required. Replace example links and connect application actions (such as uploads) to your own app.
 
 Examples follow Vue’s [script setup](https://vuejs.org/api/sfc-script-setup.html), [form bindings](https://vuejs.org/guide/essentials/forms.html), and [useId](https://vuejs.org/api/composition-api-helpers.html#useid) APIs. Dialog examples use native `showModal()` for modal focus handling and Escape dismissal; disclosure menus use normal Tab navigation.
+
+## Website types
+
+`content/website-types/*.json` defines 20 website blueprints. Each ordered section links to existing component IDs; component pages derive their “Used in” links from those references. The browser receives only searchable summaries, not the full blueprints.
+
+Run `npm run validate` after editing content. Validation checks filenames, IDs, prompt limits, and component/related links. Website types appear in home search, `/websites/`, `glossary.min.json`, `llms.txt`, and the generated sitemap.
+
+Set `NEXT_PUBLIC_SITE_URL` to the public origin (for example, your own HTTPS domain) before building the sitemap. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used if available. Without either, the sitemap uses the published URL in `src/lib/site.ts`, taken from this repository’s homepage metadata. Override it when deploying to a different domain. `public/sitemap.xml` is generated and should not be committed.

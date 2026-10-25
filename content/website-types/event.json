@@ -1,0 +1,81 @@
+{
+  "id": "event",
+  "name": "Event",
+  "aliases": [
+    "event website",
+    "conference website",
+    "festival website"
+  ],
+  "looksLike": [
+    "a site with an event schedule speakers and tickets",
+    "a page telling me when and where a gathering happens",
+    "a website for registering for a conference"
+  ],
+  "definition": "A website for a particular gathering that explains what will happen, when and where it takes place, and how visitors can attend or register.",
+  "goal": "Help prospective attendees plan and register for an event.",
+  "audience": "People considering or attending a gathering",
+  "sections": [
+    {
+      "name": "Event essentials",
+      "purpose": "Show the purpose, date, location, and registration action.",
+      "componentIds": [
+        "hero-section",
+        "badge",
+        "button"
+      ]
+    },
+    {
+      "name": "Schedule and people",
+      "purpose": "Present sessions, performers, or speakers with clear times.",
+      "componentIds": [
+        "tabs",
+        "card",
+        "avatar"
+      ]
+    },
+    {
+      "name": "Tickets and access",
+      "purpose": "Explain ticket options, accessibility, and attendance requirements.",
+      "componentIds": [
+        "card",
+        "accordion",
+        "button"
+      ]
+    },
+    {
+      "name": "Travel and updates",
+      "purpose": "Provide venue details, changes, and organizer contact information.",
+      "componentIds": [
+        "alert",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Unambiguous date time zone and location",
+    "Transparent ticket and refund terms",
+    "Accessibility and organizer contact information"
+  ],
+  "avoid": [
+    "Hiding venue or schedule changes",
+    "Countdowns that replace essential information"
+  ],
+  "examples": [
+    "A local makers festival",
+    "A professional training conference"
+  ],
+  "related": [
+    "booking",
+    "landing-page",
+    "nonprofit-church"
+  ],
+  "prompts": {
+    "short": "Build an event site with dates, venue details, a schedule, ticket options, and a registration action.",
+    "detailed": "Build a event website for people considering or attending a gathering. Help prospective attendees plan and register for an event. Include event essentials, schedule and people, tickets and access, travel and updates. Use responsive layouts, clear labels, keyboard access, and visible focus. Unambiguous date time zone and location."
+  },
+  "tags": [
+    "business",
+    "gatherings",
+    "registration"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "id": "blog",
+  "name": "Blog",
+  "aliases": [
+    "weblog",
+    "personal journal site",
+    "article blog"
+  ],
+  "looksLike": [
+    "a site with posts about one topic",
+    "a personal website with dated articles",
+    "a writer sharing stories and updates"
+  ],
+  "definition": "A site built around posts, usually organized by topic and publication date, where a person or team shares ideas, stories, tutorials, or updates.",
+  "goal": "Help readers discover and read useful posts.",
+  "audience": "Readers interested in a writer or subject",
+  "sections": [
+    {
+      "name": "Introduction and topics",
+      "purpose": "Explain the subject and help readers choose a topic.",
+      "componentIds": [
+        "navbar",
+        "hero-section"
+      ]
+    },
+    {
+      "name": "Post index",
+      "purpose": "Show titles, summaries, authors, and publication dates.",
+      "componentIds": [
+        "card",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Article",
+      "purpose": "Present a readable story with clear structure and attribution.",
+      "componentIds": [
+        "breadcrumb",
+        "avatar"
+      ]
+    },
+    {
+      "name": "Continue reading",
+      "purpose": "Suggest relevant posts and an optional subscription.",
+      "componentIds": [
+        "card",
+        "text-input",
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Readable text and descriptive headings",
+    "Author and publication information",
+    "Useful topic navigation"
+  ],
+  "avoid": [
+    "Autoplay media that interrupts reading",
+    "Subscription prompts that hide the article"
+  ],
+  "examples": [
+    "A gardening journal",
+    "A home cooking tutorial blog"
+  ],
+  "related": [
+    "news",
+    "documentation"
+  ],
+  "prompts": {
+    "short": "Build a blog with topic navigation, a post index, readable articles, and related posts.",
+    "detailed": "Build a blog website for readers interested in a writer or subject. Help readers discover and read useful posts. Include introduction and topics, post index, article, continue reading. Use responsive layouts, clear labels, keyboard access, and visible focus. Readable text and descriptive headings."
+  },
+  "tags": [
+    "publishing",
+    "articles",
+    "writing"
+  ]
+}

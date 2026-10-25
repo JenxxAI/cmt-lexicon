@@ -1,0 +1,82 @@
+{
+  "id": "forum",
+  "name": "Forum",
+  "aliases": [
+    "discussion forum",
+    "message board",
+    "discussion board website"
+  ],
+  "looksLike": [
+    "a website with topics and replies from members",
+    "people asking questions in discussion threads",
+    "a board of conversations grouped by category"
+  ],
+  "definition": "A website for structured discussions, organized into topics and threads with replies, where people can ask questions, share knowledge, and return to ongoing conversations.",
+  "goal": "Help members find and participate in useful discussions.",
+  "audience": "People discussing a shared subject or seeking help",
+  "sections": [
+    {
+      "name": "Categories and search",
+      "purpose": "Help readers find the right area before starting a topic.",
+      "componentIds": [
+        "navbar",
+        "text-input",
+        "card"
+      ]
+    },
+    {
+      "name": "Topic list",
+      "purpose": "Show titles, activity, and readable status indicators.",
+      "componentIds": [
+        "data-table",
+        "badge",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Discussion thread",
+      "purpose": "Show authors, replies, and navigation through the discussion.",
+      "componentIds": [
+        "avatar",
+        "breadcrumb",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Post and moderate",
+      "purpose": "Make replying, reporting, and community rules clear.",
+      "componentIds": [
+        "text-input",
+        "button",
+        "dropdown-menu",
+        "alert"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear community rules",
+    "Readable reply order and authorship",
+    "Search and moderation tools"
+  ],
+  "avoid": [
+    "Duplicate topics without discovery tools",
+    "Anonymous destructive moderation without explanation"
+  ],
+  "examples": [
+    "A bicycle repair discussion board",
+    "A support community for learners"
+  ],
+  "related": [
+    "social-network",
+    "documentation"
+  ],
+  "prompts": {
+    "short": "Build a forum with searchable categories, topic lists, readable threads, replies, and moderation tools.",
+    "detailed": "Build a forum website for people discussing a shared subject or seeking help. Help members find and participate in useful discussions. Include categories and search, topic list, discussion thread, post and moderate. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear community rules."
+  },
+  "tags": [
+    "community",
+    "discussion",
+    "support"
+  ]
+}

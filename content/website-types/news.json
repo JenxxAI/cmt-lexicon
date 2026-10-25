@@ -1,0 +1,79 @@
+{
+  "id": "news",
+  "name": "News",
+  "aliases": [
+    "news website",
+    "online newspaper",
+    "news publication"
+  ],
+  "looksLike": [
+    "a site with headlines and recent reporting",
+    "a newspaper website with sections and breaking stories",
+    "a homepage full of current news articles"
+  ],
+  "definition": "A publication website that helps readers find current reporting, understand when it was published or updated, and distinguish news from opinion or advertising.",
+  "goal": "Help readers discover timely reporting and understand its context.",
+  "audience": "Readers following current events or a specialist beat",
+  "sections": [
+    {
+      "name": "Headlines and sections",
+      "purpose": "Prioritize important stories and show clear topic navigation.",
+      "componentIds": [
+        "navbar",
+        "card",
+        "badge"
+      ]
+    },
+    {
+      "name": "Story lists",
+      "purpose": "Group reporting by topic and recency.",
+      "componentIds": [
+        "tabs",
+        "pagination"
+      ]
+    },
+    {
+      "name": "Article and context",
+      "purpose": "Show attribution, dates, sources, and corrections.",
+      "componentIds": [
+        "breadcrumb",
+        "avatar",
+        "alert"
+      ]
+    },
+    {
+      "name": "More reporting",
+      "purpose": "Offer related coverage and publication information.",
+      "componentIds": [
+        "card",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Publication and update timestamps",
+    "Clear author and source attribution",
+    "Labels for opinion and sponsored material"
+  ],
+  "avoid": [
+    "Misleading headlines",
+    "Unlabelled advertisements presented as reporting"
+  ],
+  "examples": [
+    "A neighborhood news publication",
+    "An independent science news site"
+  ],
+  "related": [
+    "blog",
+    "forum"
+  ],
+  "prompts": {
+    "short": "Build a news site with topic sections, current headlines, readable reporting, and clear attribution.",
+    "detailed": "Build a news website for readers following current events or a specialist beat. Help readers discover timely reporting and understand its context. Include headlines and sections, story lists, article and context, more reporting. Use responsive layouts, clear labels, keyboard access, and visible focus. Publication and update timestamps."
+  },
+  "tags": [
+    "publishing",
+    "reporting",
+    "current-events"
+  ]
+}

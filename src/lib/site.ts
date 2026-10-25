@@ -1,5 +1,6 @@
 export const SITE = {
   name: "UI Lexicon",
+  url: "https://cmt-lexicon.vercel.app",
   description:
     "Name any UI component by describing it. Free, open-source glossary with token-lean prompts for AI coding tools.",
   repoUrl: "https://github.com/JenxxAI/cmt-lexicon",

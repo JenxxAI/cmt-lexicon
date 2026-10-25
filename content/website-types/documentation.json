@@ -1,0 +1,81 @@
+{
+  "id": "documentation",
+  "name": "Documentation",
+  "aliases": [
+    "docs website",
+    "documentation site",
+    "developer docs"
+  ],
+  "looksLike": [
+    "a site with guides reference pages and a sidebar",
+    "instructions for using a product or tool",
+    "a searchable manual with step by step examples"
+  ],
+  "definition": "A website that helps people learn and use a product, service, or system through guides, reference material, examples, and searchable navigation.",
+  "goal": "Help readers find reliable instructions and complete a task.",
+  "audience": "New and experienced users seeking guidance",
+  "sections": [
+    {
+      "name": "Start here",
+      "purpose": "Explain the scope and offer a useful first task.",
+      "componentIds": [
+        "hero-section",
+        "button"
+      ]
+    },
+    {
+      "name": "Guide navigation",
+      "purpose": "Organize tasks and reference material into predictable groups.",
+      "componentIds": [
+        "sidebar",
+        "breadcrumb",
+        "text-input"
+      ]
+    },
+    {
+      "name": "Instructions and examples",
+      "purpose": "Present clear steps, prerequisites, and copyable examples.",
+      "componentIds": [
+        "stepper",
+        "tabs",
+        "alert"
+      ]
+    },
+    {
+      "name": "Next steps and feedback",
+      "purpose": "Link related guidance and offer a way to report problems.",
+      "componentIds": [
+        "card",
+        "button",
+        "footer"
+      ]
+    }
+  ],
+  "mustHave": [
+    "Clear prerequisites and current version information",
+    "Descriptive headings and searchable titles",
+    "Working examples and related links"
+  ],
+  "avoid": [
+    "Outdated instructions without a warning",
+    "Navigation labels that assume expert knowledge"
+  ],
+  "examples": [
+    "A public API manual",
+    "A community tool user guide"
+  ],
+  "related": [
+    "educational",
+    "saas-marketing",
+    "blog"
+  ],
+  "prompts": {
+    "short": "Build a documentation site with search, guide navigation, clear steps, examples, and related pages.",
+    "detailed": "Build a documentation website for new and experienced users seeking guidance. Help readers find reliable instructions and complete a task. Include start here, guide navigation, instructions and examples, next steps and feedback. Use responsive layouts, clear labels, keyboard access, and visible focus. Clear prerequisites and current version information."
+  },
+  "tags": [
+    "publishing",
+    "guides",
+    "reference"
+  ]
+}

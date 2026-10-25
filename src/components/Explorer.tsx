@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CATEGORIES, type CategoryId } from "@/lib/categories";
-import type { EntrySummary } from "@/lib/schema";
-import { search } from "@/lib/search";
+import type { EntrySummary, WebsiteTypeSummary } from "@/lib/schema";
+import { search, isWebsiteType, type SearchEntry } from "@/lib/search";
 import { SPOTLIGHT_IDS } from "@/lib/site";
+import { WebsiteCard } from "./WebsiteCard";
 import { ComponentCard } from "./ComponentCard";
 import { SearchIcon } from "./icons";
 import { Preview } from "./previews";
@@ -14,7 +15,7 @@ const EXAMPLES = ["popup with dark background", "three lines icon", "gray loadin
 
 const chip = "max-sm:shrink-0 max-sm:whitespace-nowrap min-h-11 rounded-full border px-[18px] text-[15px] font-medium";
 
-export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; assetGuide: ReactNode }) {
+export function Explorer({ entries, websites, assetGuide }: { entries: EntrySummary[]; websites: WebsiteTypeSummary[]; assetGuide: ReactNode }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryId | "all">("all");
 
@@ -60,9 +61,9 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
   }, []);
 
   const trimmed = query.trim();
-  const matches = useMemo(() => search(entries, query), [entries, query]);
+  const matches = useMemo(() => trimmed ? search<SearchEntry>([...entries, ...websites], query) : entries, [entries, websites, query, trimmed]);
   const visible = useMemo(
-    () => (category === "all" ? matches : matches.filter((entry) => entry.category === category)),
+    () => (category === "all" ? matches : matches.filter((entry) => !isWebsiteType(entry) && entry.category === category)),
     [matches, category],
   );
 
@@ -165,13 +166,13 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
             {spotlight.map((entry, index) => (
               <li key={entry.id}>
                 <Link
-                  href={`/components/${entry.id}/`}
+                  href={`/${isWebsiteType(entry) ? "websites" : "components"}/${entry.id}/`}
                   className={`flex items-center gap-3.5 rounded-[14px] px-3 py-3.5 hover:bg-paper ${
                     trimmed && index === 0 ? "bg-accent-soft hover:bg-accent-soft" : ""
                   }`}
                 >
                   <span className="block size-[52px] shrink-0 overflow-hidden rounded-xl" aria-hidden="true">
-                    <Preview id={entry.id} />
+                    <Preview id={isWebsiteType(entry) ? "hero-section" : entry.id} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-display text-xl font-semibold">{entry.name}</span>
@@ -184,7 +185,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
                       trimmed && index === 0 ? "rounded-full bg-ink px-2.5 py-1 text-white" : "text-muted"
                     }`}
                   >
-                    {trimmed && index === 0 ? "Best match" : CATEGORIES[entry.category]}
+                    {trimmed && index === 0 ? "Best match" : isWebsiteType(entry) ? "Website type" : CATEGORIES[entry.category]}
                   </span>
                 </Link>
               </li>
@@ -229,7 +230,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <p className="text-sm text-muted" aria-live="polite">
-            Showing {visible.length} of {entries.length}
+            Showing {visible.length} of {entries.length + (trimmed ? websites.length : 0)}
             {trimmed ? ` for “${trimmed}”` : ""}
           </p>
 
@@ -242,7 +243,7 @@ export function Explorer({ entries, assetGuide }: { entries: EntrySummary[]; ass
           <ul className="mt-5 grid grid-cols-1 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((entry) => (
               <li key={entry.id}>
-                <ComponentCard entry={entry} />
+                {isWebsiteType(entry) ? <WebsiteCard entry={entry} /> : <ComponentCard entry={entry} />}
               </li>
             ))}
           </ul>
