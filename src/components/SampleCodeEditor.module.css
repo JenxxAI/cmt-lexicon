@@ -1,0 +1,73 @@
+.editor {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  background: var(--color-code);
+  color: var(--color-surface);
+}
+.code,
+.input,
+.numbers {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 24px;
+  font-variant-ligatures: none;
+  tab-size: 2;
+  letter-spacing: normal;
+}
+.code {
+  position: absolute;
+  top: 0;
+  left: 56px;
+  margin: 0;
+  padding: 16px 16px 16px 0;
+  white-space: pre;
+  pointer-events: none;
+  min-width: calc(100% - 56px);
+}
+.input {
+  position: absolute;
+  top: 0;
+  left: 56px;
+  width: calc(100% - 56px);
+  height: 100%;
+  margin: 0;
+  padding: 16px 16px 16px 0;
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  white-space: pre;
+  overflow: auto;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--color-surface);
+  outline-offset: -3px;
+}
+.input::selection {
+  background: var(--color-muted);
+  color: var(--color-surface);
+}
+.gutter {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 48px;
+  overflow: hidden;
+  background: var(--color-code);
+  pointer-events: none;
+}
+.numbers {
+  margin: 0;
+  padding: 16px 8px;
+  text-align: right;
+  color: var(--color-dim);
+  white-space: pre;
+}
+@media (forced-colors: active) {
+  .code {
+    display: none;
+  }
+  .input {
+    color: CanvasText;
+    caret-color: CanvasText;
+  }
+}
