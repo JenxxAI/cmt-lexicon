@@ -1,6 +1,5 @@
 import { getWebsiteSample } from "@/lib/website-samples";
 import { WebsiteSampleStudio } from "@/components/WebsiteSampleStudio";
-import { WebsiteSample } from "@/components/WebsiteSample";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,7 +43,7 @@ export default async function WebsitePage({ params }: { params: Promise<Params> 
         </div>
         <div className="min-w-0"><PromptPanel {...entry.prompts} /></div>
       </div>
-      {sample && (entry.id === "social-network" ? <WebsiteSampleStudio initialCode={sample} id={entry.id} name={entry.name} /> : <WebsiteSample initialCode={sample} id={entry.id} name={entry.name} />)}
+      {sample && <WebsiteSampleStudio initialCode={sample} id={entry.id} name={entry.name} />}
       <section aria-labelledby="blueprint-heading" className="mt-10">
         <h2 id="blueprint-heading" className={heading}>Section blueprint</h2>
         <p className="mt-2 text-muted">A suggested order to start from. Adapt it to the people and tasks your site serves.</p>
