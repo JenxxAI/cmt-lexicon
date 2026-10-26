@@ -1,3 +1,6 @@
+import { getWebsiteSample } from "@/lib/website-samples";
+import { WebsiteSampleStudio } from "@/components/WebsiteSampleStudio";
+import { WebsiteSample } from "@/components/WebsiteSample";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -20,6 +23,7 @@ export default async function WebsitePage({ params }: { params: Promise<Params> 
   const entry = getWebsiteType((await params).id);
   if (!entry) notFound();
   const components = new Map(getAllEntries().map(component => [component.id, component.name]));
+  const sample = getWebsiteSample(entry.id);
   const related = entry.related.flatMap(id => getWebsiteType(id) ?? []);
   return <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-8">
     <Header />
@@ -40,6 +44,7 @@ export default async function WebsitePage({ params }: { params: Promise<Params> 
         </div>
         <div className="min-w-0"><PromptPanel {...entry.prompts} /></div>
       </div>
+      {sample && (entry.id === "social-network" ? <WebsiteSampleStudio initialCode={sample} id={entry.id} name={entry.name} /> : <WebsiteSample initialCode={sample} id={entry.id} name={entry.name} />)}
       <section aria-labelledby="blueprint-heading" className="mt-10">
         <h2 id="blueprint-heading" className={heading}>Section blueprint</h2>
         <p className="mt-2 text-muted">A suggested order to start from. Adapt it to the people and tasks your site serves.</p>
