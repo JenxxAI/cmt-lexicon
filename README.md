@@ -68,3 +68,9 @@ Examples follow Vue’s [script setup](https://vuejs.org/api/sfc-script-setup.ht
 Run `npm run validate` after editing content. Validation checks filenames, IDs, prompt limits, and component/related links. Website types appear in home search, `/websites/`, `glossary.min.json`, `llms.txt`, and the generated sitemap.
 
 Set `NEXT_PUBLIC_SITE_URL` to the public origin (for example, your own HTTPS domain) before building the sitemap. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used if available. Without either, the sitemap uses the published URL in `src/lib/site.ts`, taken from this repository’s homepage metadata. Override it when deploying to a different domain. `public/sitemap.xml` is generated and should not be committed.
+
+### Interactive website samples
+
+Each website detail page includes an editable example from `content/website-samples/<id>.html`. The server embeds the color tokens from `globals.css`; the browser receives only that page's example. Keep samples standalone, accessible, and free of external dependencies. The build fails if a website type has no matching sample.
+
+Users can edit the HTML/CSS/JavaScript, run changes in a sandboxed iframe, switch to a phone-width preview, copy the source, or export one `.html` file. Edits are temporary until exported. Sample interactions are local demonstrations; forms do not submit data and there is no real checkout, booking, or account creation.

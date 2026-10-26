@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everyday objects — sample store</title>
+<style>
+/* THEME_TOKENS */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font: 16px/1.5 system-ui, sans-serif; }
+a { color: inherit; } a:focus-visible, button:focus-visible { outline: 3px solid var(--color-accent-deep); outline-offset: 4px; }
+header, main, footer { max-width: 1000px; margin: auto; padding: 24px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-weight: 800; font-size: 22px; text-decoration: none; }
+nav { display: flex; gap: 16px; align-items: center; } nav a, .brand { display: inline-flex; align-items: center; min-height: 44px; }
+.hero { background: var(--color-accent-soft); padding: clamp(24px, 6vw, 64px); border-radius: 28px; }
+.eyebrow { color: var(--color-accent-deep); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+h1 { font-size: clamp(36px, 7vw, 64px); line-height: 1.05; letter-spacing: -.05em; max-width: 600px; margin: 18px 0; }
+.hero p { max-width: 430px; color: var(--color-body); }
+.button, button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 12px 22px; border: 0; border-radius: 999px; background: var(--color-ink); color: var(--color-surface); font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+.heading { margin-top: 40px; } .heading p, footer { color: var(--color-muted); }
+.products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+article { padding: 16px; background: var(--color-surface); border-radius: 24px; }
+.art { height: 160px; display: grid; place-items: center; background: var(--color-stage); border-radius: 16px; }
+.art svg { width: 120px; height: 120px; } h3 { margin: 16px 0 4px; } article p { color: var(--color-muted); margin: 4px 0 18px; } article button { width: 100%; }
+.trust { padding: 24px 0; color: var(--color-body); } #status { min-height: 24px; }
+@media (max-width: 600px) { .products { grid-template-columns: 1fr; } header, main, footer { padding: 16px; } }
+</style>
+</head>
+<body>
+<header><a class="brand" href="#">Everyday objects.</a><nav aria-label="Store"><a href="#products">Shop</a><a href="#delivery">Delivery</a><span aria-live="polite" id="cart">Bag (0)</span></nav></header>
+<main>
+<section class="hero" aria-labelledby="hero-title"><span class="eyebrow">Less, but better</span><h1 id="hero-title">Small things.<br>A little more joy.</h1><p>Thoughtful essentials for your desk, your morning, and everything in between.</p><a class="button" href="#products">Explore the collection →</a></section>
+<section id="products" aria-labelledby="products-title"><div class="heading"><span class="eyebrow">The everyday edit</span><h2 id="products-title">Made for your daily rituals</h2><p>Three simple favorites. Pick something that feels like you.</p></div>
+<div class="products">
+<article><div class="art"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M76 38h12a19 19 0 010 38H76" fill="none" stroke="var(--color-accent-deep)" stroke-width="9"/><path d="M26 28h54v54q0 18-27 18T26 82Z" fill="var(--color-accent)"/><ellipse cx="53" cy="28" rx="27" ry="7" fill="var(--color-accent-deep)"/></svg></div><h3>Morning mug</h3><p>Warm clay · $24</p><button type="button" data-product="Morning mug">Add mug to bag</button></article>
+<article><div class="art"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="28" y="16" width="65" height="90" rx="7" fill="var(--color-ink)"/><path d="M40 16v90M52 43h28M52 52h20" stroke="var(--color-hi)" stroke-width="3"/></svg></div><h3>Daily notebook</h3><p>Unlined paper · $18</p><button type="button" data-product="Daily notebook">Add notebook to bag</button></article>
+<article><div class="art"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M58 18h8v74H40v8h46v-8H66" fill="var(--color-ink)"/><path d="M36 22h48l15 39H21Z" fill="var(--color-accent)"/><ellipse cx="60" cy="61" rx="39" ry="6" fill="var(--color-hi)"/></svg></div><h3>Quiet desk lamp</h3><p>Soft warm light · $64</p><button type="button" data-product="Quiet desk lamp">Add lamp to bag</button></article>
+</div><p id="status" role="status"></p></section>
+<section id="delivery" class="trust" aria-labelledby="delivery-title"><h2 id="delivery-title">Good things, delivered simply.</h2><p>Free delivery over $75. Easy returns within 30 days.</p></section>
+</main><footer>Example store for learning. No payments or orders are processed.</footer>
+<script>
+// Keep fragment navigation inside the preview and the exported document.
+document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (!id) { window.scrollTo(0, 0); return; }
+  const target = document.getElementById(id);
+  if (target) { target.scrollIntoView(); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
+}));
+
+let count = 0;
+document.querySelectorAll('[data-product]').forEach(button => button.addEventListener('click', () => {
+  count += 1;
+  document.getElementById('cart').textContent = 'Bag (' + count + ')';
+  document.getElementById('status').textContent = button.dataset.product + ' added to your sample bag.';
+}));
+</script>
+</body>
+</html>
