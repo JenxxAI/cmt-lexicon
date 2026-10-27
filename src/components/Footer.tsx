@@ -25,6 +25,7 @@ export function Footer() {
               <li><Link href="/about/" className={footerLink}>About UI Lexicon</Link></li>
               <li><Link href="/#browse" className={footerLink}>Components</Link></li>
               <li><Link href="/websites/" className={footerLink}>Website types</Link></li>
+              <li><Link href="/community/" className={footerLink}>Community projects</Link></li>
               <li><Link href="/assets/" className={footerLink}>Icons &amp; assets</Link></li>
               <li><Link href="/cheat-sheet/" className={footerLink}>Prompt cheat sheet</Link></li>
             </ul>

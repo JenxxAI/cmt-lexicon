@@ -8,7 +8,7 @@
     "dev": "npm run exports && next dev",
     "build": "npm run validate && npm run exports && next build",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/test-search.ts && tsx scripts/test-generators.ts && tsx scripts/test-editor.ts",
+    "test": "tsx scripts/test-search.ts && tsx scripts/test-generators.ts && tsx scripts/test-editor.ts && tsx scripts/test-community.ts",
     "validate": "tsx scripts/validate-content.ts",
     "exports": "tsx scripts/build-exports.ts"
   },
@@ -16,6 +16,7 @@
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/nunito": "^5.3.0",
+    "@supabase/supabase-js": "2.118.0",
     "next": "^16.4.2",
     "prettier": "3.9.10",
     "react": "^19.3.0",
@@ -23,6 +24,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",

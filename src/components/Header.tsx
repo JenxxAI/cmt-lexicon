@@ -22,6 +22,7 @@ export function Header() {
           Components
         </Link>
         <Link href="/websites/" className={navLink}>Website types</Link>
+        <Link href="/community/" className={navLink}>Community</Link>
         <Link href="/assets/" className={navLink}>
           Icons &amp; assets
         </Link>

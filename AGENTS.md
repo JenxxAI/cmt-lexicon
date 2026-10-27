@@ -8,7 +8,7 @@ Instructions for AI coding agents (Codex, Claude Code, Cursor) working in this r
 
 ## Stack and commands
 
-Next.js (App Router, static export) · React 19 · TypeScript · Tailwind CSS 4 · Zod 4. No backend, no database.
+Next.js (App Router, static export) · React 19 · TypeScript · Tailwind CSS 4 · Zod 4. The curated glossary stays static. Community projects use Supabase Auth and PostgreSQL with RLS; see docs/community-setup.md.
 
 ```bash
 npm run dev         # exports + dev server
@@ -62,3 +62,13 @@ Remaining roadmap (renumbered):
 2. **Deploy** to Vercel (static output, no config needed) and add the live URL to the README and the portfolio.
 3. **Reverse lookup:** upload a screenshot, get the component name (AI-assisted, opt-in, keep the core site static).
 4. **Later, separate package:** a browser inspector extension. Click an element, see what it is, its icon and CSS, and (with a build plugin) its source file and line. Reuse `glossary.min.json` for naming. Expose it to coding agents via an MCP server. Do not start this before remaining items 1 to 2 are done.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
