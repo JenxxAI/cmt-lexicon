@@ -8,7 +8,7 @@ Instructions for AI coding agents (Codex, Claude Code, Cursor) working in this r
 
 ## Stack and commands
 
-Next.js (App Router, static export) · React 19 · TypeScript · Tailwind CSS 4 · Zod 4. No backend, no database.
+Next.js (App Router, static export) · React 19 · TypeScript · Tailwind CSS 4 · Zod 4. The curated glossary stays static. Community projects use Supabase Auth and PostgreSQL with RLS; see docs/community-setup.md.
 
 ```bash
 npm run dev         # exports + dev server

@@ -78,3 +78,7 @@ Users can edit the HTML/CSS/JavaScript, run changes in a sandboxed iframe, switc
 The shared code editor uses file tabs, an Explorer sidebar, line numbers, syntax colors, and a cursor-position status bar. Keyboard users can move between tabs with arrow keys, Home, and End; Tab exits the code field normally. Alt+Shift+F formats the source and Ctrl/Cmd+Enter runs it.
 
 [Prettier's browser formatter](https://prettier.io/docs/browser) and the HTML, CSS, Babel, and ESTree plugins load on demand. Source formats when the editor first opens, when a file loses focus (optional), and before Run, Copy, or Export. Formatting uses two spaces and an 80-column print width. Invalid code stays in the editor with a file-specific error; the last working preview remains available. Formatting results are discarded if the user edits or resets while they are pending. Each file has a 100,000-character formatting limit to keep the small sample editor responsive. Sample designs are unchanged.
+
+## Community library
+
+`/community/` hosts user-created components and website templates, separate from the curated glossary. GitHub sign-in and project persistence use Supabase; publication requires a designated moderator's approval. The editor also supports local drafts and standalone HTML exports. See [community setup](docs/community-setup.md) for provisioning, OAuth redirects, public environment variables, moderator setup, server-enforced limits, and the launch smoke test. Without configuration, publishing is disabled and the local editor remains usable.

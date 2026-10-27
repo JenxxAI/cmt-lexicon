@@ -30,7 +30,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : SITE.url);
 const origin = new URL(siteUrl);
 if (!["http:", "https:"].includes(origin.protocol)) throw new Error("NEXT_PUBLIC_SITE_URL must be an HTTP(S) URL");
-const routes = ["/", "/about/", "/assets/", "/cheat-sheet/", "/websites/",
+const routes = ["/", "/about/", "/assets/", "/cheat-sheet/", "/websites/", "/community/",
   ...entries.map(entry => `/components/${entry.id}/`), ...websites.map(entry => `/websites/${entry.id}/`)];
 const xmlEscape = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 fs.writeFileSync(path.join(publicDir, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(route => `  <url><loc>${xmlEscape(new URL(route, origin).href)}</loc></url>`).join("\n")}\n</urlset>\n`);
