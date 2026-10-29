@@ -5,7 +5,7 @@ The site remains a Next.js static export. Community pages fetch from Supabase in
 ## Create the backend
 
 1. Create a Supabase project in your own account and choose an appropriate region and spending limits.
-2. Run `supabase/migrations/202610270001_community.sql` once in the project's SQL editor, or apply it using the Supabase CLI migration workflow. This creates tables, read policies, and submission/moderation functions. Do not expose the `community_private` schema through the Data API.
+2. Run all SQL files in `supabase/migrations/` in filename order once in the project's SQL editor, or apply it using the Supabase CLI migration workflow. This creates tables, read policies, and submission/moderation functions. Do not expose the `community_private` schema through the Data API.
 3. In Supabase Authentication, configure GitHub as the sign-in provider. Create a GitHub OAuth App with the callback URL shown by Supabase (`https://YOUR_PROJECT.supabase.co/auth/v1/callback`). Put the OAuth client ID and secret in Supabase's GitHub provider settings, never in a `NEXT_PUBLIC_` variable. No repository-write permission is needed for community authors.
 4. Set the Supabase Site URL to your production origin. Add the exact redirect URL `https://YOUR_SITE/community/auth/` to the redirect allowlist. Add `http://localhost:3000/community/auth/` only for local development. Avoid wildcard production callbacks. Disable sign-in providers you do not intend to support, including email signup if GitHub-only access is desired. Submissions also require a GitHub identity in the database.
 5. Set these public environment variables locally and in Vercel, then rebuild:
@@ -46,3 +46,16 @@ Never enter secrets into a community project. Exported HTML contains executable 
 Run `npm run validate`, `npm run typecheck`, `npm test`, and `npm run build`. The database test uses an isolated in-memory PostgreSQL engine with simulated Supabase auth claims; it does not replace a hosted smoke test.
 
 With two real GitHub accounts and one moderator, verify: OAuth callback, a saved local draft surviving sign-in, a pending submission invisible to the other account/anonymous browser, forbidden direct updates, approval making it public, rejection notes visible to its author, withdrawal removing it from the gallery, quota errors, and mobile editor/export behavior. No real Supabase credentials were available during implementation, so production OAuth and hosted database activation require this setup and smoke test.
+
+## UI Lexicon hosted project
+
+Created in CMT on the quoted $0/month option, Singapore region: [ui-lexicon dashboard](https://supabase.com/dashboard/project/ztalqkwgaahxexkjquzl). Database migrations are already applied; do not rerun the initial migration on this project.
+
+- Project URL: `https://ztalqkwgaahxexkjquzl.supabase.co`
+- GitHub OAuth App callback: `https://ztalqkwgaahxexkjquzl.supabase.co/auth/v1/callback`
+- Production Site URL: `https://cmt-lexicon.vercel.app`
+- Allowed production redirect: `https://cmt-lexicon.vercel.app/community/auth/`
+
+The owner handles GitHub OAuth credentials and the Vercel publishable-key variable. No keys were retrieved or added during setup. After enabling GitHub sign-in, sign in once and appoint the owner's actual Auth user UUID as moderator. Real OAuth and two-account smoke tests remain required.
+
+Hosted checks confirmed RLS on all three tables, no direct client writes, and no anonymous execution of submit/review/withdraw. The follow-up migration explicitly removes Supabase's default anonymous function grants. Advisor notices for private tables without policies are intentional deny-all behavior. The anonymous moderator-check helper returns false and supports the public read policy; authenticated SECURITY DEFINER functions are intentional API endpoints with internal authorization checks. See [function advisor guidance](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) and [private-table policy guidance](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
