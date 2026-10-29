@@ -7,6 +7,7 @@ import {
   type SampleLanguage,
   type SampleSource,
 } from "@/lib/sample-source";
+import { OpenFullPreview } from "./OpenFullPreview";
 import { SampleCodeEditor } from "./SampleCodeEditor";
 
 const FILES = [
@@ -191,6 +192,7 @@ export function WebsiteSampleStudio({
         </button>
       </div>
       <div className="my-4 flex flex-wrap items-center gap-2">
+        <OpenFullPreview title={name} getDocument={() => assembleSample(initialCode, current.current)} className={`${control} inline-flex items-center bg-line hover:bg-rule`} />
         <button
           type="button"
           className={`${control} bg-line hover:bg-rule`}
