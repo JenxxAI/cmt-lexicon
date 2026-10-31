@@ -82,3 +82,7 @@ The shared code editor uses file tabs, an Explorer sidebar, line numbers, syntax
 ## Community library
 
 `/community/` hosts user-created components and website templates, separate from the curated glossary. GitHub sign-in and project persistence use Supabase; publication requires a designated moderator's approval. The editor also supports local drafts and standalone HTML exports. See [community setup](docs/community-setup.md) for provisioning, OAuth redirects, public environment variables, moderator setup, server-enforced limits, and the launch smoke test. Without configuration, publishing is disabled and the local editor remains usable.
+
+### Feedback
+
+The footer includes a private feedback form with optional screenshots. Enable the backend and email alerts using [the feedback setup guide](docs/feedback-setup.md). Until configured, visitors can report issues on GitHub.
