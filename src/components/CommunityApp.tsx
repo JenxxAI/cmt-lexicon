@@ -21,6 +21,15 @@ import {
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
 import { SampleCodeEditor } from "./SampleCodeEditor";
 import { CopyButton } from "./CopyButton";
+import { RequestStatus } from "./RequestStatus";
+import { useDraftRecovery } from "./useDraftRecovery";
+import {
+  DRAFT_KEY,
+  PRESERVE_DRAFT_EVENT,
+  communityError,
+  parseLocalDraft,
+  writeLocalDraft,
+} from "@/lib/community-resilience";
 
 type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
 const button =
@@ -29,35 +38,74 @@ const secondary =
   "inline-flex min-h-11 items-center justify-center rounded-full bg-line px-4 py-2 text-sm font-semibold text-ink disabled:opacity-50";
 const field =
   "mt-2 min-h-11 w-full rounded-xl border border-rule bg-surface px-4 py-3 text-ink";
-const DRAFT_KEY = "ui-lexicon-community-draft-v1";
 function message(error: unknown) {
-  return typeof error === "object" && error && "message" in error
-    ? String(error.message).slice(0, 700)
-    : "Something went wrong. Please try again.";
+  return communityError(
+    error,
+    typeof navigator !== "undefined" && !navigator.onLine,
+  );
+}
+function preserveDraft() {
+  return window.dispatchEvent(
+    new Event(PRESERVE_DRAFT_EVENT, { cancelable: true }),
+  );
 }
 
 export function CommunityApp({ view }: { view: View }) {
   const [client, setClient] = useState<SupabaseClient | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
-  const [moderator, setModerator] = useState(false);
+  const [moderator, setModerator] = useState<boolean | null>(null);
+  const [offline, setOffline] = useState(false);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [notice, setNotice] = useState("");
+  const hadSession = useRef(false);
+  useEffect(() => {
+    const sync = () => setOffline(!navigator.onLine);
+    sync();
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    return () => {
+      window.removeEventListener("online", sync);
+      window.removeEventListener("offline", sync);
+    };
+  }, []);
   const [error, setError] = useState("");
   useEffect(() => {
     let alive = true;
-    const api = getCommunityClient();
+    let api: SupabaseClient | null;
+    try {
+      api = getCommunityClient();
+    } catch {
+      setError(
+        "Community publishing could not be initialized. You can still edit and export locally; please report this configuration issue to the site owner.",
+      );
+      setReady(true);
+      return;
+    }
     setClient(api);
     if (!api) {
       setReady(true);
       return;
     }
     const { data: listener } = api.auth.onAuthStateChange((_event, value) => {
-      if (alive) setSession(value);
+      if (alive) {
+        if (!value && hadSession.current) {
+          preserveDraft();
+          setNotice(
+            "Your session ended. Your editor stays open. Check the local-save status, then sign in again when ready.",
+          );
+        }
+        if (value) setNotice("");
+        hadSession.current = !!value;
+        setSession(value);
+      }
     });
     api.auth
       .getSession()
       .then(({ data, error }) => {
         if (!alive) return;
         setSession(data.session);
+        hadSession.current = !!data.session;
         if (error) setError(message(error));
         setReady(true);
       })
@@ -74,27 +122,58 @@ export function CommunityApp({ view }: { view: View }) {
   }, []);
   useEffect(() => {
     let alive = true;
-    setModerator(false);
+    setModerator(client && session ? null : false);
     if (client && session)
-      client.rpc("is_community_moderator").then(({ data }) => {
-        if (alive) setModerator(data === true);
-      });
+      Promise.resolve(client.rpc("is_community_moderator"))
+        .then(({ data, error }) => {
+          if (alive) {
+            setModerator(data === true);
+            if (error) setError(message(error));
+          }
+        })
+        .catch((error) => {
+          if (alive) {
+            setModerator(false);
+            setError(message(error));
+          }
+        });
     return () => {
       alive = false;
     };
   }, [client, session]);
-  async function signIn() {
-    if (!client) return;
-    const { error } = await client.auth.signInWithOAuth({
-      provider: "github",
-      options: { redirectTo: `${window.location.origin}/community/auth/` },
-    });
-    if (error) setError(message(error));
-  }
-  async function signOut() {
-    if (!client) return;
-    const { error } = await client.auth.signOut();
-    if (error) setError(message(error));
+  async function authenticate(signOut = false) {
+    if (!client || authBusy) return;
+    if (offline) {
+      setError(communityError({}, true));
+      return;
+    }
+    if (!preserveDraft()) {
+      setError(
+        "Your draft could not be saved. Export your code before signing in or out.",
+      );
+      return;
+    }
+    setAuthBusy(true);
+    setError("");
+    try {
+      const result = signOut
+        ? await client.auth.signOut()
+        : await client.auth.signInWithOAuth({
+            provider: "github",
+            options: {
+              redirectTo: `${window.location.origin}/community/auth/`,
+            },
+          });
+      if (result.error) setError(message(result.error));
+      else if (signOut)
+        setNotice(
+          "You are signed out. Your local draft remains in this browser.",
+        );
+    } catch (error) {
+      setError(message(error));
+    } finally {
+      setAuthBusy(false);
+    }
   }
   return (
     <>
@@ -130,24 +209,49 @@ export function CommunityApp({ view }: { view: View }) {
         {ready &&
           client &&
           (session ? (
-            <button className={secondary} onClick={signOut}>
+            <button
+              className={secondary}
+              disabled={authBusy || offline}
+              onClick={() => authenticate(true)}
+            >
               Sign out
             </button>
           ) : (
-            <button className={button} onClick={signIn}>
+            <button
+              className={button}
+              disabled={authBusy || offline}
+              onClick={() => authenticate()}
+            >
               Sign in with GitHub
             </button>
           ))}
       </div>
+      {offline && (
+        <p
+          role="status"
+          className="mt-4 rounded-xl bg-accent-soft p-4 text-body"
+        >
+          You appear to be offline. Loaded glossary pages and the editor still
+          work. Reconnect, then retry community requests; navigation to uncached
+          pages needs internet.
+        </p>
+      )}
+      {notice && (
+        <p role="status" className="mt-4 text-body">
+          {notice}
+        </p>
+      )}
+      <RequestStatus pending={authBusy}>Updating your sign-in…</RequestStatus>
       {error && (
         <p role="alert" className="mt-4 rounded-xl bg-red-soft p-4 text-red">
           {error}
         </p>
       )}
+      {view === "create" && (
+        <CommunityEditor client={client} session={session} />
+      )}
       {!ready ? (
-        <p role="status" className="my-8 text-muted">
-          Connecting to the community…
-        </p>
+        <RequestStatus pending>Connecting to the community…</RequestStatus>
       ) : (
         <>
           {!client && (
@@ -162,9 +266,7 @@ export function CommunityApp({ view }: { view: View }) {
               </p>
             </div>
           )}
-          {view === "create" && (
-            <CommunityEditor client={client} session={session} />
-          )}
+
           {(view === "browse" || view === "mine" || view === "moderate") && (
             <CommunityGallery
               client={client}
@@ -210,7 +312,7 @@ function CommunityGallery({
   client: SupabaseClient | null;
   session: Session | null;
   view: "browse" | "mine" | "moderate";
-  moderator: boolean;
+  moderator: boolean | null;
 }) {
   const [items, setItems] = useState<CommunitySummary[]>([]);
   const [kind, setKind] = useState("all");
@@ -219,6 +321,7 @@ function CommunityGallery({
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
   useEffect(() => {
     let alive = true;
@@ -248,19 +351,25 @@ function CommunityGallery({
         "title",
         `%${search.trim().replace(/[\\%_]/g, (value) => "\\" + value)}%`,
       );
-    request.then(({ data, error, count }) => {
-      if (!alive) return;
-      if (error) setError(message(error));
-      else {
-        setItems((data ?? []) as unknown as CommunitySummary[]);
-        setCount(count ?? 0);
-      }
-      setLoading(false);
-    });
+    Promise.resolve(request)
+      .then(({ data, error, count }) => {
+        if (!alive) return;
+        if (error) setError(message(error));
+        else {
+          setItems((data ?? []) as unknown as CommunitySummary[]);
+          setCount(count ?? 0);
+        }
+      })
+      .catch((error) => {
+        if (alive) setError(message(error));
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
     return () => {
       alive = false;
     };
-  }, [client, session, view, moderator, page, kind, search]);
+  }, [client, session, view, moderator, page, kind, search, retry]);
   if (view !== "browse" && !session)
     return (
       <p className="my-8 text-body">
@@ -271,11 +380,22 @@ function CommunityGallery({
         .
       </p>
     );
+  if (view === "moderate" && moderator === null)
+    return <RequestStatus pending>Checking moderator access…</RequestStatus>;
   if (view === "moderate" && !moderator)
     return (
-      <p className="my-8 text-body">
-        Only appointed moderators can access this queue.
-      </p>
+      <div className="my-8 rounded-2xl bg-surface p-6">
+        <h2 className="font-display text-xl font-bold">
+          Moderator access required
+        </h2>
+        <p className="mt-2 text-body">
+          Only appointed moderators can access this queue. Signing in does not
+          grant moderation permissions.
+        </p>
+        <Link className={`${secondary} mt-4`} href="/community/">
+          Back to the community
+        </Link>
+      </div>
     );
   return (
     <section
@@ -329,9 +449,19 @@ function CommunityGallery({
           ? "Loading projects…"
           : `${count} ${view === "moderate" ? "pending" : "matching"} projects`}
       </p>
+      <RequestStatus pending={loading}>
+        Fetching the latest projects…
+      </RequestStatus>
       {error && (
         <p role="alert" className="mb-4 text-red">
           {error}
+          <button
+            type="button"
+            className={`${secondary} ml-3`}
+            onClick={() => setRetry((value) => value + 1)}
+          >
+            Try again
+          </button>
         </p>
       )}
       {!loading && !error && items.length === 0 && (
@@ -493,26 +623,26 @@ function CommunityEditor({
   const [status, setStatus] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
   const revision = useRef(0);
+  const recovery = useDraftRecovery(draft, setDraft, setTagText);
   function change(next: Partial<CommunityDraft>) {
     revision.current++;
+    recovery.markDirty();
     setDraft((old) => ({ ...old, ...next }));
     setSubmitted(null);
     setError("");
   }
   useEffect(() => {
     const id = new URL(window.location.href).searchParams.get("remix");
-    if (!id || !client) return;
+    if (!id || !client || recovery.restoredRemix.current === id) return;
     if (!isProjectId(id)) {
       setError("Invalid original project.");
       return;
     }
     const version = revision.current;
     let alive = true;
-    client
-      .from("community_projects")
-      .select("*")
-      .eq("id", id)
-      .single()
+    Promise.resolve(
+      client.from("community_projects").select("*").eq("id", id).single(),
+    )
       .then(({ data, error }) => {
         if (!alive || version !== revision.current) return;
         if (error) {
@@ -520,6 +650,7 @@ function CommunityEditor({
           return;
         }
         const project = data as CommunityProject;
+        recovery.markDirty();
         setDraft({
           html: project.html,
           css: project.css,
@@ -535,6 +666,9 @@ function CommunityEditor({
         setStatus(
           `Remixing a project by @${project.author}. Attribution is kept with your submission.`,
         );
+      })
+      .catch((error) => {
+        if (alive && version === revision.current) setError(message(error));
       });
     return () => {
       alive = false;
@@ -553,6 +687,7 @@ function CommunityEditor({
       const { formatSample } = await import("@/lib/format-sample");
       const formatted = await formatSample(draft);
       if (version === revision.current) {
+        recovery.markDirty();
         setDraft((old) => ({ ...old, ...formatted }));
         setStatus("Code formatted with Prettier.");
       } else setStatus("Newer edits kept. Format again when ready.");
@@ -569,7 +704,7 @@ function CommunityEditor({
       return;
     }
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      writeLocalDraft(localStorage, draft);
       setStatus("Draft saved in this browser. It has not been submitted.");
     } catch {
       setError("Local storage is unavailable. Export your code instead.");
@@ -582,24 +717,9 @@ function CommunityEditor({
         setStatus("No saved local draft yet.");
         return;
       }
-      const value = JSON.parse(raw);
-      if (
-        !value ||
-        !["html", "css", "js", "title", "description"].every(
-          (key) => typeof value[key] === "string",
-        ) ||
-        !Array.isArray(value.tags) ||
-        !value.tags.every((tag: unknown) => typeof tag === "string") ||
-        !["component", "website"].includes(value.kind) ||
-        sourceError(value)
-      )
-        throw new Error("Invalid draft");
+      const value = parseLocalDraft(raw);
       revision.current++;
-      setDraft({
-        ...value,
-        licenseAccepted: false,
-        remixOf: isProjectId(value.remixOf) ? value.remixOf : null,
-      });
+      setDraft(value);
       setTagText(value.tags.join(", "));
       setStatus(
         "Local draft restored. Confirm the sharing license before submitting.",
@@ -626,32 +746,45 @@ function CommunityEditor({
     setBusy(true);
     setError("");
     const submittedRevision = revision.current;
-    const { data, error } = await client.rpc("submit_community_project", {
-      p_title: draft.title.trim(),
-      p_description: draft.description.trim(),
-      p_kind: draft.kind,
-      p_tags: [...new Set(draft.tags)],
-      p_html: draft.html,
-      p_css: draft.css,
-      p_js: draft.js,
-      p_license_accepted: draft.licenseAccepted,
-      p_remix_of: draft.remixOf,
-    });
-    if (error) setError(message(error));
-    else if (submittedRevision === revision.current) {
-      setSubmitted(String(data));
-      setStatus(
-        "Submitted for review. Only you and moderators can see it until it is approved.",
-      );
-    } else {
-      setStatus(
-        "The earlier version was submitted for review. Your newer edits have not been submitted; view the earlier version in My submissions.",
-      );
+    try {
+      const { data, error } = await client.rpc("submit_community_project", {
+        p_title: draft.title.trim(),
+        p_description: draft.description.trim(),
+        p_kind: draft.kind,
+        p_tags: [...new Set(draft.tags)],
+        p_html: draft.html,
+        p_css: draft.css,
+        p_js: draft.js,
+        p_license_accepted: draft.licenseAccepted,
+        p_remix_of: draft.remixOf,
+      });
+      if (error) setError(message(error));
+      else if (submittedRevision === revision.current) {
+        setSubmitted(String(data));
+        setStatus(
+          "Submitted for review. Only you and moderators can see it until it is approved.",
+        );
+      } else {
+        setStatus(
+          "The earlier version was submitted for review. Your newer edits have not been submitted; view the earlier version in My submissions.",
+        );
+      }
+    } catch (error) {
+      setError(message(error));
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
   return (
     <div className="mt-8">
+      <p role="status" className="mb-4 text-sm text-muted">
+        {recovery.saveStatus}
+      </p>
+      <p className="mb-4 text-xs text-muted">
+        Drafts are stored only in this browser, including on shared devices. Do
+        not include secrets. Use Remove saved copy to clear the stored draft.
+      </p>
+      <RequestStatus pending={busy}>Working on your project…</RequestStatus>
       <div className="grid gap-5 rounded-[28px] bg-surface p-6 md:grid-cols-2">
         <label className="text-sm font-semibold">
           Project title
@@ -707,6 +840,9 @@ function CommunityEditor({
         </label>
       </div>
       <div className="my-4 flex flex-wrap gap-2">
+        <button className={secondary} onClick={recovery.forget}>
+          Remove saved copy
+        </button>
         <button className={secondary} disabled={busy} onClick={format}>
           Format with Prettier
         </button>
@@ -754,8 +890,8 @@ function CommunityEditor({
       </div>
       <p id="editor-help" className="mt-3 text-xs text-muted">
         100 KB per file, 300 KB total (UTF-8). HTML, CSS, and JavaScript only;
-        no uploaded files or external libraries. Save locally before signing in.
-        Tab leaves the editor.
+        no uploaded files or external libraries. Edits are saved locally when
+        browser storage is available. Tab leaves the editor.
       </p>
       <CommunityPreview source={draft} title={draft.title || "Your project"} />
       <div className="mt-6 rounded-[28px] bg-surface p-6">
@@ -789,7 +925,8 @@ function CommunityEditor({
         </button>
         {!session && (
           <p className="mt-3 text-sm text-muted">
-            Save your draft, then sign in with GitHub using the button above.
+            Check the local-save status above, then sign in with GitHub. You can
+            keep editing or export without signing in.
           </p>
         )}
       </div>
@@ -823,17 +960,20 @@ function CommunityDetail({
 }: {
   client: SupabaseClient | null;
   session: Session | null;
-  moderator: boolean;
+  moderator: boolean | null;
 }) {
   const [project, setProject] = useState<CommunityProject | null>(null);
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
   const [active, setActive] = useState<SampleLanguage>("html");
   useEffect(() => {
     setProject(null);
     setError("");
+    setLoading(false);
     if (!client) return;
     const id = new URL(window.location.href).searchParams.get("id");
     if (!isProjectId(id)) {
@@ -841,18 +981,20 @@ function CommunityDetail({
       return;
     }
     let alive = true;
-    client
-      .from("community_projects")
-      .select("*")
-      .eq("id", id)
-      .single()
+    setLoading(true);
+    Promise.resolve(
+      client.from("community_projects").select("*").eq("id", id).single(),
+    )
       .then(({ data, error }) => {
         if (!alive) return;
-        if (error)
-          setError(
-            "This project is unavailable or has not been approved for public viewing.",
-          );
+        if (error) setError(message(error));
         else setProject(data as CommunityProject);
+      })
+      .catch((error) => {
+        if (alive) setError(message(error));
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
       });
     return () => {
       alive = false;
@@ -862,29 +1004,55 @@ function CommunityDetail({
     if (!client || !project) return;
     setBusy(true);
     setError("");
-    const result =
-      decision === "withdrawn"
-        ? await client.rpc("withdraw_community_project", { p_id: project.id })
-        : await client.rpc("review_community_project", {
-            p_id: project.id,
-            p_decision: decision,
-            p_note: note,
-          });
-    if (result.error) setError(message(result.error));
-    else setRefresh((value) => value + 1);
-    setBusy(false);
+    try {
+      const result =
+        decision === "withdrawn"
+          ? await client.rpc("withdraw_community_project", { p_id: project.id })
+          : await client.rpc("review_community_project", {
+              p_id: project.id,
+              p_decision: decision,
+              p_note: note,
+            });
+      if (result.error) setError(message(result.error));
+      else {
+        setStatus(`Project ${decision}.`);
+        setRefresh((value) => value + 1);
+      }
+    } catch (error) {
+      setError(message(error));
+    } finally {
+      setBusy(false);
+    }
   }
   if (!project)
     return (
-      <p className="my-8 text-body" role="status">
-        {error ||
-          (client
-            ? "Loading project…"
-            : "Connect Supabase to view community submissions.")}
-      </p>
+      <div className="my-8 rounded-2xl bg-surface p-6">
+        <RequestStatus pending={loading}>Loading project…</RequestStatus>
+        {error && (
+          <p role="alert" className="text-red">
+            {error}
+          </p>
+        )}
+        {!client && <p>Connect Supabase to view community submissions.</p>}
+        {error && (
+          <button
+            className={`${secondary} mt-4 mr-3`}
+            onClick={() => setRefresh((value) => value + 1)}
+          >
+            Try again
+          </button>
+        )}
+        <Link className={`${secondary} mt-4`} href="/community/">
+          Back to the community
+        </Link>
+      </div>
     );
   return (
     <article className="mt-8">
+      <RequestStatus pending={busy}>Saving your decision…</RequestStatus>
+      <p role="status" className="mb-4 text-sm text-body">
+        {status}
+      </p>
       <div className="rounded-[28px] bg-surface p-6">
         <p className="font-mono text-xs uppercase text-accent-deep">
           {project.kind} · {project.status}
