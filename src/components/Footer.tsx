@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FeedbackForm } from "./FeedbackForm";
 import { SITE } from "@/lib/site";
 
 const footerLink = "inline-flex min-h-11 items-center rounded-sm text-sm text-muted underline-offset-4 hover:text-accent-deep hover:underline";
@@ -6,6 +7,7 @@ const footerLink = "inline-flex min-h-11 items-center rounded-sm text-sm text-mu
 export function Footer() {
   return (
     <footer className="mt-14 border-t border-rule pb-8 pt-8 sm:mt-20 sm:pt-10">
+      <FeedbackForm />
       <div className="grid gap-8 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:gap-12">
         <div>
           <Link href="/" className="inline-flex min-h-11 items-center gap-2.5 rounded-sm">
@@ -35,6 +37,7 @@ export function Footer() {
             <ul>
               <li><a href="/glossary.min.json" download className={footerLink}>Download glossary</a></li>
               <li><a href={`${SITE.repoUrl}/blob/main/CONTRIBUTING.md`} className={footerLink}>Contribute</a></li>
+              <li><a href="#feedback" className={footerLink}>Feedback</a></li>
               <li><a href={SITE.repoUrl} className={footerLink}>View on GitHub</a></li>
             </ul>
           </nav>

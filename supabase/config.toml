@@ -1,0 +1,3 @@
+[functions.feedback]
+# Anonymous intake is protected by server-verified Turnstile and database quotas.
+verify_jwt = false
