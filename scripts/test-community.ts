@@ -41,6 +41,7 @@ async function main() {
   assert(doc.includes("<\\/script>"));
   const db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create schema auth;
+    alter default privileges in schema public grant execute on functions to anon, authenticated;
     create table auth.users(id uuid primary key);
     create table auth.identities(user_id uuid, provider text, identity_data jsonb);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
@@ -48,6 +49,7 @@ async function main() {
   await db.exec(
     readFileSync("supabase/migrations/202610270001_community.sql", "utf8"),
   );
+  await db.exec(readFileSync("supabase/migrations/20261028024314_restrict_anonymous_community_writes.sql", "utf8"));
   const owner = "00000000-0000-4000-8000-000000000001",
     other = "00000000-0000-4000-8000-000000000002",
     moderator = "00000000-0000-4000-8000-000000000003";

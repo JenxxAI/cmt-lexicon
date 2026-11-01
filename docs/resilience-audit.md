@@ -1,6 +1,6 @@
 # UI state audit — 2026-10-31
 
-Scope: the static glossary and network-backed community flows. “Success rate” is interpreted as action success feedback, not an analytics feature. This branch is independent of open feedback PR23 and full-preview/security-grant PR22.
+Scope: the static glossary and network-backed community flows. “Success rate” is interpreted as action success feedback, not an analytics feature. Integration update: PR22 has merged into main. PR24 now includes the resolved PR23 branch so the two test-script changes remain compatible. Merge PR23 first, then PR24.
 
 | Requested state | Result |
 | --- | --- |
