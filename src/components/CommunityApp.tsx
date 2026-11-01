@@ -20,6 +20,7 @@ import {
 } from "@/lib/community";
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
 import { SampleCodeEditor } from "./SampleCodeEditor";
+import { OpenFullPreview } from "./OpenFullPreview";
 import { CopyButton } from "./CopyButton";
 
 type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
@@ -429,6 +430,7 @@ function CommunityPreview({
       aria-label="Project preview"
     >
       <div className="mb-3 flex flex-wrap gap-3">
+        <OpenFullPreview title={title} getDocument={() => communityDocument(source, title)} className={secondary} />
         <button
           className={button}
           onClick={() => {
