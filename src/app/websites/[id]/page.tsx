@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { getWebsiteSample } from "@/lib/website-samples";
 import { WebsiteSampleStudio } from "@/components/WebsiteSampleStudio";
 import type { Metadata } from "next";
@@ -13,7 +14,7 @@ export const dynamicParams = false;
 export function generateStaticParams(): Params[] { return getAllWebsiteTypes().map(({ id }) => ({ id })); }
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const entry = getWebsiteType((await params).id);
-  return entry ? { title: `${entry.name} website`, description: entry.definition } : {};
+  return entry ? publicPageMetadata(`/websites/${entry.id}/`, { title: `${entry.name} website`, description: entry.definition }) : {};
 }
 const pill = "inline-flex min-h-11 items-center rounded-full border border-rule bg-surface px-4 text-sm font-medium hover:border-ink hover:text-accent-deep";
 const heading = "font-display text-2xl font-bold";

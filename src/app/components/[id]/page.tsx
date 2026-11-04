@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -22,7 +23,7 @@ export function generateStaticParams(): Params[] {
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params;
   const entry = getEntry(id);
-  return entry ? { title: entry.name, description: entry.definition } : {};
+  return entry ? publicPageMetadata(`/components/${entry.id}/`, { title: entry.name, description: entry.definition }) : {};
 }
 
 const pill = "inline-flex min-h-11 items-center rounded-full border border-rule bg-surface px-[18px] text-[15px] font-medium hover:border-ink";

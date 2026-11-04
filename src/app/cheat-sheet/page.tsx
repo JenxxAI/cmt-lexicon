@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { CopyButton } from "@/components/CopyButton";
 import { Footer } from "@/components/Footer";
@@ -9,10 +9,10 @@ import { buildCheatSheet } from "@/lib/cheatsheet";
 import { getAllEntries } from "@/lib/content";
 import { estimateTokens } from "@/lib/tokens";
 
-export const metadata: Metadata = {
+export const metadata = publicPageMetadata("/cheat-sheet/", {
   title: "Prompt cheat sheet",
   description: "Copy concise UI prompts by category, from navigation and forms to icons and assets. Download the full vocabulary for your AI coding tools.",
-};
+});
 
 const link = "inline-flex min-h-11 items-center rounded-sm text-sm text-accent-deep underline underline-offset-4 hover:text-ink";
 

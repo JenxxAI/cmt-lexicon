@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -7,10 +7,10 @@ import { assets } from "@/lib/assets";
 import { getAllEntries } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = publicPageMetadata("/about/", {
   title: "About",
   description: "UI Lexicon helps beginners and developers name interface components and turn ideas into clear prompts. Learn how it works and contribute to the open-source glossary.",
-};
+});
 
 const textLink = "inline-flex min-h-11 items-center rounded-sm text-sm text-accent-deep underline underline-offset-4 hover:text-ink";
 
