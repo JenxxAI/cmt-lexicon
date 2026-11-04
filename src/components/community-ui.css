@@ -139,3 +139,59 @@
     transform: none;
   }
 }
+
+.community-ui .code-workspace {
+  position: static;
+  width: 100%;
+  max-width: none;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border-radius: 1.5rem;
+}
+.community-ui .workspace-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 1rem;
+}
+.community-ui .workspace-toolbar > div {
+  min-width: min(13rem, 100%);
+}
+.community-ui .workspace-dot {
+  flex: none;
+  width: 0.65rem;
+  height: 0.65rem;
+  background: var(--color-accent-deep);
+  border-radius: 50%;
+}
+.community-ui .workspace-panes {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 0.75rem;
+}
+.community-ui .workspace-panes > section {
+  margin: 0;
+  min-width: 0;
+}
+.community-ui .code-workspace:modal {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  height: 100dvh;
+  max-height: none;
+  overflow: auto;
+  border-radius: 0;
+}
+@media (min-width: 800px) {
+  .community-ui .code-workspace:modal .workspace-panes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .community-ui .code-workspace:modal {
+    --workspace-editor-height: max(24rem, calc(100dvh - 15rem));
+  }
+  .community-ui .code-workspace:modal iframe {
+    height: var(--workspace-editor-height);
+  }
+}

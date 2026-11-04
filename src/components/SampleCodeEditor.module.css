@@ -1,6 +1,6 @@
 .editor {
   position: relative;
-  height: 420px;
+  height: var(--workspace-editor-height, 420px);
   overflow: hidden;
   background: var(--color-code);
   color: var(--color-surface);
@@ -70,4 +70,32 @@
     color: CanvasText;
     caret-color: CanvasText;
   }
+}
+
+.comment {
+  color: var(--color-dim);
+}
+.tag {
+  color: color-mix(in srgb, var(--color-blue) 38%, var(--color-blue-soft));
+}
+.attribute {
+  color: color-mix(in srgb, var(--color-blue) 18%, var(--color-green-soft));
+}
+.string {
+  color: var(--color-hi);
+}
+.keyword {
+  color: color-mix(in srgb, var(--color-red-soft) 60%, var(--color-blue));
+}
+.number {
+  color: color-mix(in srgb, var(--color-green-soft) 70%, var(--color-green));
+}
+.call {
+  color: var(--color-accent-soft);
+}
+.errorLine {
+  background: var(--color-red-soft);
+  color: var(--color-red);
+  font-weight: bold;
+  text-decoration: underline wavy;
 }

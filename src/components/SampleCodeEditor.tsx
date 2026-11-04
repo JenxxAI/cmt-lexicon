@@ -2,33 +2,8 @@
 
 import { useMemo, useRef } from "react";
 import type { SampleLanguage } from "@/lib/sample-source";
+import { codeTokens } from "@/lib/editor-highlighting";
 import styles from "./SampleCodeEditor.module.css";
-
-function highlighted(source: string, language: SampleLanguage) {
-  // Decorative, conservative highlighting; parsing and validation belong to Prettier.
-  const pattern =
-    language === "html"
-      ? /(<!--[\s\S]*?-->|"[^"\n]*"|'[^'\n]*'|<\/?[\w-]+|\/?\s*>)/g
-      : /(\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:const|let|var|function|return|if|else|for|new|true|false|null|document|window|async|await)\b|\b\d+(?:\.\d+)?(?:px|rem|em|%)?)/g;
-  return source.split(pattern).map((part, index) => {
-    const color = /^(<!--|\/\*|\/\/)/.test(part)
-      ? "text-dim"
-      : /^["'`]/.test(part)
-        ? "text-green-soft"
-        : /^\d/.test(part)
-          ? "text-hi"
-          : /^(<|\/?\s*>)/.test(part)
-            ? "text-blue-soft"
-            : "text-hi";
-    return index % 2 ? (
-      <span key={index} className={color}>
-        {part}
-      </span>
-    ) : (
-      part
-    );
-  });
-}
 
 export function SampleCodeEditor({
   value,
@@ -36,7 +11,11 @@ export function SampleCodeEditor({
   onChange,
   onBlur,
   onCursor,
+  errorLine,
+  problemId,
 }: {
+  errorLine?: number;
+  problemId?: string;
   value: string;
   language: SampleLanguage;
   onChange: (value: string) => void;
@@ -45,7 +24,19 @@ export function SampleCodeEditor({
 }) {
   const code = useRef<HTMLPreElement>(null);
   const numbers = useRef<HTMLPreElement>(null);
-  const tokens = useMemo(() => highlighted(value, language), [value, language]);
+  const tokens = useMemo(
+    () =>
+      codeTokens(value, language).map((token, index) =>
+        token.kind ? (
+          <span key={index} className={styles[token.kind]}>
+            {token.text}
+          </span>
+        ) : (
+          token.text
+        ),
+      ),
+    [value, language],
+  );
   return (
     <div className={styles.editor}>
       <pre ref={code} aria-hidden="true" className={styles.code}>
@@ -54,15 +45,23 @@ export function SampleCodeEditor({
       </pre>
       <div aria-hidden="true" className={styles.gutter}>
         <pre ref={numbers} className={styles.numbers}>
-          {Array.from(
-            { length: value.split("\n").length },
-            (_, index) => index + 1,
-          ).join("\n")}
+          {Array.from({ length: value.split("\n").length }, (_, index) => (
+            <span
+              key={index}
+              className={errorLine === index + 1 ? styles.errorLine : undefined}
+            >
+              {index + 1}
+              {"\n"}
+            </span>
+          ))}
         </pre>
       </div>
       <textarea
         aria-label={`${{ html: "HTML", css: "CSS", js: "JavaScript" }[language]} code`}
-        aria-describedby="editor-help"
+        aria-invalid={errorLine ? true : undefined}
+        aria-describedby={
+          problemId ? `editor-help ${problemId}` : "editor-help"
+        }
         className={styles.input}
         value={value}
         wrap="off"
