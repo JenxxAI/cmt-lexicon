@@ -1,0 +1,141 @@
+/* Intentionally unlayered: scoped interaction styles override utility defaults. */
+.community-ui
+  :where(
+    button,
+    a[href],
+    select,
+    [role="tab"],
+    input[type="checkbox"],
+    input[type="radio"],
+    label:has(input[type="checkbox"]),
+    label:has(input[type="radio"])
+  ) {
+  cursor: pointer;
+}
+.community-ui :is(button, a[href], select) {
+  min-height: 44px;
+}
+.community-ui button,
+.community-ui .btn {
+  transition:
+    background-color 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    transform 170ms ease;
+}
+.community-ui .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.community-ui .btn-primary {
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+.community-ui .btn-secondary {
+  padding: 0.5rem 1rem;
+  background: var(--color-line);
+  color: var(--color-ink);
+}
+@media (hover: hover) {
+  .community-ui button:not(:disabled):hover,
+  .community-ui .btn:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+  .community-ui .btn-secondary:not(:disabled):hover {
+    background: var(--color-rule);
+  }
+  .community-ui .btn-primary:not(:disabled):hover {
+    background: var(--color-body);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-ink) 18%, transparent);
+  }
+  .community-ui button:not(.btn):not(:disabled):hover {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+}
+.community-ui button:not(:disabled):active,
+.community-ui .btn:not(:disabled):active {
+  transform: scale(0.98);
+}
+.community-ui button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+.community-ui
+  :is(
+    button,
+    a[href],
+    input,
+    select,
+    textarea:not([aria-describedby="editor-help"]),
+    pre
+  ):focus-visible {
+  outline: 2px solid var(--color-accent-deep);
+  outline-offset: 3px;
+}
+/* Inset rings remain visible in clipped code panels; leave the editor textarea alone. */
+.community-ui .bg-code :is(button, a[href], pre):focus-visible {
+  outline-color: var(--color-hi);
+  outline-offset: -3px;
+}
+.community-ui .bg-code > div:has(> button) {
+  padding: 4px;
+}
+.community-ui .community-dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+}
+.community-ui .community-dialog[open] {
+  animation: community-dialog-in 170ms ease-out;
+}
+.community-ui .community-dialog::backdrop {
+  background: color-mix(in srgb, var(--color-ink) 50%, transparent);
+}
+.community-ui .community-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: community-spin 700ms linear infinite;
+}
+@keyframes community-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes community-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .community-ui button,
+  .community-ui .btn,
+  .community-ui .community-dialog[open],
+  .community-ui .community-spinner {
+    transition: none;
+    animation: none;
+  }
+  .community-ui button:not(:disabled):hover,
+  .community-ui .btn:not(:disabled):hover,
+  .community-ui button:not(:disabled):active,
+  .community-ui .btn:not(:disabled):active {
+    transform: none;
+  }
+}
