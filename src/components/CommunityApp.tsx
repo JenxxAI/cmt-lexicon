@@ -1,6 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import "./community-ui.css";
+import { AuthDialog } from "./AuthDialog";
+import { Spinner } from "./Spinner";
+import {
+  consumeSignIn,
+  displayName,
+  markSignIn,
+  oauthReturnError,
+  submitButtonState,
+  type AuthDialogState,
+} from "@/lib/community-ui";
 import { useEffect, useRef, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { getCommunityClient } from "@/lib/supabase";
@@ -33,10 +44,8 @@ import {
 } from "@/lib/community-resilience";
 
 type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
-const button =
-  "inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-5 py-3 text-sm font-semibold text-surface disabled:opacity-50";
-const secondary =
-  "inline-flex min-h-11 items-center justify-center rounded-full bg-line px-4 py-2 text-sm font-semibold text-ink disabled:opacity-50";
+const button = "btn btn-primary";
+const secondary = "btn btn-secondary";
 const field =
   "mt-2 min-h-11 w-full rounded-xl border border-rule bg-surface px-4 py-3 text-ink";
 function message(error: unknown) {
@@ -59,6 +68,60 @@ export function CommunityApp({ view }: { view: View }) {
   const [offline, setOffline] = useState(false);
   const [authBusy, setAuthBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  const [dialog, setDialog] = useState<AuthDialogState | null>(null);
+  const authPending = useRef(false);
+  const returnChecked = useRef(false);
+  const [awaitingReturn, setAwaitingReturn] = useState(false);
+  useEffect(() => {
+    if (returnChecked.current) return;
+    returnChecked.current = true;
+    const failure = oauthReturnError(
+      window.location.search,
+      window.location.hash,
+    );
+    if (view !== "auth" && !failure) return;
+    const started = consumeSignIn();
+    if (failure)
+      setDialog({
+        kind: "error",
+        retry: "in",
+        cancelled: failure === "cancelled",
+      });
+    else if (started) setAwaitingReturn(true);
+  }, [view]);
+  useEffect(() => {
+    if (!awaitingReturn) return;
+    if (session) {
+      setAwaitingReturn(false);
+      setDialog({ kind: "signed-in", name: displayName(session.user) });
+      return;
+    }
+    if (!ready) return;
+    const timeout = window.setTimeout(() => {
+      setAwaitingReturn(false);
+      setDialog({ kind: "error", retry: "in", cancelled: true });
+    }, 1500);
+    return () => window.clearTimeout(timeout);
+  }, [awaitingReturn, ready, session]);
+  useEffect(() => {
+    if (dialog?.kind !== "signed-in") return;
+    const timeout = window.setTimeout(() => setDialog(null), 2500);
+    return () => window.clearTimeout(timeout);
+  }, [dialog]);
+  useEffect(() => {
+    function restored(event: PageTransitionEvent) {
+      if (!event.persisted) return;
+      consumeSignIn();
+      authPending.current = false;
+      setDialog((current) =>
+        current?.kind === "redirecting"
+          ? { kind: "error", retry: "in", cancelled: true }
+          : current,
+      );
+    }
+    window.addEventListener("pageshow", restored);
+    return () => window.removeEventListener("pageshow", restored);
+  }, []);
   const hadSession = useRef(false);
   useEffect(() => {
     const sync = () => setOffline(!navigator.onLine);
@@ -143,16 +206,28 @@ export function CommunityApp({ view }: { view: View }) {
     };
   }, [client, session]);
   async function authenticate(signOut = false) {
-    if (!client || authBusy) return;
+    if (!client || authBusy || authPending.current) return;
     if (offline) {
-      setError(communityError({}, true));
+      setDialog({
+        kind: "error",
+        retry: signOut ? "out" : "in",
+        detail: communityError({}, true),
+      });
       return;
     }
     if (!preserveDraft()) {
-      setError(
-        "Your draft could not be saved. Export your code before signing in or out.",
-      );
+      setDialog({
+        kind: "error",
+        retry: signOut ? "out" : "in",
+        detail:
+          "Your draft could not be saved. Export your code before signing in or out.",
+      });
       return;
+    }
+    authPending.current = true;
+    if (!signOut) {
+      markSignIn();
+      setDialog({ kind: "redirecting" });
     }
     setAuthBusy(true);
     setError("");
@@ -165,19 +240,25 @@ export function CommunityApp({ view }: { view: View }) {
               redirectTo: `${window.location.origin}/community/auth/`,
             },
           });
-      if (result.error) setError(message(result.error));
-      else if (signOut)
-        setNotice(
-          "You are signed out. Your local draft remains in this browser.",
-        );
+      if (result.error) throw result.error;
+      if (signOut) {
+        setNotice("");
+        setDialog({ kind: "signed-out" });
+      }
     } catch (error) {
-      setError(message(error));
+      if (!signOut) consumeSignIn();
+      setDialog({
+        kind: "error",
+        retry: signOut ? "out" : "in",
+        detail: message(error),
+      });
     } finally {
+      authPending.current = false;
       setAuthBusy(false);
     }
   }
   return (
-    <>
+    <div className="community-ui">
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <nav aria-label="Community" className="flex flex-wrap gap-2">
           <Link
@@ -212,14 +293,16 @@ export function CommunityApp({ view }: { view: View }) {
           (session ? (
             <button
               className={secondary}
+              data-auth-trigger
               disabled={authBusy || offline}
-              onClick={() => authenticate(true)}
+              onClick={() => setDialog({ kind: "confirm-sign-out" })}
             >
               Sign out
             </button>
           ) : (
             <button
               className={button}
+              data-auth-trigger
               disabled={authBusy || offline}
               onClick={() => authenticate()}
             >
@@ -242,7 +325,6 @@ export function CommunityApp({ view }: { view: View }) {
           {notice}
         </p>
       )}
-      <RequestStatus pending={authBusy}>Updating your sign-in…</RequestStatus>
       {error && (
         <p role="alert" className="mt-4 rounded-xl bg-red-soft p-4 text-red">
           {error}
@@ -300,7 +382,18 @@ export function CommunityApp({ view }: { view: View }) {
           )}
         </>
       )}
-    </>
+      <AuthDialog
+        state={dialog}
+        pending={authBusy}
+        onClose={() => setDialog(null)}
+        onSignOut={() => authenticate(true)}
+        onRetry={() => {
+          if (dialog?.kind === "error" && dialog.retry === "out")
+            setDialog({ kind: "confirm-sign-out" });
+          else void authenticate();
+        }}
+      />
+    </div>
   );
 }
 
@@ -560,7 +653,11 @@ function CommunityPreview({
       aria-label="Project preview"
     >
       <div className="mb-3 flex flex-wrap gap-3">
-        <OpenFullPreview title={title} getDocument={() => communityDocument(source, title)} className={secondary} />
+        <OpenFullPreview
+          title={title}
+          getDocument={() => communityDocument(source, title)}
+          className={secondary}
+        />
         <button
           className={button}
           onClick={() => {
@@ -621,6 +718,8 @@ function CommunityEditor({
   const [tagText, setTagText] = useState("");
   const [active, setActive] = useState<SampleLanguage>("html");
   const [busy, setBusy] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const submitPending = useRef(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
@@ -734,6 +833,7 @@ function CommunityEditor({
     }
   }
   async function submit() {
+    if (submitPending.current || busy || submitted) return;
     const invalid = draftError(draft);
     if (invalid) {
       setError(invalid);
@@ -745,7 +845,8 @@ function CommunityEditor({
       );
       return;
     }
-    setBusy(true);
+    submitPending.current = true;
+    setSubmitting(true);
     setError("");
     const submittedRevision = revision.current;
     try {
@@ -774,9 +875,17 @@ function CommunityEditor({
     } catch (error) {
       setError(message(error));
     } finally {
-      setBusy(false);
+      submitPending.current = false;
+      setSubmitting(false);
     }
   }
+  const submitState = submitButtonState({
+    submitting,
+    busy,
+    submitted: !!submitted,
+    connected: !!client,
+    signedIn: !!session,
+  });
   return (
     <div className="mt-8">
       <p role="status" className="mb-4 text-sm text-muted">
@@ -845,7 +954,11 @@ function CommunityEditor({
         <button className={secondary} onClick={recovery.forget}>
           Remove saved copy
         </button>
-        <button className={secondary} disabled={busy} onClick={format}>
+        <button
+          className={secondary}
+          disabled={busy || submitting}
+          onClick={format}
+        >
           Format with Prettier
         </button>
         <button className={secondary} onClick={save}>
@@ -920,10 +1033,12 @@ function CommunityEditor({
         </p>
         <button
           className={button}
-          disabled={busy || !client || !session || !!submitted}
+          disabled={submitState.disabled}
+          aria-busy={submitState.busy}
           onClick={submit}
         >
-          {busy ? "Working…" : "Submit for review"}
+          {submitting && <Spinner />}
+          {submitState.label}
         </button>
         {!session && (
           <p className="mt-3 text-sm text-muted">
@@ -941,6 +1056,7 @@ function CommunityEditor({
         </p>
       )}
       <p role="status" className="mt-4 text-sm text-body">
+        {submitted && <span aria-hidden="true">✓ </span>}
         {status}
       </p>
       {submitted && (
