@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useId, useEffect, useRef, useState, type ReactNode } from "react";
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
+import type { EditorProblem } from "@/lib/editor-diagnostics";
 import { SampleCodeEditor } from "./SampleCodeEditor";
 
 const files = {
@@ -23,15 +24,64 @@ function FilePane({
   change: (value: string) => void;
 }) {
   const [position, setPosition] = useState([1, 1]);
+  const id = useId();
+  const [result, setResult] = useState<{
+    source: string;
+    problem: EditorProblem | null;
+    unavailable?: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!active || !value.trim() || value.length > 100_000) return;
+    let current = true;
+    const timer = window.setTimeout(async () => {
+      try {
+        const { checkSyntax } = await import("@/lib/editor-diagnostics");
+        const problem = await checkSyntax(value, language);
+        if (current) setResult({ source: value, problem });
+      } catch {
+        if (current)
+          setResult({ source: value, problem: null, unavailable: true });
+      }
+    }, 450);
+    return () => {
+      current = false;
+      window.clearTimeout(timer);
+    };
+  }, [active, value, language]);
+  const checked = result?.source === value ? result : null;
+  const problem = checked?.problem;
   return (
     <div hidden={!active}>
       <SampleCodeEditor
+        errorLine={problem?.line}
+        problemId={problem ? id : undefined}
         language={language}
         value={value}
         onChange={change}
         onBlur={() => {}}
         onCursor={(line, column) => setPosition([line, column])}
       />
+      <div role="status" aria-live="polite">
+        {problem && (
+          <p
+            id={id}
+            className="workspace-problem break-words bg-red-soft px-4 py-3 text-sm text-red"
+          >
+            <strong>
+              Syntax error · Line {problem.line}, column {problem.column}
+            </strong>
+            <br />
+            {problem.message}
+          </p>
+        )}
+        {(checked?.unavailable || value.length > 100_000) && (
+          <p className="bg-body px-4 py-2 text-sm text-surface">
+            {value.length > 100_000
+              ? "Syntax checking is paused for files over 100,000 characters."
+              : "Syntax checking is unavailable. You can still edit and save."}
+          </p>
+        )}
+      </div>
       <div className="flex flex-wrap justify-between gap-2 bg-body px-4 py-2 font-mono text-xs text-surface">
         <span>{language === "js" ? "JavaScript" : language.toUpperCase()}</span>
         <span>
