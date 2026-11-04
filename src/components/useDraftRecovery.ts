@@ -23,22 +23,24 @@ export function useDraftRecovery(
   const latest = useRef(draft);
   latest.current = draft;
   const dirty = useRef(false);
+  const [unsaved, setUnsaved] = useState(false);
   const restoredRemix = useRef<string | null>(null);
   const [ready, setReady] = useState(false);
   const [saveStatus, setSaveStatus] = useState(
     "Drafts stay in this browser. Do not include secrets on a shared device.",
   );
-  const flush = useRef<() => boolean>(() => true);
-  flush.current = () => {
-    if (!dirty.current) return true;
+  const flush = useRef<(force?: boolean) => boolean>(() => true);
+  flush.current = (force = false) => {
+    if (!force && !dirty.current) return true;
     try {
       writeLocalDraft(localStorage, latest.current);
       setSaveStatus("Draft saved in this browser. It has not been submitted.");
       dirty.current = false;
+      setUnsaved(false);
       return true;
     } catch {
       setSaveStatus(
-        "Automatic save is unavailable or the draft exceeds the limit. Keep this tab open. Reduce oversized code, or copy/export your work before leaving.",
+        "Local saving is unavailable or the draft exceeds the limit. Keep this tab open. Reduce oversized code, or copy/export your work before leaving.",
       );
       return false;
     }
@@ -93,12 +95,23 @@ export function useDraftRecovery(
   return {
     saveStatus,
     restoredRemix,
+    unsaved,
+    saveNow() {
+      flush.current(true);
+    },
+    markRestored() {
+      dirty.current = false;
+      setUnsaved(false);
+      setSaveStatus("Your saved draft was restored.");
+    },
     markDirty() {
       dirty.current = true;
+      setUnsaved(true);
     },
     forget() {
       try {
         localStorage.removeItem(DRAFT_KEY);
+        setUnsaved(true);
         dirty.current = false;
         setSaveStatus(
           "Saved copy removed. Current edits remain here; further edits will be saved again.",

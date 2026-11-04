@@ -19,7 +19,6 @@ import {
   COMMUNITY_LIMITS,
   EMPTY_DRAFT,
   SUMMARY_COLUMNS,
-  byteLength,
   communityDocument,
   downloadCommunity,
   draftError,
@@ -30,7 +29,7 @@ import {
   type CommunitySummary,
 } from "@/lib/community";
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
-import { SampleCodeEditor } from "./SampleCodeEditor";
+import { CommunityCodeWorkspace } from "./CommunityCodeWorkspace";
 import { OpenFullPreview } from "./OpenFullPreview";
 import { CopyButton } from "./CopyButton";
 import { RequestStatus } from "./RequestStatus";
@@ -40,7 +39,6 @@ import {
   PRESERVE_DRAFT_EVENT,
   communityError,
   parseLocalDraft,
-  writeLocalDraft,
 } from "@/lib/community-resilience";
 
 type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
@@ -716,7 +714,6 @@ function CommunityEditor({
     tags: [],
   }));
   const [tagText, setTagText] = useState("");
-  const [active, setActive] = useState<SampleLanguage>("html");
   const [busy, setBusy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const submitPending = useRef(false);
@@ -798,19 +795,6 @@ function CommunityEditor({
       setBusy(false);
     }
   }
-  function save() {
-    const size = sourceError(draft);
-    if (size) {
-      setError(size);
-      return;
-    }
-    try {
-      writeLocalDraft(localStorage, draft);
-      setStatus("Draft saved in this browser. It has not been submitted.");
-    } catch {
-      setError("Local storage is unavailable. Export your code instead.");
-    }
-  }
   function load() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
@@ -820,6 +804,7 @@ function CommunityEditor({
       }
       const value = parseLocalDraft(raw);
       revision.current++;
+      recovery.markRestored();
       setDraft(value);
       setTagText(value.tags.join(", "));
       setStatus(
@@ -888,9 +873,6 @@ function CommunityEditor({
   });
   return (
     <div className="mt-8">
-      <p role="status" className="mb-4 text-sm text-muted">
-        {recovery.saveStatus}
-      </p>
       <p className="mb-4 text-xs text-muted">
         Drafts are stored only in this browser, including on shared devices. Do
         not include secrets. Use Remove saved copy to clear the stored draft.
@@ -961,9 +943,6 @@ function CommunityEditor({
         >
           Format with Prettier
         </button>
-        <button className={secondary} onClick={save}>
-          Save local draft
-        </button>
         <button className={secondary} onClick={load}>
           Load local draft
         </button>
@@ -980,35 +959,20 @@ function CommunityEditor({
           Export HTML
         </button>
       </div>
-      <div className="overflow-hidden rounded-2xl bg-code text-surface">
-        <div className="flex flex-wrap border-b border-dim/30">
-          {(["html", "css", "js"] as const).map((key) => (
-            <button
-              key={key}
-              className={`min-h-11 px-5 font-mono text-sm ${active === key ? "bg-body text-hi" : "text-surface"}`}
-              aria-pressed={active === key}
-              onClick={() => setActive(key)}
-            >
-              {key.toUpperCase()} · {(byteLength(draft[key]) / 1000).toFixed(1)}{" "}
-              KB
-            </button>
-          ))}
-        </div>
-        <SampleCodeEditor
-          key={active}
-          language={active}
-          value={draft[active]}
-          onChange={(value) => change({ [active]: value })}
-          onBlur={() => {}}
-          onCursor={() => {}}
-        />
-      </div>
-      <p id="editor-help" className="mt-3 text-xs text-muted">
-        100 KB per file, 300 KB total (UTF-8). HTML, CSS, and JavaScript only;
-        no uploaded files or external libraries. Edits are saved locally when
-        browser storage is available. Tab leaves the editor.
-      </p>
-      <CommunityPreview source={draft} title={draft.title || "Your project"} />
+      <CommunityCodeWorkspace
+        source={draft}
+        title={draft.title}
+        unsaved={recovery.unsaved}
+        saveStatus={recovery.saveStatus}
+        onSave={recovery.saveNow}
+        onChange={(language, value) => change({ [language]: value })}
+        preview={
+          <CommunityPreview
+            source={draft}
+            title={draft.title || "Your project"}
+          />
+        }
+      />
       <div className="mt-6 rounded-[28px] bg-surface p-6">
         <label className="flex min-h-11 items-start gap-3 text-sm text-body">
           <input

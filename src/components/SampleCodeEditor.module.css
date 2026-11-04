@@ -1,6 +1,6 @@
 .editor {
   position: relative;
-  height: 420px;
+  height: var(--workspace-editor-height, 420px);
   overflow: hidden;
   background: var(--color-code);
   color: var(--color-surface);
