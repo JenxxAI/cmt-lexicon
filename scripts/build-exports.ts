@@ -3,6 +3,7 @@ import path from "node:path";
 import { assets } from "../src/lib/assets";
 import { buildCheatSheet } from "../src/lib/cheatsheet";
 import { getAllEntries, getAllWebsiteTypes } from "../src/lib/content";
+import { siteOrigin } from "../src/lib/site-origin";
 import { SITE } from "../src/lib/site";
 
 const entries = getAllEntries();
@@ -26,10 +27,7 @@ fs.writeFileSync(path.join(publicDir, "llms.txt"), buildCheatSheet(entries, asse
 ].join("\n")).join("\n\n") + "\n");
 
 // Absolute sitemap URLs use the configured public origin (the repository’s published site otherwise).
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : SITE.url);
-const origin = new URL(siteUrl);
-if (!["http:", "https:"].includes(origin.protocol)) throw new Error("NEXT_PUBLIC_SITE_URL must be an HTTP(S) URL");
+const origin = siteOrigin();
 const routes = ["/", "/about/", "/assets/", "/cheat-sheet/", "/websites/", "/community/",
   ...entries.map(entry => `/components/${entry.id}/`), ...websites.map(entry => `/websites/${entry.id}/`)];
 const xmlEscape = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");

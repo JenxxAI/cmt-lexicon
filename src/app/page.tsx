@@ -1,3 +1,5 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
+import { SITE } from "@/lib/site";
 import Link from "next/link";
 import { assets } from "@/lib/assets";
 import { Explorer } from "@/components/Explorer";
@@ -5,6 +7,11 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { OpenSourceBand } from "@/components/OpenSourceBand";
 import { getAllEntries, toSummary, getAllWebsiteTypes, toWebsiteSummary } from "@/lib/content";
+
+export const metadata = publicPageMetadata("/", {
+  title: `${SITE.name}: name any UI component`,
+  description: SITE.description,
+});
 
 export default function HomePage() {
   const entries = getAllEntries().map(toSummary);

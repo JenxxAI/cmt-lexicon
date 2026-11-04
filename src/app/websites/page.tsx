@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WebsiteExplorer } from "@/components/WebsiteExplorer";
 import { getAllWebsiteTypes, toWebsiteSummary } from "@/lib/content";
 
-export const metadata: Metadata = {
+export const metadata = publicPageMetadata("/websites/", {
   title: "Website types",
   description: "Find the name for the website you want to build, explore its section blueprint, and copy a concise prompt.",
-};
+});
 
 export default function WebsitesPage() {
   return <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-8">

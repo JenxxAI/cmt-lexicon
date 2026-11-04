@@ -4,9 +4,11 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/nunito";
 import "./globals.css";
+import { siteOrigin } from "@/lib/site-origin";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
+  metadataBase: siteOrigin(),
   title: { default: `${SITE.name}: name any UI component`, template: `%s · ${SITE.name}` },
   description: SITE.description,
 };

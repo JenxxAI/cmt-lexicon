@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { AssetGlyph } from "@/components/AssetGlyph";
 import { CopyButton } from "@/components/CopyButton";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { assets } from "@/lib/assets";
 
-export const metadata: Metadata = {
+export const metadata = publicPageMetadata("/assets/", {
   title: "Icons & assets",
   description: "Name the small graphics on a website: icons, SVGs, favicons, sprites, Lottie animations, and Open Graph images. Compare common icon names across libraries.",
-};
+});
 
 const link = "inline-flex min-h-11 items-center text-accent-deep underline underline-offset-4 hover:text-ink";
 
