@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import "./community-ui.css";
+import { CommunityAccountMenu } from "./CommunityAccountMenu";
 import { AuthDialog } from "./AuthDialog";
 import { Spinner } from "./Spinner";
 import {
@@ -257,7 +258,13 @@ export function CommunityApp({ view }: { view: View }) {
   }
   return (
     <div className="community-ui">
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      <div
+        className={
+          session
+            ? "mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"
+            : "mt-6 flex flex-wrap items-center justify-between gap-3"
+        }
+      >
         <nav aria-label="Community" className="flex flex-wrap gap-2">
           <Link
             className={secondary}
@@ -289,14 +296,17 @@ export function CommunityApp({ view }: { view: View }) {
         {ready &&
           client &&
           (session ? (
-            <button
-              className={secondary}
-              data-auth-trigger
-              disabled={authBusy || offline}
-              onClick={() => setDialog({ kind: "confirm-sign-out" })}
-            >
-              Sign out
-            </button>
+            <CommunityAccountMenu
+              handle={displayName(session.user)}
+              avatar={
+                session.user.identities?.find(
+                  (identity) => identity.provider === "github",
+                )?.identity_data?.avatar_url ??
+                session.user.user_metadata.avatar_url
+              }
+              signOutDisabled={authBusy || offline}
+              onSignOut={() => setDialog({ kind: "confirm-sign-out" })}
+            />
           ) : (
             <button
               className={button}
