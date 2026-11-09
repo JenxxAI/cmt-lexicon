@@ -60,6 +60,20 @@ const cases: [string, string][] = [
   ["volume control with a handle on a track", "slider"],
   ["field with a down arrow that opens choices", "select"],
   ["type in a field to narrow the available choices", "select"],
+  // Editable combobox intent must beat the dropdown-menu vocabulary (issue #30).
+  ["dropdown with search", "select"],
+  ["searchable dropdown", "select"],
+  ["autocomplete suggestions", "select"],
+  ["typeahead", "select"],
+  ["searchable select", "select"],
+  // Common misspellings of complete words (issue #30).
+  ["drower", "drawer"],
+  ["toats", "toast"],
+  ["tooltp", "tooltip"],
+  ["hamburgr", "hamburger-icon"],
+  ["accordian", "accordion"],
+  ["carosel", "carousel"],
+  ["dropdwon", "dropdown-menu"],
   ["spinning circle while I wait", "spinner"],
   ["rotating ring while something loads", "spinner"],
   ["wide message strip with a warning", "alert"],
@@ -120,6 +134,22 @@ assert.deepEqual(idsFor("  SIDE   PANEL  "), idsFor("side panel"), "case and whi
 assert.strictEqual(search(entries, " \t\n "), entries, "whitespace preserves the browse list and order");
 assert.deepEqual(search([], "drawer"), [], "an empty corpus has no matches");
 assert.deepEqual(search(entries, "?!..."), [], "punctuation alone has no matches");
+
+// Typo tolerance is deliberately narrow: whole words of 5+ letters, one edit
+// (two from 8 letters), same first letter. Short words stay exact-or-prefix only.
+assert.deepEqual(idsFor("drower").slice(0, 1), ["drawer"], "one substituted letter");
+assert.deepEqual(idsFor("toats"), ["toast"], "swapped adjacent letters, with the stemmed trailing s");
+assert.deepEqual(idsFor("carosel").slice(0, 1), ["carousel"], "one missing letter");
+assert.deepEqual(idsFor("modl"), [], "four-letter typos are out of scope: too ambiguous");
+assert.deepEqual(search([fixture("cart", "Cart")], "card"), [], "short words do not fuzzy-match");
+assert.deepEqual(search([fixture("alert", "Alert")], "olert"), [], "a different first letter is not a typo");
+assert.deepEqual(search([fixture("toast", "Toast")], "totally"), [], "two edits are too far for a 7-letter word");
+assert.deepEqual(search([fixture("drawer", "Drawer")], "drawyyr"), [], "two edits are too far for a 7-letter word");
+assert.deepEqual(search([fixture("toast", "Toast")], "toats").map((entry) => entry.id), ["toast"]);
+assert.deepEqual(
+  search([fixture("typo", "Toast"), fixture("exact", "Toats")], "toats").map((entry) => entry.id),
+  ["exact"], "an exact word outranks a typo match, which falls below the relative cutoff",
+);
 
 function fixture(id: string, name: string, fields: Partial<EntrySummary> = {}): EntrySummary {
   return {
