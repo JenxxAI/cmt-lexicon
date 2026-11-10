@@ -30,7 +30,54 @@ export function tokenize(text: string, dropStopwords = false): string[] {
     .map(stem);
 }
 
-/** 1 = same word, 0.6 = one is the start of the other (min 3 letters), 0 = no match. */
+const TYPO_QUALITY = 0.5;
+
+/** Edits allowed for a typo: none under 5 letters (too ambiguous: form/from, card/cart), 1 up to 7, 2 beyond. */
+function typoBudget(length: number): number {
+  return length >= 8 ? 2 : length >= 5 ? 1 : 0;
+}
+
+/**
+ * Optimal string alignment distance (Levenshtein plus adjacent swaps, so "toats" is one
+ * edit from "toast"). Gives up early once every cell exceeds `limit`.
+ */
+function withinEdits(a: string, b: string, limit: number): boolean {
+  if (Math.abs(a.length - b.length) > limit) return false;
+  let twoBack: number[] = [];
+  let previous = Array.from({ length: b.length + 1 }, (_, column) => column);
+  for (let row = 1; row <= a.length; row++) {
+    const current = [row];
+    let rowMin = row;
+    for (let column = 1; column <= b.length; column++) {
+      const cost = a[row - 1] === b[column - 1] ? 0 : 1;
+      let value = Math.min(previous[column] + 1, current[column - 1] + 1, previous[column - 1] + cost);
+      if (row > 1 && column > 1 && a[row - 1] === b[column - 2] && a[row - 2] === b[column - 1]) {
+        value = Math.min(value, twoBack[column - 2] + 1);
+      }
+      current.push(value);
+      rowMin = Math.min(rowMin, value);
+    }
+    if (rowMin > limit) return false;
+    twoBack = previous;
+    previous = current;
+  }
+  return previous[b.length] <= limit;
+}
+
+/**
+ * A likely misspelling of a complete word. The first letter must match, which keeps
+ * accidental neighbours out. Stemming may have removed a trailing "s" that was part of
+ * the typo ("toats" is stemmed to "toat"), so the unstemmed spelling is tried too.
+ */
+function isTypoOf(queryToken: string, docToken: string): boolean {
+  if (queryToken[0] !== docToken[0]) return false;
+  return [queryToken, `${queryToken}s`].some((spelling) => {
+    const limit = typoBudget(Math.min(spelling.length, docToken.length));
+    return limit > 0 && withinEdits(spelling, docToken, limit);
+  });
+}
+
+/** 1 = same word, 0.6 = one is the start of the other (min 3 letters), 0.5 = likely typo, 0 = no match. */
 function matchQuality(queryToken: string, docToken: string): number {
   if (queryToken === docToken) return 1;
   if (
@@ -40,7 +87,7 @@ function matchQuality(queryToken: string, docToken: string): number {
   ) {
     return 0.6;
   }
-  return 0;
+  return isTypoOf(queryToken, docToken) ? TYPO_QUALITY : 0;
 }
 
 // Keep plausible alternatives while dropping incidental word matches.

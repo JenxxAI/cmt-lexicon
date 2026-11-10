@@ -39,7 +39,7 @@ The easiest contribution is a new component. It takes about five minutes and nee
 
 ## Writing `looksLike`
 
-Describe what you *see*, not what it's called: "gray boxes that stand in for content while it loads", not "skeleton screen". If a beginner might type it into Google, it belongs here. After adding phrases, check that searching them finds your entry (add a case to `scripts/test-search.ts` if it's a good example).
+Describe what you *see*, not what it's called: "gray boxes that stand in for content while it loads", not "skeleton screen". If a beginner might type it into Google, it belongs here. After adding phrases, check that searching them finds your entry (add a case to `scripts/test-search.ts` if it's a good example). Don't add misspellings as aliases: search already tolerates typos in words of 5+ letters. Do add real alternate names people use ("autocomplete", "searchable dropdown") as aliases.
 
 ## Code changes
 

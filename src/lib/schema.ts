@@ -8,7 +8,12 @@ const slug = z
 /** Code is authored as an array of lines in JSON (readable diffs), joined with \n at load time. */
 const codeLines = z.array(z.string()).min(1).transform((lines) => lines.join("\n"));
 
-export const entrySchema = z.object({
+/**
+ * Every content object is strict: a misspelled key ("defintion", "alises") fails validation
+ * instead of being silently dropped, so typos in content JSON surface immediately.
+ * `libraries` stays a record on purpose, because library names are free-form keys.
+ */
+export const entrySchema = z.strictObject({
   /** Must match the file name: content/components/<id>.json */
   id: slug,
   name: z.string().min(2).max(40),
@@ -21,16 +26,16 @@ export const entrySchema = z.object({
   whenToUse: z.array(z.string().min(3)).min(1),
   /** Look-alikes people mix this up with. `id` must be another entry. */
   notConfusedWith: z
-    .array(z.object({ id: slug, difference: z.string().min(8).max(140) }))
+    .array(z.strictObject({ id: slug, difference: z.string().min(8).max(140) }))
     .default([]),
   related: z.array(slug).default([]),
-  prompts: z.object({
+  prompts: z.strictObject({
     /** Token-lean. Keep it to one or two short sentences. */
     short: z.string().min(10).max(160),
     detailed: z.string().min(20).max(500),
   }),
   snippets: z
-    .object({
+    .strictObject({
       html: codeLines.optional(),
       reactTailwind: codeLines.optional(),
       vue: codeLines.optional(),
@@ -51,7 +56,7 @@ export type EntrySummary = Pick<
 > & { shortPrompt: string };
 
 /** Website blueprints reference existing components rather than duplicating their content. */
-export const websiteTypeSchema = z.object({
+export const websiteTypeSchema = z.strictObject({
   id: slug,
   name: z.string().min(2).max(60),
   aliases: z.array(z.string().min(2)).min(3),
@@ -59,7 +64,7 @@ export const websiteTypeSchema = z.object({
   definition: z.string().min(20).max(240),
   goal: z.string().min(10).max(240),
   audience: z.string().min(5).max(240),
-  sections: z.array(z.object({
+  sections: z.array(z.strictObject({
     name: z.string().min(2).max(80),
     purpose: z.string().min(10).max(240),
     componentIds: z.array(slug).min(1),
@@ -68,7 +73,7 @@ export const websiteTypeSchema = z.object({
   avoid: z.array(z.string().min(5)).min(1),
   examples: z.array(z.string().min(5)).min(1),
   related: z.array(slug).default([]),
-  prompts: z.object({ short: z.string().min(10).max(156), detailed: z.string().min(20).max(500) }),
+  prompts: z.strictObject({ short: z.string().min(10).max(156), detailed: z.string().min(20).max(500) }),
   tags: z.array(slug).min(1),
 });
 
