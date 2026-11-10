@@ -77,7 +77,7 @@
     ]
   },
   "libraries": {
-    "shadcn/ui": "Select / Combobox"
+    "shadcn/ui": "Select (fixed choices) / Combobox (separate, searchable)"
   },
   "a11yNotes": [
     "Associate a visible label and retain keyboard operation",
