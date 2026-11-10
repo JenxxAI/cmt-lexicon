@@ -76,7 +76,7 @@
   "libraries": {
     "shadcn/ui": "Sonner (the older Toast is deprecated)",
     "MUI": "Snackbar",
-    "Chakra UI": "Toast",
+    "Chakra UI": "toaster (v3) / useToast (v2)",
     "Mantine": "Notifications",
     "Radix UI": "Toast"
   },
