@@ -249,3 +249,8 @@
     padding-right: 0.875rem;
   }
 }
+
+.community-ui .shell-create {
+  width: 100%;
+  white-space: nowrap;
+}

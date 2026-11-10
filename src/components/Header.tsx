@@ -1,47 +1,152 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useRef, type ReactNode } from "react";
 import { SITE } from "@/lib/site";
-import { StarIcon } from "./icons";
+import { HeaderAccount } from "./HeaderAccount";
+import "./header.css";
 
-const navLink = "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap hover:text-accent-deep";
+const destinations = [
+  ["/#browse", "Components", "/components/"],
+  ["/websites/", "Website types", "/websites"],
+  ["/community/", "Community", "/community"],
+  ["/assets/", "Icons & assets", "/assets"],
+  ["/cheat-sheet/", "Cheat sheet", "/cheat-sheet"],
+] as const;
 
-export function Header() {
+export function Header({
+  account,
+  mobileContent,
+}: {
+  account?: ReactNode;
+  mobileContent?: ReactNode;
+}) {
+  const drawer = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  function close() {
+    drawer.current?.close();
+    trigger.current?.focus();
+  }
   return (
-    <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-4 max-sm:grid max-sm:grid-cols-[1fr_auto] max-sm:gap-y-0 max-sm:py-2">
-      <Link href="/" className="flex items-center gap-2.5 max-sm:min-h-11">
-        <span
-          aria-hidden="true"
-          className="grid size-8 place-items-center rounded-[10px] bg-accent font-mono text-sm font-semibold text-ink"
-        >
-          Aa
-        </span>
-        <span className="font-display text-[22px] font-bold tracking-tight">{SITE.name}</span>
+    <header className="site-header">
+      <Link href="/" className="site-brand">
+        <span aria-hidden="true">Aa</span>
+        <span>{SITE.name}</span>
       </Link>
-
-      <nav aria-label="Main" className="flex flex-wrap items-center gap-x-7 text-[15px] font-medium max-sm:col-span-2 max-sm:row-start-2 max-sm:flex-nowrap max-sm:min-w-0 max-sm:overflow-x-auto max-sm:justify-start max-sm:gap-x-4 max-sm:text-[13px]">
-        <Link href="/#browse" className={navLink}>
-          Components
-        </Link>
-        <Link href="/websites/" className={navLink}>Website types</Link>
-        <Link href="/community/" className={navLink}>Community</Link>
-        <Link href="/assets/" className={navLink}>
-          Icons &amp; assets
-        </Link>
-        <Link href="/cheat-sheet/" className={navLink}>
-          Cheat sheet
-        </Link>
-        <a href={`${SITE.repoUrl}/blob/main/CONTRIBUTING.md`} className={navLink}>
-          Contribute
-        </a>
-      </nav>
-
-      <a
-        href={SITE.repoUrl}
-        aria-label="Star on GitHub"
-        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 text-[15px] font-medium hover:bg-line max-sm:col-start-2 max-sm:row-start-1 max-sm:w-11 max-sm:justify-center max-sm:px-0"
+      <div className="site-account">
+        {account === undefined ? <HeaderAccount /> : account}
+      </div>
+      <button
+        type="button"
+        ref={trigger}
+        className="site-menu-toggle"
+        aria-label="Open site navigation"
+        aria-haspopup="dialog"
+        onClick={() => drawer.current?.showModal()}
       >
-        <StarIcon className="size-[18px]" />
-        <span className="max-sm:hidden">Star on GitHub</span>
-      </a>
+        <svg
+          aria-hidden="true"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+        >
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <dialog
+        ref={drawer}
+        className="site-drawer"
+        aria-labelledby="site-navigation-title"
+        onCancel={(event) => {
+          event.preventDefault();
+          close();
+        }}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) close();
+        }}
+      >
+        <div className="site-drawer-inner">
+          <div className="site-drawer-heading">
+            <h2 id="site-navigation-title">Explore UI Lexicon</h2>
+            <button
+              type="button"
+              aria-label="Close site navigation"
+              onClick={close}
+            >
+              ✕
+            </button>
+          </div>
+          <div
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest("a")) close();
+            }}
+          >
+            <nav aria-label="Main">
+              <SiteNavigation />
+              <a href={`${SITE.repoUrl}/blob/main/CONTRIBUTING.md`}>
+                Contribute
+              </a>
+              <a href={SITE.repoUrl}>Star on GitHub</a>
+            </nav>
+            {mobileContent && (
+              <section
+                className="site-mobile-community"
+                aria-label="Community navigation"
+              >
+                <h2>Community workspace</h2>
+                {mobileContent}
+              </section>
+            )}
+          </div>
+        </div>
+      </dialog>
     </header>
+  );
+}
+
+export function SiteNavigation({ compact = false }: { compact?: boolean }) {
+  const pathname = usePathname();
+  const symbols = [
+    "M4 4h16v16H4zM9 4v16M9 10h11",
+    "M3 4h18v16H3zM3 9h18",
+    "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 4a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4",
+    "m12 3 9 9-9 9-9-9z",
+    "M5 3h14v18H5zM8 8h8M8 12h8M8 16h5",
+  ];
+  return (
+    <>
+      {destinations.map(([href, label, prefix], index) => (
+        <Link
+          key={href}
+          href={href}
+          title={compact ? label : undefined}
+          aria-label={compact ? label : undefined}
+          aria-current={
+            (pathname === "/" && label === "Components") ||
+            pathname.startsWith(prefix)
+              ? "page"
+              : undefined
+          }
+        >
+          <svg
+            aria-hidden="true"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          >
+            <path d={symbols[index]} />
+          </svg>
+          {!compact && <span>{label}</span>}
+        </Link>
+      ))}
+    </>
   );
 }
