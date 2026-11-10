@@ -6,17 +6,24 @@
     "select",
     "combobox",
     "dropdown field",
-    "choice picker"
+    "choice picker",
+    "searchable dropdown",
+    "searchable select",
+    "dropdown with search",
+    "autocomplete",
+    "typeahead"
   ],
   "looksLike": [
     "field with a down arrow that opens choices",
     "box where I pick one item from a list",
-    "type in a field to narrow the available choices"
+    "type in a field to narrow the available choices",
+    "text field that shows suggestions while I type"
   ],
-  "definition": "A field for choosing an option. A select offers fixed choices; an editable combobox also lets users type to find options and may allow a custom value.",
+  "definition": "A field for choosing an option. A select offers fixed choices; an editable combobox (autocomplete or searchable dropdown) also lets users type to find options and may allow a custom value.",
   "whenToUse": [
     "Choosing a country or category",
-    "Searching a long list of options"
+    "Searching a long list of options",
+    "Autocomplete suggestions while typing in a field"
   ],
   "notConfusedWith": [
     {
