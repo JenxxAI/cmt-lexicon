@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CodeTabs, type CodeTab } from "@/components/CodeTabs";
 import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+import { SiteShell } from "@/components/SiteShell";
 import { Preview } from "@/components/previews";
 import { PromptPanel } from "@/components/PromptPanel";
 import { ComponentWorkbench } from "@/components/playground/ComponentWorkbench";
@@ -20,15 +20,29 @@ export function generateStaticParams(): Params[] {
   return getAllEntries().map((entry) => ({ id: entry.id }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
   const { id } = await params;
   const entry = getEntry(id);
-  return entry ? publicPageMetadata(`/components/${entry.id}/`, { title: entry.name, description: entry.definition }) : {};
+  return entry
+    ? publicPageMetadata(`/components/${entry.id}/`, {
+        title: entry.name,
+        description: entry.definition,
+      })
+    : {};
 }
 
-const pill = "inline-flex min-h-11 items-center rounded-full border border-rule bg-surface px-[18px] text-[15px] font-medium hover:border-ink";
+const pill =
+  "inline-flex min-h-11 items-center rounded-full border border-rule bg-surface px-[18px] text-[15px] font-medium hover:border-ink";
 
-export default async function ComponentPage({ params }: { params: Promise<Params> }) {
+export default async function ComponentPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
   const { id } = await params;
   const entry = getEntry(id);
   if (!entry) notFound();
@@ -37,26 +51,36 @@ export default async function ComponentPage({ params }: { params: Promise<Params
   const byId = new Map(all.map((item) => [item.id, item]));
 
   const tabs: CodeTab[] = [
-    entry.snippets.html ? { id: "html", label: "HTML", code: entry.snippets.html } : null,
+    entry.snippets.html
+      ? { id: "html", label: "HTML", code: entry.snippets.html }
+      : null,
     entry.snippets.reactTailwind
       ? {
           id: "react",
-          label: entry.snippets.reactTailwind.includes("@/components/ui") ? "React (shadcn/ui)" : "React + Tailwind",
+          label: entry.snippets.reactTailwind.includes("@/components/ui")
+            ? "React (shadcn/ui)"
+            : "React + Tailwind",
           code: entry.snippets.reactTailwind,
         }
       : null,
-    entry.snippets.vue ? { id: "vue", label: "Vue", code: entry.snippets.vue } : null,
+    entry.snippets.vue
+      ? { id: "vue", label: "Vue", code: entry.snippets.vue }
+      : null,
   ].filter((tab): tab is CodeTab => tab !== null);
 
   const usedIn = getWebsiteTypesUsing(entry.id);
   const libraries = Object.entries(entry.libraries);
-  const related = entry.related.flatMap((relatedId) => byId.get(relatedId) ?? []);
+  const related = entry.related.flatMap(
+    (relatedId) => byId.get(relatedId) ?? [],
+  );
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-8">
-      <Header />
+    <SiteShell>
       <main id="main">
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 pb-2 pt-5 text-sm text-muted">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex flex-wrap items-center gap-2 pb-2 pt-5 text-sm text-muted"
+        >
           <Link href="/#browse" className="hover:text-accent-deep">
             Components
           </Link>
@@ -72,7 +96,9 @@ export default async function ComponentPage({ params }: { params: Promise<Params
           {/* Left: the vocabulary */}
           <div className="min-w-0 flex-[1_1_520px] max-lg:contents">
             <div className="max-lg:order-1 max-lg:min-w-0 max-lg:w-full">
-              <p className="font-mono text-[13px] uppercase text-muted">{CATEGORIES[entry.category]}</p>
+              <p className="font-mono text-[13px] uppercase text-muted">
+                {CATEGORIES[entry.category]}
+              </p>
               <h1 className="mt-1.5 font-display text-6xl font-bold leading-none tracking-tight sm:text-7xl">
                 {entry.name}
               </h1>
@@ -89,19 +115,28 @@ export default async function ComponentPage({ params }: { params: Promise<Params
                 ))}
               </div>
 
-              <p className="mt-6 max-w-[560px] text-[19px] text-body">{entry.definition}</p>
+              <p className="mt-6 max-w-[560px] text-[19px] text-body">
+                {entry.definition}
+              </p>
             </div>
             <div className="max-lg:order-5 max-lg:min-w-0 max-lg:w-full">
-              <h2 className="mt-9 font-display text-[22px] font-semibold">How people describe it</h2>
+              <h2 className="mt-9 font-display text-[22px] font-semibold">
+                How people describe it
+              </h2>
               <ul className="mt-3 flex flex-wrap gap-2.5">
                 {entry.looksLike.map((phrase) => (
-                  <li key={phrase} className="rounded-2xl bg-surface px-3.5 py-2 text-[15px]">
+                  <li
+                    key={phrase}
+                    className="rounded-2xl bg-surface px-3.5 py-2 text-[15px]"
+                  >
                     “{phrase}”
                   </li>
                 ))}
               </ul>
 
-              <h2 className="mt-9 font-display text-[22px] font-semibold">Good for</h2>
+              <h2 className="mt-9 font-display text-[22px] font-semibold">
+                Good for
+              </h2>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-body marker:text-muted">
                 {entry.whenToUse.map((use) => (
                   <li key={use}>{use}</li>
@@ -110,22 +145,32 @@ export default async function ComponentPage({ params }: { params: Promise<Params
 
               {entry.notConfusedWith.length > 0 && (
                 <>
-                  <h2 className="mt-9 font-display text-[22px] font-semibold">Don’t mix it up with</h2>
+                  <h2 className="mt-9 font-display text-[22px] font-semibold">
+                    Don’t mix it up with
+                  </h2>
                   <ul className="mt-3 flex flex-wrap gap-3">
                     {entry.notConfusedWith.map((item) => {
                       const other = byId.get(item.id);
                       return (
-                        <li key={item.id} className="min-w-0 flex-[1_1_170px] rounded-[20px] bg-surface p-4">
+                        <li
+                          key={item.id}
+                          className="min-w-0 flex-[1_1_170px] rounded-[20px] bg-surface p-4"
+                        >
                           <div className="font-display text-lg font-semibold">
                             {other ? (
-                              <Link href={`/components/${other.id}/`} className="hover:text-accent-deep">
+                              <Link
+                                href={`/components/${other.id}/`}
+                                className="hover:text-accent-deep"
+                              >
                                 {other.name}
                               </Link>
                             ) : (
                               item.id
                             )}
                           </div>
-                          <p className="mt-1 text-sm text-muted">{item.difference}</p>
+                          <p className="mt-1 text-sm text-muted">
+                            {item.difference}
+                          </p>
                         </li>
                       );
                     })}
@@ -135,7 +180,9 @@ export default async function ComponentPage({ params }: { params: Promise<Params
 
               {libraries.length > 0 && (
                 <>
-                  <h2 className="mt-9 font-display text-[22px] font-semibold">What your library calls it</h2>
+                  <h2 className="mt-9 font-display text-[22px] font-semibold">
+                    What your library calls it
+                  </h2>
                   <div className="mt-3 overflow-x-auto rounded-[20px] bg-surface">
                     <table className="w-full border-collapse text-[15px]">
                       <thead>
@@ -151,7 +198,10 @@ export default async function ComponentPage({ params }: { params: Promise<Params
                       <tbody>
                         {libraries.map(([library, name]) => (
                           <tr key={library} className="border-t border-line">
-                            <th scope="row" className="px-4 py-3 text-left font-normal">
+                            <th
+                              scope="row"
+                              className="px-4 py-3 text-left font-normal"
+                            >
                               {library}
                             </th>
                             <td className="px-4 py-3 font-mono">{name}</td>
@@ -165,7 +215,9 @@ export default async function ComponentPage({ params }: { params: Promise<Params
 
               {entry.a11yNotes.length > 0 && (
                 <>
-                  <h2 className="mt-9 font-display text-[22px] font-semibold">Accessibility checklist</h2>
+                  <h2 className="mt-9 font-display text-[22px] font-semibold">
+                    Accessibility checklist
+                  </h2>
                   <ul className="mt-3 list-disc space-y-1 pl-5 text-body marker:text-muted">
                     {entry.a11yNotes.map((note) => (
                       <li key={note}>{note}</li>
@@ -177,39 +229,71 @@ export default async function ComponentPage({ params }: { params: Promise<Params
           </div>
 
           {/* Right: see it, prompt it, code it */}
-          {hasSample(entry.id) ? <ComponentWorkbench id={entry.id} name={entry.name} prompts={entry.prompts} tabs={tabs} /> : (
-          <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5 max-lg:contents">
-            <div className="max-lg:order-3 max-lg:min-w-0 max-lg:w-full">
-
-                <section aria-label={`${entry.name} illustration`} className="overflow-hidden rounded-[28px] bg-surface">
-                  <div role="img" aria-label={`Illustration of a ${entry.name.toLowerCase()}`} className="h-80">
+          {hasSample(entry.id) ? (
+            <ComponentWorkbench
+              id={entry.id}
+              name={entry.name}
+              prompts={entry.prompts}
+              tabs={tabs}
+            />
+          ) : (
+            <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5 max-lg:contents">
+              <div className="max-lg:order-3 max-lg:min-w-0 max-lg:w-full">
+                <section
+                  aria-label={`${entry.name} illustration`}
+                  className="overflow-hidden rounded-[28px] bg-surface"
+                >
+                  <div
+                    role="img"
+                    aria-label={`Illustration of a ${entry.name.toLowerCase()}`}
+                    className="h-80"
+                  >
                     <Preview id={entry.id} />
                   </div>
                 </section>
+              </div>
+              <div className="max-lg:order-2 max-lg:min-w-0 max-lg:w-full">
+                <PromptPanel
+                  short={entry.prompts.short}
+                  detailed={entry.prompts.detailed}
+                />
+              </div>
+              <div className="min-w-0 max-lg:order-4 max-lg:w-full">
+                <CodeTabs tabs={tabs} />
+              </div>
             </div>
-            <div className="max-lg:order-2 max-lg:min-w-0 max-lg:w-full">
-              <PromptPanel short={entry.prompts.short} detailed={entry.prompts.detailed} />
-            </div>
-            <div className="min-w-0 max-lg:order-4 max-lg:w-full">
-              <CodeTabs tabs={tabs} />
-            </div>
-          </div>
           )}
         </div>
 
         {usedIn.length > 0 && (
           <section aria-labelledby="used-in-heading" className="mt-12">
-            <h2 id="used-in-heading" className="font-display text-[22px] font-semibold">Used in</h2>
-            <p className="mt-2 text-sm text-muted">Explore website blueprints that use this component.</p>
+            <h2
+              id="used-in-heading"
+              className="font-display text-[22px] font-semibold"
+            >
+              Used in
+            </h2>
+            <p className="mt-2 text-sm text-muted">
+              Explore website blueprints that use this component.
+            </p>
             <ul className="mt-3 flex flex-wrap gap-2.5">
-              {usedIn.map(website => <li key={website.id}><Link href={`/websites/${website.id}/`} className={pill}>{website.name}</Link></li>)}
+              {usedIn.map((website) => (
+                <li key={website.id}>
+                  <Link href={`/websites/${website.id}/`} className={pill}>
+                    {website.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </section>
         )}
 
         {related.length > 0 && (
           <section aria-labelledby="related-heading" className="mt-12">
-            <h2 id="related-heading" className="font-display text-[22px] font-semibold">
+            <h2
+              id="related-heading"
+              className="font-display text-[22px] font-semibold"
+            >
               Related
             </h2>
             <ul className="mt-3 flex flex-wrap gap-2.5">
@@ -225,6 +309,6 @@ export default async function ComponentPage({ params }: { params: Promise<Params
         )}
       </main>
       <Footer />
-    </div>
+    </SiteShell>
   );
 }
