@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { COPY_FAILED_HINT, useCopyStatus } from "../useCopyStatus";
 import { PRESETS, cssFill, fixContrast, normalizeHex, pickOn, randomPalette, type Palette } from "./color";
 import { setPalette } from "./palette-store";
 
@@ -73,7 +74,7 @@ function ColorRow({ label, value, canPick, onChange }: { label: string; value: s
 export function ColorLab({ palette, onUse }: { palette: Palette; onUse: () => void }) {
   const angleId = useId();
   const [canPick, setCanPick] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, copy] = useCopyStatus();
   useEffect(() => setCanPick("EyeDropper" in window), []);
 
   const { ratio } = pickOn(palette);
@@ -85,14 +86,8 @@ export function ColorLab({ palette, onUse }: { palette: Palette; onUse: () => vo
     onUse();
   }
 
-  async function copyCss() {
-    try {
-      await navigator.clipboard.writeText(`background: ${cssFill(palette)};\ncolor: ${pickOn(palette).on};`);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* clipboard blocked */
-    }
+  function copyCss() {
+    return copy(`background: ${cssFill(palette)};\ncolor: ${pickOn(palette).on};`);
   }
 
   return (
@@ -148,7 +143,11 @@ export function ColorLab({ palette, onUse }: { palette: Palette; onUse: () => vo
 
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" onClick={() => update(randomPalette(palette.all))} className={`${pill} bg-ink text-white hover:bg-body`}>Generate gradient</button>
-        <button type="button" onClick={() => void copyCss()} className={`${pill} bg-line hover:bg-rule`}>{copied ? "Copied ✓" : "Copy CSS"}</button>
+        <button type="button" onClick={() => void copyCss()} className={`${pill} bg-line hover:bg-rule`}>
+          {copyStatus === "copied" ? "Copied ✓" : copyStatus === "failed" ? "Copy failed" : "Copy CSS"}
+        </button>
+        <span role="status" className="sr-only">{copyStatus === "copied" ? "CSS copied to clipboard" : ""}</span>
+        <span role="alert" className="sr-only">{copyStatus === "failed" ? COPY_FAILED_HINT : ""}</span>
       </div>
 
       <fieldset className="mt-5">
