@@ -25,7 +25,7 @@ export function Footer() {
             <h2 className="mb-2 font-display text-base font-semibold">Explore</h2>
             <ul>
               <li><Link href="/about/" className={footerLink}>About UI Lexicon</Link></li>
-              <li><Link href="/#browse" className={footerLink}>Components</Link></li>
+              <li><Link href="/" className={footerLink}>Components</Link></li>
               <li><Link href="/websites/" className={footerLink}>Website types</Link></li>
               <li><Link href="/community/" className={footerLink}>Community projects</Link></li>
               <li><Link href="/assets/" className={footerLink}>Icons &amp; assets</Link></li>

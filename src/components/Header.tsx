@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, type ReactNode } from "react";
 import { SITE } from "@/lib/site";
+import { ThemeToggle } from "./ThemeToggle";
 import { HeaderAccount } from "./HeaderAccount";
 import "./header.css";
 
 const destinations = [
-  ["/#browse", "Components", "/components/"],
+  ["/", "Components", "/components/"],
   ["/websites/", "Website types", "/websites"],
   ["/community/", "Community", "/community"],
   ["/assets/", "Icons & assets", "/assets"],
@@ -37,6 +38,7 @@ export function Header({
       <div className="site-account">
         {account === undefined ? <HeaderAccount /> : account}
       </div>
+      <ThemeToggle />
       <button
         type="button"
         ref={trigger}

@@ -1,5 +1,6 @@
 "use client";
 
+import { CommunityAccountMenu } from "./CommunityAccountMenu";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
@@ -32,18 +33,14 @@ export function HeaderAccount() {
   }, []);
   const handle = session ? displayName(session.user) : "";
   return session ? (
-    <Link
-      href="/community/mine/"
-      className="site-profile"
-      aria-label={handle ? `My submissions for @${handle}` : "My submissions"}
-    >
-      <span className="site-avatar" aria-hidden="true">
-        {handle.slice(0, 2).toUpperCase() || "GH"}
-      </span>
-      <span className="site-handle">
-        {handle ? `@${handle}` : "My account"}
-      </span>
-    </Link>
+    <CommunityAccountMenu
+      handle={handle}
+      avatar={
+        session.user.identities?.find(
+          (identity) => identity.provider === "github",
+        )?.identity_data?.avatar_url ?? session.user.user_metadata.avatar_url
+      }
+    />
   ) : (
     <Link href="/community/auth/" className="site-sign-in">
       Sign in
