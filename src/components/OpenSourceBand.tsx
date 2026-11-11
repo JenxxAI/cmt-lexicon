@@ -1,4 +1,5 @@
 import { SITE } from "@/lib/site";
+import { withBasePath } from "@/lib/base-path";
 import { DownloadIcon } from "./icons";
 
 const base =
@@ -20,11 +21,11 @@ export function OpenSourceBand() {
         </p>
       </div>
       <div className="flex min-w-0 flex-[1_1_340px] flex-wrap gap-3">
-        <a href="/glossary.min.json" download className={`${base} bg-hi font-mono text-ink`}>
+        <a href={withBasePath("/glossary.min.json")} download className={`${base} bg-hi font-mono text-ink`}>
           <DownloadIcon className="size-[18px]" />
           glossary.min.json
         </a>
-        <a href="/llms.txt" download className={`${base} border border-dim font-mono`}>
+        <a href={withBasePath("/llms.txt")} download className={`${base} border border-dim font-mono`}>
           <DownloadIcon className="size-[18px]" />
           llms.txt
         </a>

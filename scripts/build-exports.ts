@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { assets } from "../src/lib/assets";
 import { buildCheatSheet } from "../src/lib/cheatsheet";
+import { withBasePath } from "../src/lib/base-path";
 import { getAllEntries, getAllWebsiteTypes } from "../src/lib/content";
 import { siteOrigin } from "../src/lib/site-origin";
 import { SITE } from "../src/lib/site";
@@ -14,23 +15,24 @@ fs.mkdirSync(publicDir, { recursive: true });
 // 1. Full glossary as minified JSON, for apps, extensions, and other tools.
 fs.writeFileSync(
   path.join(publicDir, "glossary.min.json"),
-  JSON.stringify({ name: SITE.name, repo: SITE.repoUrl, count: entries.length, entries, websiteTypeCount: websites.length, websiteTypes: websites, assetCount: assets.topics.length, assets: assets.topics.map((topic) => ({ ...topic, url: `/assets/#${topic.id}` })) }),
+  JSON.stringify({ name: SITE.name, repo: SITE.repoUrl, count: entries.length, entries, websiteTypeCount: websites.length, websiteTypes: websites, assetCount: assets.topics.length, assets: assets.topics.map((topic) => ({ ...topic, url: withBasePath(`/assets/#${topic.id}`) })) }),
 );
 
 // 2. Shared with the human-readable cheat sheet and its Copy all action.
 fs.writeFileSync(path.join(publicDir, "llms.txt"), buildCheatSheet(entries, assets.topics) + "\n\n# Website types\n\n" + websites.map(entry => [
-  `## ${entry.name}`, `/websites/${entry.id}/`, entry.definition,
+  `## ${entry.name}`, withBasePath(`/websites/${entry.id}/`), entry.definition,
   `Goal: ${entry.goal}`, `Audience: ${entry.audience}`,
-  `Blueprint: ${entry.sections.map(section => `${section.name}: ${section.purpose} [${section.componentIds.map(id => `/components/${id}/`).join(", ")}]`).join("; ")}`,
+  `Blueprint: ${entry.sections.map(section => `${section.name}: ${section.purpose} [${section.componentIds.map(id => withBasePath(`/components/${id}/`)).join(", ")}]`).join("; ")}`,
   `Must have: ${entry.mustHave.join("; ")}`, `Avoid: ${entry.avoid.join("; ")}`,
   `Prompt: ${entry.prompts.short}`,
 ].join("\n")).join("\n\n") + "\n");
 
-// Absolute sitemap URLs use the configured public origin (the repository’s published site otherwise).
+// Absolute sitemap URLs use the configured public origin (the repository’s published site otherwise),
+// plus the base path when the site is hosted under a subpath.
 const origin = siteOrigin();
 const routes = ["/", "/about/", "/assets/", "/cheat-sheet/", "/websites/", "/community/",
   ...entries.map(entry => `/components/${entry.id}/`), ...websites.map(entry => `/websites/${entry.id}/`)];
 const xmlEscape = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
-fs.writeFileSync(path.join(publicDir, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(route => `  <url><loc>${xmlEscape(new URL(route, origin).href)}</loc></url>`).join("\n")}\n</urlset>\n`);
+fs.writeFileSync(path.join(publicDir, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(route => `  <url><loc>${xmlEscape(new URL(withBasePath(route), origin).href)}</loc></url>`).join("\n")}\n</urlset>\n`);
 
 console.log(`✓ exported ${entries.length} components, ${websites.length} website types, and ${assets.topics.length} asset topics; sitemap has ${routes.length} URLs`);

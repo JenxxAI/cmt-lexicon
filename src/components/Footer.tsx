@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FeedbackForm } from "./FeedbackForm";
 import { SITE } from "@/lib/site";
+import { withBasePath } from "@/lib/base-path";
 
 const footerLink = "inline-flex min-h-11 items-center rounded-sm text-sm text-muted underline-offset-4 hover:text-accent-deep hover:underline";
 
@@ -35,7 +36,7 @@ export function Footer() {
           <nav aria-label="Footer resources">
             <h2 className="mb-2 font-display text-base font-semibold">Resources</h2>
             <ul>
-              <li><a href="/glossary.min.json" download className={footerLink}>Download glossary</a></li>
+              <li><a href={withBasePath("/glossary.min.json")} download className={footerLink}>Download glossary</a></li>
               <li><a href={`${SITE.repoUrl}/blob/main/CONTRIBUTING.md`} className={footerLink}>Contribute</a></li>
               <li><a href="#feedback" className={footerLink}>Feedback</a></li>
               <li><a href={SITE.repoUrl} className={footerLink}>View on GitHub</a></li>

@@ -69,6 +69,8 @@ Run `npm run validate` after editing content. Validation checks filenames, IDs, 
 
 Set `NEXT_PUBLIC_SITE_URL` to the public origin (for example, your own HTTPS domain) before building the site. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used if available. Without either, canonical links, social cards, the sitemap, and robots.txt use the published URL in `src/lib/site.ts`, taken from this repository’s homepage metadata. Override it when deploying to a different domain. `public/sitemap.xml` is generated and should not be committed.
 
+**GitHub Pages project sites** (`https://<user>.github.io/<repo>/`) need the repository path as a build-time prefix: set `NEXT_PUBLIC_BASE_PATH=/<repo>` (and `NEXT_PUBLIC_SITE_URL=https://<user>.github.io`), then verify the export with `npm run check:base-path -- /<repo>`. Leave it unset for Vercel, Netlify and custom domains. Full steps, including a ready-to-use GitHub Actions workflow, are in [docs/github-pages.md](docs/github-pages.md).
+
 ### Interactive website samples
 
 Each website detail page includes an editable example from `content/website-samples/<id>.html`. The server embeds the color tokens from `globals.css`; the browser receives only that page's example. Keep samples standalone, accessible, and free of external dependencies. The build fails if a website type has no matching sample.

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { storePreview } from "@/lib/full-preview";
+import { withBasePath } from "@/lib/base-path";
 
 export function OpenFullPreview({
   title,
@@ -15,7 +16,7 @@ export function OpenFullPreview({
   return (
     <>
       <a
-        href="/preview/"
+        href={withBasePath("/preview/")}
         target="_blank"
         rel="noopener noreferrer"
         className={className}

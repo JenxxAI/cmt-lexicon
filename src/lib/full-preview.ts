@@ -1,3 +1,5 @@
+import { BASE_PATH } from "./base-path";
+
 export const PREVIEW_PREFIX = "ui-lexicon-preview:";
 export const PREVIEW_TTL = 15 * 60 * 1000;
 export type PreviewSnapshot = {
@@ -6,9 +8,20 @@ export type PreviewSnapshot = {
   returnTo: string;
   createdAt: number;
 };
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Where "Return to editor" may point: an in-site editor page. `returnTo` comes from
+ * `location.pathname`, which includes the base path on a subpath host such as GitHub Pages.
+ */
+function returnPathPattern(basePath: string) {
+  return new RegExp(`^${escapeRegExp(basePath)}/(websites|community)/`);
+}
+
 export function parsePreview(
   raw: string | null,
   now = Date.now(),
+  basePath: string = BASE_PATH,
 ): PreviewSnapshot | null {
   if (!raw || raw.length > 2_000_000) return null;
   try {
@@ -18,7 +31,7 @@ export function parsePreview(
       value.title.length > 160 ||
       typeof value.document !== "string" ||
       typeof value.returnTo !== "string" ||
-      !/^\/(websites|community)\//.test(value.returnTo) ||
+      !returnPathPattern(basePath).test(value.returnTo) ||
       /[\\\r\n]/.test(value.returnTo) ||
       !Number.isFinite(value.createdAt) ||
       value.createdAt > now ||

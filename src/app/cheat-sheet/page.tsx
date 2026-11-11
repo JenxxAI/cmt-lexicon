@@ -8,6 +8,7 @@ import { CATEGORIES, type CategoryId } from "@/lib/categories";
 import { buildCheatSheet } from "@/lib/cheatsheet";
 import { getAllEntries } from "@/lib/content";
 import { estimateTokens } from "@/lib/tokens";
+import { withBasePath } from "@/lib/base-path";
 
 export const metadata = publicPageMetadata("/cheat-sheet/", {
   title: "Prompt cheat sheet",
@@ -31,8 +32,8 @@ export default function CheatSheetPage() {
         <p className="mt-4 max-w-2xl text-lg text-body">Find the component you need, copy a short prompt, and make it your own. {entries.length} components and {assets.topics.length} asset topics, all in one place.</p>
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <CopyButton text={buildCheatSheet(entries, assets.topics)} label="Copy all prompts" variant="solid" />
-          <a href="/llms.txt" download className={link}>Download text version</a>
-          <a href="/llms.txt" className={link}>View plain text</a>
+          <a href={withBasePath("/llms.txt")} download className={link}>Download text version</a>
+          <a href={withBasePath("/llms.txt")} className={link}>View plain text</a>
         </div>
 
         <section aria-labelledby="use-heading" className="mt-8 rounded-[28px] bg-surface p-5 sm:p-6">
