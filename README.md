@@ -14,7 +14,7 @@ Vibe coders often can't prompt well because they lack the words. "That thing tha
 
 ## Features
 
-- **Describe-it search**: matches names, aliases, plain-language descriptions, and weighted query synonyms. Share filters through `?q=&cat=`; press `/` to focus search.
+- **Describe-it search**: matches names, aliases, plain-language descriptions, and weighted query synonyms. It also forgives common misspellings ("drower" finds Drawer, "toats" finds Toast): one edit for words of 5 to 7 letters, two from 8 letters, same first letter. Words under 5 letters are matched exactly or by prefix only, because typo guesses there are too ambiguous. Share filters through `?q=&cat=`; press `/` to focus search.
 - **Copy-ready prompts**: a short and a detailed version per component, with a rough token count.
 - **Look-alike guidance**: "Don't mix it up with" (Drawer vs Modal vs Popover).
 - **Library cheat sheet**: what shadcn/ui, MUI, Chakra, Mantine, and Radix each call it.
