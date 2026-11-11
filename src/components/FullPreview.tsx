@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 import {
   PREVIEW_PREFIX,
   parsePreview,
@@ -49,7 +50,7 @@ export function FullPreview() {
           choose Open full preview. Preview links work only in this browser and
           expire after 15 minutes.
         </p>
-        <a href="/websites/" className={`${control} bg-ink text-surface`}>
+        <a href={withBasePath("/websites/")} className={`${control} bg-ink text-surface`}>
           Browse website samples
         </a>
       </main>

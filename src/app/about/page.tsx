@@ -6,6 +6,7 @@ import { Preview } from "@/components/previews";
 import { assets } from "@/lib/assets";
 import { getAllEntries } from "@/lib/content";
 import { SITE } from "@/lib/site";
+import { withBasePath } from "@/lib/base-path";
 
 export const metadata = publicPageMetadata("/about/", {
   title: "About",
@@ -174,10 +175,14 @@ export default function AboutPage() {
             <Link href="/assets/" className={textLink}>
               Explore icons &amp; assets
             </Link>
-            <a href="/llms.txt" download className={textLink}>
+            <a href={withBasePath("/llms.txt")} download className={textLink}>
               Download the prompt reference
             </a>
-            <a href="/glossary.min.json" download className={textLink}>
+            <a
+              href={withBasePath("/glossary.min.json")}
+              download
+              className={textLink}
+            >
               Download the glossary
             </a>
           </div>

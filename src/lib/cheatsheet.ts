@@ -1,3 +1,4 @@
+import { withBasePath } from "./base-path";
 import { CATEGORIES, type CategoryId } from "./categories";
 import type { Entry } from "./schema";
 import { SITE } from "./site";
@@ -26,13 +27,13 @@ export function buildCheatSheet(entries: readonly PromptEntry[], topics: readonl
     lines.push(`## ${CATEGORIES[categoryId]}`);
     for (const entry of group) {
       const aka = entry.aliases.length ? ` (aka ${entry.aliases.join(", ")})` : "";
-      lines.push(`- ${entry.name}${aka} [/components/${entry.id}/]: ${entry.prompts.short}`);
+      lines.push(`- ${entry.name}${aka} [${withBasePath(`/components/${entry.id}/`)}]: ${entry.prompts.short}`);
     }
     lines.push("");
   }
   lines.push("## Asset vocabulary");
   for (const topic of topics) {
-    lines.push(`- ${topic.name} [/assets/#${topic.id}]: ${topic.definition} Prompt: ${topic.prompt}`);
+    lines.push(`- ${topic.name} [${withBasePath(`/assets/#${topic.id}`)}]: ${topic.definition} Prompt: ${topic.prompt}`);
   }
   return `${lines.join("\n").trimEnd()}\n`;
 }

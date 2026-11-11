@@ -8,6 +8,7 @@ import { CATEGORIES, type CategoryId } from "@/lib/categories";
 import { buildCheatSheet } from "@/lib/cheatsheet";
 import { getAllEntries } from "@/lib/content";
 import { estimateTokens } from "@/lib/tokens";
+import { withBasePath } from "@/lib/base-path";
 
 export const metadata = publicPageMetadata("/cheat-sheet/", {
   title: "Prompt cheat sheet",
@@ -48,10 +49,10 @@ export default function CheatSheetPage() {
             label="Copy all prompts"
             variant="solid"
           />
-          <a href="/llms.txt" download className={link}>
+          <a href={withBasePath("/llms.txt")} download className={link}>
             Download text version
           </a>
-          <a href="/llms.txt" className={link}>
+          <a href={withBasePath("/llms.txt")} className={link}>
             View plain text
           </a>
         </div>

@@ -6,11 +6,11 @@ import "@fontsource-variable/nunito";
 import "./globals.css";
 import "./dark-theme.css";
 import { THEME_SCRIPT } from "@/lib/theme";
-import { siteOrigin } from "@/lib/site-origin";
+import { siteBaseUrl } from "@/lib/site-origin";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  metadataBase: siteOrigin(),
+  metadataBase: siteBaseUrl(),
   title: {
     default: `${SITE.name}: name any UI component`,
     template: `%s · ${SITE.name}`,

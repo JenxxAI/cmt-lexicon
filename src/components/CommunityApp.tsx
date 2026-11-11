@@ -17,6 +17,7 @@ import {
 } from "@/lib/community-ui";
 import { useEffect, useRef, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
+import { withBasePath } from "@/lib/base-path";
 import { getCommunityClient } from "@/lib/supabase";
 import {
   COMMUNITY_LIMITS,
@@ -244,7 +245,7 @@ export function CommunityApp({
         : await client.auth.signInWithOAuth({
             provider: "github",
             options: {
-              redirectTo: `${window.location.origin}/community/auth/`,
+              redirectTo: `${window.location.origin}${withBasePath("/community/auth/")}`,
             },
           });
       if (result.error) throw result.error;
@@ -1145,7 +1146,7 @@ function CommunityDetail({
         {project.remix_of && (
           <a
             className={`${secondary} mt-3`}
-            href={`/community/project/?id=${project.remix_of}`}
+            href={withBasePath(`/community/project/?id=${project.remix_of}`)}
           >
             View original project
           </a>
