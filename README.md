@@ -51,6 +51,10 @@ It's one JSON file. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [AGENTS.md](AGENTS.md#roadmap-in-order).
 
+## Security
+
+Please report vulnerabilities privately, not in public issues. See [SECURITY.md](SECURITY.md) for how to report and what is in scope.
+
 ## License
 
 [MIT](LICENSE)
