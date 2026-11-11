@@ -5,7 +5,13 @@ import { CopyButton } from "./CopyButton";
 
 export type CodeTab = { id: string; label: string; code: string };
 
-export function CodeTabs({ tabs, customized = false }: { tabs: CodeTab[]; customized?: boolean }) {
+export function CodeTabs({
+  tabs,
+  customized = false,
+}: {
+  tabs: CodeTab[];
+  customized?: boolean;
+}) {
   const [activeId, setActiveId] = useState(tabs[0]?.id);
   const baseId = useId();
   const buttons = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -17,7 +23,8 @@ export function CodeTabs({ tabs, customized = false }: { tabs: CodeTab[]; custom
     const index = tabs.findIndex((tab) => tab.id === current.id);
     let next = index;
     if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
-    else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+    else if (event.key === "ArrowLeft")
+      next = (index - 1 + tabs.length) % tabs.length;
     else if (event.key === "Home") next = 0;
     else if (event.key === "End") next = tabs.length - 1;
     else return;
@@ -27,10 +34,24 @@ export function CodeTabs({ tabs, customized = false }: { tabs: CodeTab[]; custom
   }
 
   return (
-    <section aria-label="Code snippets" className="overflow-hidden rounded-[18px] bg-ink">
-      {customized && <p className="px-5 pt-3 text-sm text-white">{current.id === "vue" ? "Default Vue example" : "Reflects your settings"}</p>}
+    <section
+      aria-label="Code snippets"
+      className="overflow-hidden rounded-[18px] bg-code"
+    >
+      {customized && (
+        <p className="px-5 pt-3 text-sm text-white">
+          {current.id === "vue"
+            ? "Default Vue example"
+            : "Reflects your settings"}
+        </p>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 pt-2">
-        <div role="tablist" aria-label="Snippet language" onKeyDown={onKeyDown} className="flex flex-wrap gap-1">
+        <div
+          role="tablist"
+          aria-label="Snippet language"
+          onKeyDown={onKeyDown}
+          className="flex flex-wrap gap-1"
+        >
           {tabs.map((tab) => {
             const selected = tab.id === current.id;
             return (
@@ -55,9 +76,18 @@ export function CodeTabs({ tabs, customized = false }: { tabs: CodeTab[]; custom
             );
           })}
         </div>
-        <CopyButton text={current.code} label="Copy code" variant="ghost" iconOnly />
+        <CopyButton
+          text={current.code}
+          label="Copy code"
+          variant="ghost"
+          iconOnly
+        />
       </div>
-      <div id={`${baseId}-panel`} role="tabpanel" aria-labelledby={`${baseId}-tab-${current.id}`}>
+      <div
+        id={`${baseId}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${baseId}-tab-${current.id}`}
+      >
         <pre
           tabIndex={0}
           className="overflow-x-auto bg-code p-5 font-mono text-[13px] leading-[1.65] text-line"
