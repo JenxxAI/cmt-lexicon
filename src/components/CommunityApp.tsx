@@ -16,13 +16,13 @@ import {
   type AuthDialogState,
 } from "@/lib/community-ui";
 import { useEffect, useRef, useState } from "react";
-import type { Session, SupabaseClient } from "@supabase/supabase-js";
+import type { CommunitySession as Session } from "@/lib/community-session";
+import type { CommunityClient as SupabaseClient } from "@/lib/supabase";
 import { withBasePath } from "@/lib/base-path";
 import { getCommunityClient } from "@/lib/supabase";
 import {
   COMMUNITY_LIMITS,
   EMPTY_DRAFT,
-  SUMMARY_COLUMNS,
   communityDocument,
   downloadCommunity,
   draftError,
@@ -176,8 +176,8 @@ export function CommunityApp({
       .getSession()
       .then(({ data, error }) => {
         if (!alive) return;
-        setSession(data.session);
-        hadSession.current = !!data.session;
+        setSession(data?.session ?? null);
+        hadSession.current = !!data?.session;
         if (error) setError(message(error));
         setReady(true);
       })
@@ -242,12 +242,7 @@ export function CommunityApp({
     try {
       const result = signOut
         ? await client.auth.signOut()
-        : await client.auth.signInWithOAuth({
-            provider: "github",
-            options: {
-              redirectTo: `${window.location.origin}${withBasePath("/community/auth/")}`,
-            },
-          });
+        : await client.auth.signInWithOAuth();
       if (result.error) throw result.error;
       if (signOut) {
         setNotice("");
@@ -276,12 +271,7 @@ export function CommunityApp({
           (session ? (
             <CommunityAccountMenu
               handle={displayName(session.user)}
-              avatar={
-                session.user.identities?.find(
-                  (identity) => identity.provider === "github",
-                )?.identity_data?.avatar_url ??
-                session.user.user_metadata.avatar_url
-              }
+              avatar={session.user.user_metadata.avatar_url}
               signOutDisabled={authBusy || offline}
               onSignOut={() => setDialog({ kind: "confirm-sign-out" })}
             />
@@ -425,21 +415,7 @@ function CommunityGallery({
     )
       return;
     setLoading(true);
-    let request = client
-      .from("community_projects")
-      .select(SUMMARY_COLUMNS, { count: "exact" })
-      .order("created_at", { ascending: false })
-      .order("id", { ascending: false })
-      .range(page * 12, page * 12 + 11);
-    if (view === "browse") request = request.eq("status", "approved");
-    if (view === "mine") request = request.eq("owner_id", session!.user.id);
-    if (view === "moderate") request = request.eq("status", "pending");
-    if (kind !== "all") request = request.eq("kind", kind);
-    if (search.trim())
-      request = request.ilike(
-        "title",
-        `%${search.trim().replace(/[\\%_]/g, (value) => "\\" + value)}%`,
-      );
+    const request = client.projects({ view, page, kind, search });
     Promise.resolve(request)
       .then(({ data, error, count }) => {
         if (!alive) return;
@@ -735,9 +711,7 @@ function CommunityEditor({
     }
     const version = revision.current;
     let alive = true;
-    Promise.resolve(
-      client.from("community_projects").select("*").eq("id", id).single(),
-    )
+    Promise.resolve(client.project(id))
       .then(({ data, error }) => {
         if (!alive || version !== revision.current) return;
         if (error) {
@@ -1061,9 +1035,7 @@ function CommunityDetail({
     }
     let alive = true;
     setLoading(true);
-    Promise.resolve(
-      client.from("community_projects").select("*").eq("id", id).single(),
-    )
+    Promise.resolve(client.project(id))
       .then(({ data, error }) => {
         if (!alive) return;
         if (error) setError(message(error));

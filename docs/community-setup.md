@@ -1,19 +1,25 @@
 # Community setup
 
-The site remains a Next.js static export. Community pages fetch from Supabase in the browser. The curated component and website JSON files are independent. No project has been provisioned automatically and no OAuth secret belongs in this repository.
+The glossary remains pre-rendered. Community uses same-origin Next.js server endpoints on Vercel; a static-only host cannot run authenticated Community. The curated component and website JSON files are independent. No project has been provisioned automatically and no OAuth secret belongs in this repository.
 
 ## Create the backend
 
 1. Create a Supabase project in your own account and choose an appropriate region and spending limits.
 2. Run all SQL files in `supabase/migrations/` in filename order once in the project's SQL editor, or apply it using the Supabase CLI migration workflow. This creates tables, read policies, and submission/moderation functions. Do not expose the `community_private` schema through the Data API.
 3. In Supabase Authentication, configure GitHub as the sign-in provider. Create a GitHub OAuth App with the callback URL shown by Supabase (`https://YOUR_PROJECT.supabase.co/auth/v1/callback`). Put the OAuth client ID and secret in Supabase's GitHub provider settings, never in a `NEXT_PUBLIC_` variable. No repository-write permission is needed for community authors.
-4. Set the Supabase Site URL to your production origin. Add the exact redirect URL `https://YOUR_SITE/community/auth/` to the redirect allowlist. Add `http://localhost:3000/community/auth/` only for local development. Avoid wildcard production callbacks. Disable sign-in providers you do not intend to support, including email signup if GitHub-only access is desired. Submissions also require a GitHub identity in the database.
-5. Set these public environment variables locally and in Vercel, then rebuild:
+4. Set the Supabase Site URL to your production origin. Allow `https://YOUR_SITE/api/community/callback/?state=*` in the redirect allowlist (include any configured base path). The wildcard is limited to the random state query on this exact host and callback path. Add the equivalent localhost callback only for local development. Never allow arbitrary hosts or paths. Disable sign-in providers you do not intend to support, including email signup if GitHub-only access is desired. Submissions also require a GitHub identity in the database.
+5. Set these **server-only** environment variables locally and in Vercel:
    ```text
-   NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_PUBLISHABLE_KEY
+   SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+   SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_PUBLISHABLE_KEY
+   COMMUNITY_ORIGIN=https://YOUR_SITE
+   COMMUNITY_COOKIE_KEY=BASE64_ENCODED_RANDOM_32_BYTE_KEY
    ```
-   The publishable key (or legacy anon key) is designed for browser use; access is controlled by RLS and function permissions. Never use a secret or service-role key in the frontend. `vercel.json` permits connections only to standard `*.supabase.co` origins; custom domains require an explicit CSP update.
+   Generate `COMMUNITY_COOKIE_KEY` securely (32 random bytes, base64); never commit or paste it into chat. Keep it stable across instances. Rotating it signs everyone out. Do not prefix these variables with `NEXT_PUBLIC_`. Use the publishable/anon key, **not** service-role or secret keys: API calls run with the user's JWT and retain RLS. `COMMUNITY_ORIGIN` must be the exact origin with no trailing slash. Only development permits HTTP on localhost/127.0.0.1. Configure a separate origin and cookie key for each preview environment.
+
+   Sessions use AES-256-GCM encrypted `__Host-community-session` cookies with HttpOnly, Secure, SameSite=Lax, Path=/, no Domain, and a seven-day absolute lifetime. Credentials are never returned in JSON; only ID, GitHub handle and permitted avatar URL reach the browser. PKCE verification stays server-side in a separate ten-minute cookie. POST endpoints require the configured Origin and JSON content type, and session responses are not cached. The server refreshes credentials near expiry and verifies the user with Supabase. This does **not** add immediate JWT revocation checks (audit fix 3 remains deferred).
+
+   On rollout, existing browser SDK sessions are discarded; users must sign in again. Keep the existing public Supabase URL/key variables only if needed by the separate feedback form. Deploy using Vercel's Next.js preset with its default output directory (remove any `out` override). Use `npm run start` after building locally. GitHub Pages cannot host this version's API routes.
 6. Sign in with your own GitHub account. In Supabase Auth → Users, copy your user UUID and appoint yourself via the SQL editor:
    ```sql
    insert into community_private.moderators (user_id)
@@ -54,8 +60,12 @@ Created in CMT on the quoted $0/month option, Singapore region: [ui-lexicon dash
 - Project URL: `https://ztalqkwgaahxexkjquzl.supabase.co`
 - GitHub OAuth App callback: `https://ztalqkwgaahxexkjquzl.supabase.co/auth/v1/callback`
 - Production Site URL: `https://cmt-lexicon.vercel.app`
-- Allowed production redirect: `https://cmt-lexicon.vercel.app/community/auth/`
+- Allowed production redirect: `https://cmt-lexicon.vercel.app/api/community/callback/?state=*`
 
-The owner handles GitHub OAuth credentials and the Vercel publishable-key variable. No keys were retrieved or added during setup. After enabling GitHub sign-in, sign in once and appoint the owner's actual Auth user UUID as moderator. Real OAuth and two-account smoke tests remain required.
+The owner handles GitHub OAuth credentials and the server-only Vercel variables above. No keys were retrieved or added during setup. After enabling GitHub sign-in, sign in once and appoint the owner's actual Auth user UUID as moderator. Real OAuth and two-account smoke tests remain required.
 
 Hosted checks confirmed RLS on all three tables, no direct client writes, and no anonymous execution of submit/review/withdraw. The follow-up migration explicitly removes Supabase's default anonymous function grants. Advisor notices for private tables without policies are intentional deny-all behavior. The anonymous moderator-check helper returns false and supports the public read policy; authenticated SECURITY DEFINER functions are intentional API endpoints with internal authorization checks. See [function advisor guidance](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) and [private-table policy guidance](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+
+## Session-fix verification
+
+`npm test` covers PKCE callback binding, CSRF rejection, encrypted cookie integrity and flags, refresh, user-scoped queries, and credential-free JSON using synthetic fixtures. Production activation still requires the server variables and callback allowlist above, followed by a real GitHub sign-in. No hosted configuration or database migration was changed for this fix.

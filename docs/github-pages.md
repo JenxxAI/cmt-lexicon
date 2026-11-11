@@ -1,3 +1,5 @@
+> **Historical static-export instructions.** The current app requires a Next.js server for HttpOnly Community sessions. This workflow does not deploy the current version; use Vercel and [community setup](community-setup.md). A future glossary-only export would need to exclude the API routes.
+
 # Deploying to GitHub Pages
 
 UI Lexicon is a fully static export, so it can be hosted on GitHub Pages. A **project site** lives under the repository name (`https://<user>.github.io/<repo>/`), so the build needs to know that prefix. Hosts that serve the site from the root (Vercel, Netlify, a custom domain, a `<user>.github.io` user site) need nothing: leave the variable unset and every URL stays exactly as it is.
