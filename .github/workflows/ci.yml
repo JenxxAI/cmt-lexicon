@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege: the job only reads the repository. Without this block the
+# GITHUB_TOKEN gets the repository default, which can include write access.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
