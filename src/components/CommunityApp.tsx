@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import "./community-ui.css";
+import { CommunityShell } from "./CommunityShell";
+import type { ReactNode } from "react";
 import { CommunityAccountMenu } from "./CommunityAccountMenu";
 import { AuthDialog } from "./AuthDialog";
 import { Spinner } from "./Spinner";
@@ -60,7 +62,13 @@ function preserveDraft() {
   );
 }
 
-export function CommunityApp({ view }: { view: View }) {
+export function CommunityApp({
+  view,
+  children,
+}: {
+  view: View;
+  children?: ReactNode;
+}) {
   const [client, setClient] = useState<SupabaseClient | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
@@ -259,42 +267,11 @@ export function CommunityApp({ view }: { view: View }) {
   }
   return (
     <div className="community-ui">
-      <div
-        className={
-          session
-            ? "mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"
-            : "mt-6 flex flex-wrap items-center justify-between gap-3"
-        }
-      >
-        <nav aria-label="Community" className="flex flex-wrap gap-2">
-          <Link
-            className={secondary}
-            href="/community/"
-            aria-current={view === "browse" ? "page" : undefined}
-          >
-            Explore
-          </Link>
-          <Link
-            className={secondary}
-            href="/community/create/"
-            aria-current={view === "create" ? "page" : undefined}
-          >
-            Create a project
-          </Link>
-          <Link
-            className={secondary}
-            href="/community/mine/"
-            aria-current={view === "mine" ? "page" : undefined}
-          >
-            My submissions
-          </Link>
-          {moderator && (
-            <Link className={secondary} href="/community/moderate/">
-              Review queue
-            </Link>
-          )}
-        </nav>
-        {ready &&
+      <CommunityShell
+        view={view}
+        moderator={!!moderator}
+        account={
+          ready &&
           client &&
           (session ? (
             <CommunityAccountMenu
@@ -317,80 +294,83 @@ export function CommunityApp({ view }: { view: View }) {
             >
               Sign in with GitHub
             </button>
-          ))}
-      </div>
-      {offline && (
-        <p
-          role="status"
-          className="mt-4 rounded-xl bg-accent-soft p-4 text-body"
-        >
-          You appear to be offline. Loaded glossary pages and the editor still
-          work. Reconnect, then retry community requests; navigation to uncached
-          pages needs internet.
-        </p>
-      )}
-      {notice && (
-        <p role="status" className="mt-4 text-body">
-          {notice}
-        </p>
-      )}
-      {error && (
-        <p role="alert" className="mt-4 rounded-xl bg-red-soft p-4 text-red">
-          {error}
-        </p>
-      )}
-      {view === "create" && (
-        <CommunityEditor client={client} session={session} />
-      )}
-      {!ready ? (
-        <RequestStatus pending>Connecting to the community…</RequestStatus>
-      ) : (
-        <>
-          {!client && (
-            <div className="mt-5 rounded-2xl bg-accent-soft p-5">
-              <h2 className="font-display text-xl font-bold">
-                Publishing is not connected yet
-              </h2>
-              <p className="mt-2 text-sm text-body">
-                You can try the editor, preview code, and export locally.
-                Sign-in, submissions, and the public library become available
-                after the site owner configures Supabase.
-              </p>
-            </div>
-          )}
+          ))
+        }
+      >
+        {children}
+        {offline && (
+          <p
+            role="status"
+            className="mt-4 rounded-xl bg-accent-soft p-4 text-body"
+          >
+            You appear to be offline. Loaded glossary pages and the editor still
+            work. Reconnect, then retry community requests; navigation to
+            uncached pages needs internet.
+          </p>
+        )}
+        {notice && (
+          <p role="status" className="mt-4 text-body">
+            {notice}
+          </p>
+        )}
+        {error && (
+          <p role="alert" className="mt-4 rounded-xl bg-red-soft p-4 text-red">
+            {error}
+          </p>
+        )}
+        {view === "create" && (
+          <CommunityEditor client={client} session={session} />
+        )}
+        {!ready ? (
+          <RequestStatus pending>Connecting to the community…</RequestStatus>
+        ) : (
+          <>
+            {!client && (
+              <div className="mt-5 rounded-2xl bg-accent-soft p-5">
+                <h2 className="font-display text-xl font-bold">
+                  Publishing is not connected yet
+                </h2>
+                <p className="mt-2 text-sm text-body">
+                  You can try the editor, preview code, and export locally.
+                  Sign-in, submissions, and the public library become available
+                  after the site owner configures Supabase.
+                </p>
+              </div>
+            )}
 
-          {(view === "browse" || view === "mine" || view === "moderate") && (
-            <CommunityGallery
-              client={client}
-              session={session}
-              view={view}
-              moderator={moderator}
-            />
-          )}
-          {view === "project" && (
-            <CommunityDetail
-              client={client}
-              session={session}
-              moderator={moderator}
-            />
-          )}
-          {view === "auth" && (
-            <section className="my-8 rounded-[28px] bg-surface p-6">
-              <h2 className="font-display text-2xl font-bold">
-                {session ? "You are signed in" : "Sign-in has not completed"}
-              </h2>
-              <p className="my-4 text-body">
-                {session
-                  ? "Return to the editor to load your saved local draft, or check your submissions."
-                  : "Use the GitHub sign-in button to try again. If you opened this link in another browser, return to the browser where you started signing in."}
-              </p>
-              <Link href="/community/create/" className={button}>
-                Return to the editor
-              </Link>
-            </section>
-          )}
-        </>
-      )}
+            {(view === "browse" || view === "mine" || view === "moderate") && (
+              <CommunityGallery
+                client={client}
+                session={session}
+                view={view}
+                moderator={moderator}
+              />
+            )}
+            {view === "project" && (
+              <CommunityDetail
+                client={client}
+                session={session}
+                moderator={moderator}
+              />
+            )}
+            {view === "auth" && (
+              <section className="my-8 rounded-[28px] bg-surface p-6">
+                <h2 className="font-display text-2xl font-bold">
+                  {session ? "You are signed in" : "Sign-in has not completed"}
+                </h2>
+                <p className="my-4 text-body">
+                  {session
+                    ? "Return to the editor to load your saved local draft, or check your submissions."
+                    : "Use the GitHub sign-in button to try again. If you opened this link in another browser, return to the browser where you started signing in."}
+                </p>
+                <Link href="/community/create/" className={button}>
+                  Return to the editor
+                </Link>
+              </section>
+            )}
+          </>
+        )}
+      </CommunityShell>
       <AuthDialog
         state={dialog}
         pending={authBusy}
@@ -421,6 +401,12 @@ function CommunityGallery({
   const [kind, setKind] = useState("all");
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState("");
+  useEffect(() => {
+    const initial =
+      new URLSearchParams(window.location.search).get("q")?.slice(0, 100) ?? "";
+    setQuery(initial);
+    setSearch(initial);
+  }, []);
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);

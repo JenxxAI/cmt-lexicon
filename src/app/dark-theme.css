@@ -1,0 +1,75 @@
+/* Warm charcoal surfaces, cream text, and the same orange brand accent. */
+:root {
+  color-scheme: light;
+  --color-on-accent: #21170d;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #191817;
+  --color-surface: #242220;
+  --color-ink: #f4efe9;
+  --color-body: #d8d0c7;
+  --color-muted: #b4aaa0;
+  --color-dim: #aaa19a;
+  --color-line: #302d29;
+  --color-rule: #514a43;
+  --color-accent: #f28c28;
+  --color-accent-deep: #ffb36b;
+  --color-accent-soft: #3c2a1c;
+  --color-stage: #302d29;
+  --color-skel: #766b60;
+  --color-skel-soft: #4c453e;
+  --color-blue: #91b8ff;
+  --color-blue-soft: #202f48;
+  --color-green: #8cd5a2;
+  --color-green-soft: #23372a;
+  --color-red: #ffaaa1;
+  --color-red-soft: #452624;
+}
+/* Inverse buttons follow the foreground token; code panels stay dark. */
+:root[data-theme="dark"] .bg-ink.text-white,
+:root[data-theme="dark"] .peer:checked ~ .peer-checked\:text-white {
+  color: var(--color-surface);
+}
+:root[data-theme="dark"] :is(.bg-accent, .bg-hi).text-ink,
+:root[data-theme="dark"] :is(.bg-red, .bg-blue, .bg-green).text-white {
+  color: var(--color-on-accent);
+}
+:root[data-theme="dark"] .site-brand > span:first-child {
+  color: var(--color-on-accent);
+}
+:root[data-theme="dark"] .bg-code .text-rule {
+  color: #d4d4d4;
+}
+/* Only animate surfaces and text; never animate layout or code input. */
+body,
+.site-header,
+.site-sidebar,
+.site-drawer,
+.account-panel,
+.theme-options,
+.bg-paper,
+.bg-surface,
+.bg-line,
+.bg-accent-soft,
+.site-sign-in {
+  transition:
+    background-color 240ms ease,
+    color 240ms ease,
+    border-color 240ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .site-header,
+  .site-sidebar,
+  .site-drawer,
+  .account-panel,
+  .theme-options,
+  .bg-paper,
+  .bg-surface,
+  .bg-line,
+  .bg-accent-soft,
+  .site-sign-in {
+    transition: none;
+  }
+}

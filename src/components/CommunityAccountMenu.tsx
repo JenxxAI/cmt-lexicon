@@ -1,5 +1,6 @@
 "use client";
 
+import "./account-menu.css";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -11,8 +12,8 @@ export function CommunityAccountMenu({
 }: {
   handle: string;
   avatar: unknown;
-  signOutDisabled: boolean;
-  onSignOut: () => void;
+  signOutDisabled?: boolean;
+  onSignOut?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [failedImage, setFailedImage] = useState("");
@@ -75,21 +76,6 @@ export function CommunityAccountMenu({
             handle.slice(0, 2).toUpperCase() || "GH"
           )}
         </span>
-        <span className="hidden max-w-48 truncate sm:inline">{name}</span>
-        <svg
-          aria-hidden="true"
-          width="14"
-          height="14"
-          viewBox="0 0 16 16"
-          className="hidden sm:block"
-        >
-          <path
-            d="m4 6 4 4 4-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-        </svg>
       </button>
       <div hidden={!open} id={panelId} className="account-panel">
         <p className="px-3 pb-2 text-xs text-muted">
@@ -99,16 +85,22 @@ export function CommunityAccountMenu({
         <Link href="/community/mine/" onClick={() => setOpen(false)}>
           My submissions
         </Link>
-        <button
-          type="button"
-          disabled={signOutDisabled}
-          onClick={() => {
-            close();
-            onSignOut();
-          }}
-        >
-          Sign out
-        </button>
+        {onSignOut ? (
+          <button
+            type="button"
+            disabled={signOutDisabled}
+            onClick={() => {
+              close();
+              onSignOut();
+            }}
+          >
+            Sign out
+          </button>
+        ) : (
+          <Link href="/community/auth/" onClick={() => setOpen(false)}>
+            Manage account
+          </Link>
+        )}
       </div>
     </div>
   );

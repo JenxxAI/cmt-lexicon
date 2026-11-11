@@ -196,56 +196,7 @@
   }
 }
 
-.community-ui .account-trigger {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  min-width: 44px;
-  border-radius: 2rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-rule);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-.community-ui .account-avatar {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--color-accent-soft);
-  color: var(--color-accent-deep);
-}
-.community-ui .account-panel {
-  position: absolute;
-  z-index: 10;
-  inset-inline-end: 0;
-  top: calc(100% + 0.5rem);
-  width: min(15rem, calc(100vw - 2rem));
-  padding: 0.75rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-rule);
-  border-radius: 1rem;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-ink) 12%, transparent);
-}
-.community-ui .account-panel :is(a, button) {
-  display: flex;
+.community-ui .shell-create {
   width: 100%;
-  min-height: 44px;
-  padding-inline: 0.75rem;
-  align-items: center;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-.community-ui .account-panel a:hover {
-  background: var(--color-line);
-}
-@media (min-width: 640px) {
-  .community-ui .account-trigger {
-    padding-right: 0.875rem;
-  }
+  white-space: nowrap;
 }
