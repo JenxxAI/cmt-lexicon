@@ -60,6 +60,33 @@ const fragment = splitHtmlDocument("<main><p>Just a fragment</p></main><style>p{
 assert.deepEqual(fragment.source, { html: "<main><p>Just a fragment</p></main>", css: "p{color:red}", js: "" });
 assert.deepEqual(splitHtmlDocument("").source, { html: "", css: "", js: "" });
 
+// Tricky markup the scanner must handle like a browser (these are what CodeQL flagged in regex versions)
+const odd = splitHtmlDocument("<main>x</main><SCRIPT>a=1;</script\t\n bar><p>after</p>");
+assert.equal(odd.source.js, "a=1;", "end tag with whitespace and junk closes the script");
+assert.equal(odd.source.html, "<main>x</main><p>after</p>");
+const upper = splitHtmlDocument("<STYLE media=screen>p{color:red}</STYLE ><p>y</p>");
+assert.equal(upper.source.css, "p{color:red}");
+assert.equal(upper.source.html, "<p>y</p>");
+const inScript = splitHtmlDocument('<script>const s="</scriptx>"; const t = "<!-- keep -->";</script>');
+assert.equal(inScript.source.js, 'const s="</scriptx>"; const t = "<!-- keep -->";', "fake end tag and comments inside scripts stay");
+const nested = splitHtmlDocument("<div><scr<script>ipt>alert(1)</scr</script>ipt></div>");
+assert.equal(
+  nested.source.html,
+  "<div><scr<script>ipt>alert(1)</scr</script>ipt></div>",
+  "an unknown element is passed through untouched; nothing is stripped, so nothing can reassemble",
+);
+assert.equal(nested.source.js, "", "no script was extracted from the fragments");
+const comment = splitHtmlDocument("<!-- <script>evil()</script> --><p>ok</p><!-- never closed <style>x{}</style>");
+assert.equal(comment.source.html, "<p>ok</p>");
+assert.equal(comment.source.js + comment.source.css, "", "commented-out code is dropped");
+const unclosed = splitHtmlDocument("<p>a</p><script>let x = 1;");
+assert.deepEqual(unclosed.source, { html: "<p>a</p>", css: "", js: "let x = 1;" });
+const quoted = splitHtmlDocument('<img alt="a > b" src="https://x.test/a.png"><p>t</p>');
+assert(quoted.source.html.startsWith('<img alt="a > b"'), "'>' inside quotes does not end the tag");
+assert.equal(quoted.warnings.length, 1);
+assert.equal(splitHtmlDocument("1 < 2 and 3 <4").source.html, "1 < 2 and 3 <4", "plain text with < is kept");
+assert.equal(splitHtmlDocument("<p>İstanbul</p><style>a{}</style>").source.css, "a{}", "non-ASCII does not shift indexes");
+
 // ---- site CSP lets the page show signed Supabase images and local blob thumbnails
 const csp = JSON.parse(readFileSync("vercel.json", "utf8")).headers[0].headers.find(
   (h: { key: string }) => h.key === "Content-Security-Policy",
