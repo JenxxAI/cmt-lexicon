@@ -30,13 +30,15 @@ export type CommunityProject = SampleSource & {
   review_note: string;
   remix_of: string | null;
   license: string;
+  /** Storage paths in the private community-previews bucket; the first is the cover. */
+  previews: string[];
 };
 export type CommunitySummary = Omit<
   CommunityProject,
   "html" | "css" | "js" | "review_note"
 >;
 export const SUMMARY_COLUMNS =
-  "id,owner_id,author,title,description,kind,tags,status,created_at,reviewed_at,remix_of,license";
+  "id,owner_id,author,title,description,kind,tags,status,created_at,reviewed_at,remix_of,license,previews";
 export const EMPTY_DRAFT: CommunityDraft = {
   title: "",
   description: "",
