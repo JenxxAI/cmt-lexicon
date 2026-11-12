@@ -37,9 +37,22 @@ RLS reference: https://supabase.com/docs/guides/database/postgres/row-level-secu
 
 ## Preview safety and supported source
 
-HTML/CSS/JavaScript only. No package installation, file uploads, React compilation, external scripts, or remote assets in this first version. Gallery cards do not run user code. Visitors explicitly choose Run preview. The iframe uses `sandbox="allow-scripts"` without same-origin, forms, popups, or top-navigation privileges. A CSP inside the document blocks network connections, child frames, workers, and external resources. All author text outside the iframe uses normal React escaping. Previews are isolated but cannot guarantee protection from CPU-heavy loops or every browser bug: review source before running it and reload if needed.
+HTML/CSS/JavaScript only. No package installation, React compilation, external scripts, or remote assets in this first version. Importing a file only loads its text into the editor in your browser; nothing is uploaded until you submit. Gallery cards do not run user code. Visitors explicitly choose Run preview. The iframe uses `sandbox="allow-scripts"` without same-origin, forms, popups, or top-navigation privileges. A CSP inside the document blocks network connections, child frames, workers, and external resources. All author text outside the iframe uses normal React escaping. Previews are isolated but cannot guarantee protection from CPU-heavy loops or every browser bug: review source before running it and reload if needed.
 
 Never enter secrets into a community project. Exported HTML contains executable JavaScript and should be treated as untrusted code. Human approval is not a guarantee of security.
+
+## Import and preview images
+
+The editor can import `.html` (split into the HTML, CSS and JS tabs), `.css` and `.js` files, and attach up to four screenshots per project. The first is the cover; two or more become a sideways carousel on the project card and the project page.
+
+One-time setup, in the Supabase SQL editor, after the base migration: run `supabase/migrations/20261111000001_community_previews.sql`. It adds `community_projects.previews`, a **private** `community-previews` bucket (600 KB per file, WebP/PNG/JPEG only) with storage policies, and replaces `submit_community_project` with a version that accepts the image paths. Do not rerun it.
+
+- **Moderation covers images.** Files are readable by the public only while an *approved* project references them. Pending, rejected, withdrawn and unreferenced files are visible only to their owner and moderators. The gallery uses short-lived signed URLs.
+- **Limits.** Four images per project, 500 KB each after the browser resizes to 1280 px and re-encodes (this also removes EXIF/GPS data), and 40 stored files per account including unsubmitted uploads. SVG and GIF are rejected because SVG can carry script.
+- **The database re-checks everything.** Paths must sit in the submitter's own folder, be unique and exist in the bucket. Anonymous users cannot upload or submit.
+- **Orphans.** If a submit fails, the browser deletes what it just uploaded. Uploads from abandoned tabs and images of withdrawn projects stay until cleaned up; delete bucket objects that no `previews` array references, for example monthly.
+- **Content Security Policy.** `vercel.json` allows `img-src` from `blob:` (thumbnails before upload) and `https://*.supabase.co` (signed URLs). Keep both if you change the policy.
+- Screenshots are not stored with local drafts. Add them after signing in, right before you submit.
 
 ## Verify before launch
 

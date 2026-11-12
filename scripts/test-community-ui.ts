@@ -160,7 +160,7 @@ const originalCalls = [
   'client.rpc("is_community_moderator")',
   "client.auth.signOut()",
   'client.auth.signInWithOAuth({\n            provider: "github",\n            options: {\n              redirectTo: `${window.location.origin}${withBasePath("/community/auth/")}`,\n            },\n          })',
-  'client.rpc("submit_community_project", {\n        p_title: draft.title.trim(),\n        p_description: draft.description.trim(),\n        p_kind: draft.kind,\n        p_tags: [...new Set(draft.tags)],\n        p_html: draft.html,\n        p_css: draft.css,\n        p_js: draft.js,\n        p_license_accepted: draft.licenseAccepted,\n        p_remix_of: draft.remixOf,\n      })',
+  'client.rpc("submit_community_project", {\n        p_title: draft.title.trim(),\n        p_description: draft.description.trim(),\n        p_kind: draft.kind,\n        p_tags: [...new Set(draft.tags)],\n        p_html: draft.html,\n        p_css: draft.css,\n        p_js: draft.js,\n        p_license_accepted: draft.licenseAccepted,\n        p_remix_of: draft.remixOf,\n        p_previews: uploaded,\n      })',
   'client.rpc("withdraw_community_project", { p_id: project.id })',
   'client.rpc("review_community_project", {\n              p_id: project.id,\n              p_decision: decision,\n              p_note: note,\n            })',
 ];

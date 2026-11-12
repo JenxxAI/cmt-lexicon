@@ -38,6 +38,7 @@ In scope, because the project handles them:
 
 - **Community library** (`/community/`): row-level security and function permissions in `supabase/migrations/`, GitHub sign-in and its redirect handling, moderator-only actions, and anything that lets a user read, change or publish content they should not.
 - **User-submitted and editable HTML/CSS/JavaScript**: escaping a preview or sample iframe sandbox, script injection into the surrounding site, or stored content that runs for other visitors.
+- **Community preview images**: the private `community-previews` bucket and its storage policies, signed-URL handling, and anything that exposes an unapproved project's images or lets a user upload outside their own folder or past the limits.
 - **Footer feedback form**: abuse of the form or its screenshot upload, access to the private feedback inbox or screenshot bucket, or bypassing its origin and bot checks.
 - **Secrets and data exposure**: committed credentials, or private data reachable from the static site.
 - **Dependencies**: a vulnerable dependency that is actually exploitable through how this project uses it.
