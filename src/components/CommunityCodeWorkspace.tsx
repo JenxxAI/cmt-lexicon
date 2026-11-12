@@ -1,7 +1,15 @@
 "use client";
 
-import { useId, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useId,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
+import { COMMUNITY_LIMITS, byteLength } from "@/lib/community";
 import type { EditorProblem } from "@/lib/editor-diagnostics";
 import { SampleCodeEditor } from "./SampleCodeEditor";
 
@@ -11,17 +19,24 @@ const files = {
   js: "script.js",
 } as const;
 const languages = ["html", "css", "js"] as const;
+/** Decorative file-type tiles for the file rail. Text, not colour, names the file. */
+const glyphs = { html: "<>", css: "{}", js: "JS" } as const;
+const kb = (bytes: number) => `${(bytes / 1000).toFixed(1)} KB`;
 
 function FilePane({
   language,
   value,
   active,
   change,
+  tabId,
+  panelId,
 }: {
   language: SampleLanguage;
   value: string;
   active: boolean;
   change: (value: string) => void;
+  tabId: string;
+  panelId: string;
 }) {
   const [position, setPosition] = useState([1, 1]);
   const id = useId();
@@ -51,7 +66,7 @@ function FilePane({
   const checked = result?.source === value ? result : null;
   const problem = checked?.problem;
   return (
-    <div hidden={!active}>
+    <div hidden={!active} role="tabpanel" id={panelId} aria-labelledby={tabId}>
       <SampleCodeEditor
         errorLine={problem?.line}
         problemId={problem ? id : undefined}
@@ -113,6 +128,21 @@ export function CommunityCodeWorkspace({
   const expand = useRef<HTMLButtonElement>(null);
   const [active, setActive] = useState<SampleLanguage>("html");
   const [full, setFull] = useState(false);
+  const ids = useId();
+  const tabRefs = useRef<Partial<Record<SampleLanguage, HTMLButtonElement | null>>>({});
+  const total = languages.reduce((sum, key) => sum + byteLength(source[key]), 0);
+  function onTabKey(event: KeyboardEvent) {
+    const index = languages.indexOf(active);
+    let next = index;
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (index + 1) % languages.length;
+    else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (index + languages.length - 1) % languages.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = languages.length - 1;
+    else return;
+    event.preventDefault();
+    setActive(languages[next]);
+    tabRefs.current[languages[next]]?.focus();
+  }
   function toggleFull() {
     const element = workspace.current;
     if (!element) return;
@@ -174,29 +204,75 @@ export function CommunityCodeWorkspace({
       <p role="status" className="px-4 pb-3 text-sm text-muted">
         {saveStatus}
       </p>
-      <div className="workspace-panes">
-        <div className="min-w-0 overflow-hidden rounded-2xl bg-code text-surface">
+      <div className="ide">
+        <div className="ide-files">
+          <p id={`${ids}-files`} className="ide-heading">
+            Files
+          </p>
           <div
-            className="flex flex-wrap border-b border-dim/30"
-            role="group"
-            aria-label="Project files"
+            role="tablist"
+            aria-labelledby={`${ids}-files`}
+            className="ide-tabs"
+            onKeyDown={onTabKey}
           >
-            {languages.map((key) => (
-              <button
-                key={key}
-                aria-pressed={active === key}
-                onClick={() => setActive(key)}
-                className="min-h-11 px-3 font-mono text-sm aria-pressed:bg-body aria-pressed:text-hi"
-              >
-                {files[key]}
-              </button>
-            ))}
+            {languages.map((key) => {
+              const size = byteLength(source[key]);
+              const over = size > COMMUNITY_LIMITS.fileBytes;
+              return (
+                <button
+                  key={key}
+                  ref={(element) => {
+                    tabRefs.current[key] = element;
+                  }}
+                  role="tab"
+                  type="button"
+                  id={`${ids}-tab-${key}`}
+                  aria-selected={active === key}
+                  aria-controls={`${ids}-panel-${key}`}
+                  tabIndex={active === key ? 0 : -1}
+                  className="ide-tab"
+                  onClick={() => setActive(key)}
+                >
+                  <span className="ide-glyph" data-kind={key} aria-hidden="true">
+                    {glyphs[key]}
+                  </span>
+                  <span className="ide-tab-name">{files[key]}</span>
+                  <span className="ide-tab-size" data-over={over || undefined}>
+                    {over ? "Over 100 KB" : kb(size)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="ide-meter">
+            <label htmlFor={`${ids}-size`}>
+              Project size{" "}
+              <span className="font-mono">
+                {kb(total)} / {COMMUNITY_LIMITS.totalBytes / 1000} KB
+              </span>
+            </label>
+            <progress
+              id={`${ids}-size`}
+              value={Math.min(total, COMMUNITY_LIMITS.totalBytes)}
+              max={COMMUNITY_LIMITS.totalBytes}
+              data-over={total > COMMUNITY_LIMITS.totalBytes || undefined}
+            />
+          </div>
+        </div>
+        <div className="ide-editor bg-code">
+          <div className="ide-editor-head" aria-hidden="true">
+            <span className="ide-glyph" data-kind={active}>
+              {glyphs[active]}
+            </span>
+            {files[active]}
           </div>
           {languages.map((key) => (
             <FilePane
               key={key}
               language={key}
               active={key === active}
+              tabId={`${ids}-tab-${key}`}
+              panelId={`${ids}-panel-${key}`}
               value={source[key]}
               change={(value) => onChange(key, value)}
             />
