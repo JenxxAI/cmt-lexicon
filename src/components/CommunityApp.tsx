@@ -662,66 +662,111 @@ function CommunityGallery({
 function CommunityPreview({
   source,
   title,
+  fill = false,
 }: {
   source: SampleSource;
   title: string;
+  /** Stretch to the workspace height (editor layout) instead of a fixed 500px frame. */
+  fill?: boolean;
 }) {
   const [document, setDocument] = useState<string | null>(null);
+  const [run, setRun] = useState(0);
   const [error, setError] = useState("");
   useEffect(() => {
     setDocument(null);
   }, [source.html, source.css, source.js]);
+  function start() {
+    try {
+      setDocument(communityDocument(source, title));
+      setRun((count) => count + 1);
+      setError("");
+    } catch (error) {
+      setDocument(null);
+      setError(message(error));
+    }
+  }
   return (
     <section
-      className="mt-5 rounded-2xl bg-stage p-4"
+      className="preview-frame"
+      data-fill={fill || undefined}
       aria-label="Project preview"
     >
-      <div className="mb-3 flex flex-wrap gap-3">
+      <div className="preview-bar">
+        <p className="preview-address" title={title}>
+          <span
+            className="preview-dot"
+            data-live={!!document || undefined}
+            aria-hidden="true"
+          />
+          <span className="truncate">
+            <span className="preview-label">Preview · </span>
+            {document ? "Running" : "Stopped"}
+          </span>
+        </p>
+        {document ? (
+          <>
+            <button
+              type="button"
+              className="btn btn-secondary preview-action"
+              onClick={start}
+              aria-label="Reload preview"
+            >
+              <span aria-hidden="true">↻</span>
+              <span className="preview-label">Reload</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary preview-action"
+              onClick={() => setDocument(null)}
+              aria-label="Stop preview"
+            >
+              <span aria-hidden="true">■</span>
+              <span className="preview-label">Stop</span>
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary preview-action"
+            onClick={start}
+          >
+            <span aria-hidden="true">▶</span> Run
+          </button>
+        )}
         <OpenFullPreview
           title={title}
           getDocument={() => communityDocument(source, title)}
-          className={secondary}
-        />
-        <button
-          className={button}
-          onClick={() => {
-            try {
-              setDocument(communityDocument(source, title));
-              setError("");
-            } catch (error) {
-              setError(message(error));
-            }
-          }}
+          className="btn btn-secondary preview-action"
         >
-          Run preview
-        </button>
-        {document && (
-          <button className={secondary} onClick={() => setDocument(null)}>
-            Stop preview
-          </button>
-        )}
+          <span aria-hidden="true">↗</span>
+          <span className="preview-label">Open</span>
+        </OpenFullPreview>
       </div>
-      <p className="mb-3 text-xs text-muted">
-        Community code runs only when you choose. External scripts, fetch
-        requests, embedded pages, popups, and form submissions are blocked. Stop
-        or reload the page if a sample misbehaves.
+      <p className="preview-note">
+        Runs only when you choose. External scripts, fetch requests, embedded
+        pages, popups and form submissions are blocked. Stop or reload the page
+        if a sample misbehaves.
       </p>
       {error && (
-        <p role="alert" className="text-red">
+        <p role="alert" className="px-4 pb-3 text-red">
           {error}
         </p>
       )}
       {document ? (
         <iframe
+          key={run}
           title={`Preview: ${title}`}
           sandbox="allow-scripts"
           referrerPolicy="no-referrer"
           srcDoc={document}
-          className="h-[500px] w-full rounded-xl border border-rule bg-surface"
+          className="preview-iframe"
         />
       ) : (
-        <div className="grid h-48 place-items-center rounded-xl border border-dashed border-rule bg-surface p-6 text-center text-muted">
-          Select Run preview to see this project.
+        <div className="preview-empty">
+          <span aria-hidden="true" className="preview-play">
+            ▶
+          </span>
+          Select Run to see this project here.
         </div>
       )}
     </section>
@@ -1193,6 +1238,7 @@ function CommunityEditor({
         onChange={(language, value) => change({ [language]: value })}
         preview={
           <CommunityPreview
+            fill
             source={draft}
             title={draft.title || "Your project"}
           />
@@ -1399,7 +1445,9 @@ function CommunityDetail({
           />
         </div>
       )}
-      <CommunityPreview source={project} title={project.title} />
+      <div className="mt-4">
+        <CommunityPreview source={project} title={project.title} />
+      </div>
       <div className="my-4 flex flex-wrap gap-2">
         <Link
           className={button}

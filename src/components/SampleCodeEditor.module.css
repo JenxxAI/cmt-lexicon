@@ -3,7 +3,7 @@
   height: var(--workspace-editor-height, 420px);
   overflow: hidden;
   background: var(--color-code);
-  color: var(--color-surface);
+  color: var(--color-on-code);
 }
 .code,
 .input,
@@ -40,12 +40,12 @@
   overflow: auto;
   background: transparent;
   color: transparent;
-  caret-color: var(--color-surface);
+  caret-color: var(--color-on-code);
   outline-offset: -3px;
 }
 .input::selection {
-  background: var(--color-muted);
-  color: var(--color-surface);
+  background: color-mix(in srgb, var(--color-on-code) 30%, transparent);
+  color: var(--color-on-code);
 }
 .gutter {
   position: absolute;
@@ -72,26 +72,27 @@
   }
 }
 
+/* The code panel is dark in both themes, so syntax colors are fixed (not theme tokens). */
 .comment {
   color: var(--color-dim);
 }
 .tag {
-  color: color-mix(in srgb, var(--color-blue) 38%, var(--color-blue-soft));
+  color: #93aff0;
 }
 .attribute {
-  color: color-mix(in srgb, var(--color-blue) 18%, var(--color-green-soft));
+  color: #badde4;
 }
 .string {
   color: var(--color-hi);
 }
 .keyword {
-  color: color-mix(in srgb, var(--color-red-soft) 60%, var(--color-blue));
+  color: #a4a8de;
 }
 .number {
-  color: color-mix(in srgb, var(--color-green-soft) 70%, var(--color-green));
+  color: #a0d7b4;
 }
 .call {
-  color: var(--color-accent-soft);
+  color: #fdebd9;
 }
 .errorLine {
   background: var(--color-red-soft);
