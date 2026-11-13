@@ -4,7 +4,8 @@
   "category": "layout",
   "aliases": [
     "expandable sections",
-    "disclosure list"
+    "disclosure list",
+    "progressive disclosure"
   ],
   "looksLike": [
     "sections that expand when you click",
