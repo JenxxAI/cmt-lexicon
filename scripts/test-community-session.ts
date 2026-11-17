@@ -56,6 +56,7 @@ async function main() {
     user,
   };
   const originalFetch = globalThis.fetch;
+  let active = true;
   let calls = 0;
   let verifier = "";
   let receivedAuthorization = "";
@@ -69,8 +70,12 @@ async function main() {
       return Response.json(session);
     }
     if (url.includes("/auth/v1/user")) return Response.json(user);
-    if (url.includes("/auth/v1/logout"))
+    if (url.includes("/rest/v1/rpc/community_session_active"))
+      return Response.json(active);
+    if (url.includes("/auth/v1/logout")) {
+      active = false;
       return new Response(null, { status: 204 });
+    }
     if (url.includes("/rest/v1/")) {
       receivedAuthorization = headers.get("authorization") ?? "";
       return Response.json([], { headers: { "content-range": "*/0" } });
@@ -197,6 +202,13 @@ async function main() {
     const logout = await request("logout/", "POST", authCookie);
     assert.equal(logout.status, 200);
     assert.match(logout.headers.get("set-cookie")!, /Max-Age=0/);
+    const stale = await request("session/", "GET", authCookie);
+    assert.equal(stale.status, 401);
+    assert.match(stale.headers.get("set-cookie")!, /Max-Age=0/);
+    assert.equal(
+      (await request("projects/?view=mine", "GET", authCookie)).status,
+      401,
+    );
     const clientSource = readFileSync("src/lib/supabase.ts", "utf8");
     assert.ok(!clientSource.includes("@supabase/supabase-js"));
     assert.ok(!clientSource.includes("localStorage.setItem"));

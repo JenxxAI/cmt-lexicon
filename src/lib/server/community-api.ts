@@ -214,6 +214,14 @@ export async function communityApi(request: Request): Promise<Response> {
       user = data.user;
     } else credentials = null;
     const api = client(user ? credentials?.access : undefined);
+    if (user && action !== "logout") {
+      const { data: active, error } = await api.rpc("community_session_active");
+      if (error) return fail(503, "Session verification unavailable");
+      if (active !== true) {
+        setCookie(sessionName, "", 0);
+        return fail(401, "Session expired; sign in again");
+      }
+    }
     if (action === "session" && request.method === "GET")
       return json({
         data: { session: user ? profile(user) : null },

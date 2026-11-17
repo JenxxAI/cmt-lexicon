@@ -43,13 +43,26 @@ async function main() {
   await db.exec(`create role anon; create role authenticated; create schema auth;
     alter default privileges in schema public grant execute on functions to anon, authenticated;
     create table auth.users(id uuid primary key);
+    create table auth.sessions(id uuid primary key, user_id uuid, not_after timestamptz);
+    create function auth.jwt() returns jsonb language sql stable as $$ select jsonb_build_object('session_id', current_setting('fixture.session_id',true)) $$;
     create table auth.identities(user_id uuid, provider text, identity_data jsonb);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to anon,authenticated; grant execute on function auth.uid() to anon,authenticated;`);
   await db.exec(
     readFileSync("supabase/migrations/202610270001_community.sql", "utf8"),
   );
-  await db.exec(readFileSync("supabase/migrations/20261028024314_restrict_anonymous_community_writes.sql", "utf8"));
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261028024314_restrict_anonymous_community_writes.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261117045756_require_active_community_session.sql",
+      "utf8",
+    ),
+  );
   const owner = "00000000-0000-4000-8000-000000000001",
     other = "00000000-0000-4000-8000-000000000002",
     moderator = "00000000-0000-4000-8000-000000000003";
@@ -67,10 +80,25 @@ async function main() {
   await db.query("insert into community_private.moderators values($1)", [
     moderator,
   ]);
-  async function as(id: string | null) {
+  const withoutIdentity = "00000000-0000-4000-8000-000000000099";
+  const sessions = new Map<string, string>();
+  for (const id of [owner, other, moderator, withoutIdentity]) {
+    const result = await db.query<{ id: string }>(
+      "insert into auth.sessions values(gen_random_uuid(),$1,null) returning id",
+      [id],
+    );
+    sessions.set(id, result.rows[0].id);
+  }
+  async function as(
+    id: string | null,
+    sessionId = sessions.get(id ?? "") ?? "",
+  ) {
     await db.exec("reset role");
     await db.query("select set_config('request.jwt.claim.sub',$1,false)", [
       id ?? "",
+    ]);
+    await db.query("select set_config('fixture.session_id',$1,false)", [
+      sessionId,
     ]);
     await db.exec(`set role ${id ? "authenticated" : "anon"}`);
   }
@@ -203,6 +231,62 @@ async function main() {
   );
   await as(other);
   await assert.rejects(submit(), /Submission limit/);
+  // The owner has withdrawn their project and the second account owns a rejected remix.
+  // Positive controls ensure an empty result signifies isolation, not a missing fixture.
+  for (const [id, expected] of [
+    [owner, [project]],
+    [other, [remix]],
+    [null, []],
+  ] as const) {
+    await as(id);
+    const visible = await db.query<{ id: string }>(
+      "select id from community_projects where id in ($1,$2)",
+      [project, remix],
+    );
+    assert.deepEqual(
+      visible.rows.map((row) => row.id),
+      expected,
+    );
+  }
+  // Keep the original signed claims while changing only the backing session.
+  await db.exec("reset role");
+  await db.query("delete from auth.sessions where user_id=$1", [other]);
+  await as(other);
+  assert.equal(
+    (await db.query("select id from community_projects")).rows.length,
+    0,
+  );
+  await assert.rejects(submit(), /session expired/);
+  await assert.rejects(
+    db.query("select withdraw_community_project($1)", [remix]),
+    /session expired/,
+  );
+  for (const invalid of ["", sessions.get(owner)!]) {
+    await as(other, invalid);
+    assert.equal(
+      (await db.query<{ active: boolean }>("select community_session_active() as active")).rows[0]
+        .active,
+      false,
+    );
+  }
+  await db.exec("reset role");
+  await db.query("update auth.sessions set not_after=now() where user_id=$1", [
+    moderator,
+  ]);
+  await as(moderator);
+  assert.equal(
+    (await db.query<{ allowed: boolean }>("select is_community_moderator() as allowed")).rows[0]
+      .allowed,
+    false,
+  );
+  await assert.rejects(
+    db.query("select review_community_project($1,'approved','')", [remix]),
+    /Moderator/,
+  );
+  await as(owner);
+  assert.ok(
+    (await db.query("select id from community_projects")).rows.length > 0,
+  );
   await db.close();
   console.log(
     "Community checks passed: UTF-8 limits, preview CSP, anonymous denial, private pending rows, moderator-only approval, direct-write denial, rejected feedback, remix attribution, withdrawal, hourly/daily quotas.",
