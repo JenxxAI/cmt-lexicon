@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -424,7 +425,7 @@ export function WebsiteSampleStudio({
               <span className="h-2 w-14 rounded-full bg-dim" />
               <span>100%</span>
             </div>
-            <iframe
+            <SandboxPreview
               title={`Interactive ${name.toLowerCase()} phone sample`}
               sandbox="allow-scripts allow-forms"
               srcDoc={assembleSample(initialCode, applied)}
@@ -438,7 +439,7 @@ export function WebsiteSampleStudio({
             </div>
           </div>
         ) : (
-          <iframe
+          <SandboxPreview
             title={`Interactive ${name.toLowerCase()} sample`}
             sandbox="allow-scripts allow-forms"
             srcDoc={assembleSample(initialCode, applied)}

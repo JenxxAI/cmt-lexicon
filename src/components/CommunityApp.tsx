@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import "./community-ui.css";
@@ -659,7 +660,7 @@ function CommunityPreview({
         </p>
       )}
       {document ? (
-        <iframe
+        <SandboxPreview
           title={`Preview: ${title}`}
           sandbox="allow-scripts"
           referrerPolicy="no-referrer"

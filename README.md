@@ -35,13 +35,13 @@ npm run dev        # http://localhost:3000
 | `npm run validate` | Check every `content/components/*.json` against the schema |
 | `npm test` | Search quality tests (beginner phrases must find the right component) |
 | `npm run typecheck` | TypeScript check |
-| `npm run build` | Validate and build pre-rendered pages plus the Community server API |
+| `npm run build` | Validate and build server-rendered pages plus the Community server API |
 
 The JSON export keeps component `entries` and `count` compatible; asset topics live in `assets` with their own `assetCount` and detail URLs. The text cheat sheet includes both.
 
 ## Stack
 
-Next.js (pre-rendered glossary and server-backed Community) · React · TypeScript · Tailwind CSS 4 · Zod. Curated content is JSON; Community uses Supabase through a same-origin API.
+Next.js (server-rendered glossary and server-backed Community) · React · TypeScript · Tailwind CSS 4 · Zod. Curated content is JSON; Community uses Supabase through a same-origin API.
 
 ## Add a component
 

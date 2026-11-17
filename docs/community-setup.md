@@ -1,6 +1,6 @@
 # Community setup
 
-The glossary remains pre-rendered. Community uses same-origin Next.js server endpoints on Vercel; a static-only host cannot run authenticated Community. The curated component and website JSON files are independent. No project has been provisioned automatically and no OAuth secret belongs in this repository.
+Glossary pages render per request to issue fresh script nonces. Community uses same-origin Next.js server endpoints on Vercel; a static-only host cannot run authenticated Community. The curated component and website JSON files are independent. No project has been provisioned automatically and no OAuth secret belongs in this repository.
 
 ## Create the backend
 
@@ -69,3 +69,11 @@ Hosted checks confirmed RLS on all three tables, no direct client writes, and no
 ## Session-fix verification
 
 `npm test` covers PKCE callback binding, CSRF rejection, encrypted cookie integrity and flags, refresh, user-scoped queries, and credential-free JSON using synthetic fixtures. Production activation still requires the server variables and callback allowlist above, followed by a real GitHub sign-in. No hosted configuration or database migration was changed for this fix.
+
+## Script policy
+
+The Next.js proxy issues a new script nonce for each HTML response. Pages render per request with private, no-store caching. The parent page blocks inline event handlers and allows the configured Cloudflare Turnstile script host. Development also permits eval for framework tooling.
+
+The editor uses a separate sandboxed frame so sample scripts and event handlers can run without the application nonce. The preview receives draft HTML locally through a one-use MessagePort. Its response policy blocks network connections, external scripts and form submissions, and forces an opaque origin. Keep this route frameable by the application origin.
+
+To check the policy locally, run the production server on port 3218 and run `node scripts/test-csp-http.mjs`.

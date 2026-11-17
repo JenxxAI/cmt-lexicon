@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import { BASE_PATH } from "./src/lib/base-path";
 
 const nextConfig: NextConfig = {
-  // Public pages stay pre-rendered; HttpOnly Community auth requires a server.
+  // Page HTML renders per request for fresh CSP nonces.
   basePath: BASE_PATH,
   trailingSlash: true,
   images: { unoptimized: true },
