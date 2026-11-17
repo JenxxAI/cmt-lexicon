@@ -42,6 +42,14 @@ async function main() {
   const db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create schema auth;
     alter default privileges in schema public grant execute on functions to anon, authenticated;
+    create schema storage;
+    create table storage.buckets(id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
+    create table storage.objects(id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid);
+    alter table storage.objects enable row level security;
+    create function storage.foldername(name text) returns text[] language sql immutable as $$ select (string_to_array(name,'/'))[1:cardinality(string_to_array(name,'/'))-1] $$;
+    grant usage on schema storage to anon, authenticated;
+    grant select, insert, delete on storage.objects to anon, authenticated;
+    grant execute on function storage.foldername(text) to anon, authenticated;
     create table auth.users(id uuid primary key);
     create table auth.sessions(id uuid primary key, user_id uuid, not_after timestamptz);
     create function auth.jwt() returns jsonb language sql stable as $$ select jsonb_build_object('session_id', current_setting('fixture.session_id',true)) $$;
@@ -54,6 +62,12 @@ async function main() {
   await db.exec(
     readFileSync(
       "supabase/migrations/20261028024314_restrict_anonymous_community_writes.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261111000001_community_previews.sql",
       "utf8",
     ),
   );
@@ -248,10 +262,34 @@ async function main() {
       expected,
     );
   }
+  await as(other);
+  const image = other + "/10000000-0000-4000-8000-000000000001.webp";
+  const putImage = (name: string) =>
+    db.query(
+      "insert into storage.objects(bucket_id,name) values ('community-previews',$1)",
+      [name],
+    );
+  const readImage = () =>
+    db.query("select id from storage.objects where name=$1", [image]);
+  await putImage(image);
+  assert.equal((await readImage()).rows.length, 1);
   // Keep the original signed claims while changing only the backing session.
   await db.exec("reset role");
   await db.query("delete from auth.sessions where user_id=$1", [other]);
   await as(other);
+  assert.equal((await readImage()).rows.length, 0);
+  await assert.rejects(
+    putImage(image.replace(".webp", ".png")),
+    /row-level security/,
+  );
+  assert.equal(
+    (
+      await db.query("delete from storage.objects where name=$1 returning id", [
+        image,
+      ])
+    ).rows.length,
+    0,
+  );
   assert.equal(
     (await db.query("select id from community_projects")).rows.length,
     0,
@@ -264,8 +302,11 @@ async function main() {
   for (const invalid of ["", sessions.get(owner)!]) {
     await as(other, invalid);
     assert.equal(
-      (await db.query<{ active: boolean }>("select community_session_active() as active")).rows[0]
-        .active,
+      (
+        await db.query<{ active: boolean }>(
+          "select community_session_active() as active",
+        )
+      ).rows[0].active,
       false,
     );
   }
@@ -275,8 +316,11 @@ async function main() {
   ]);
   await as(moderator);
   assert.equal(
-    (await db.query<{ allowed: boolean }>("select is_community_moderator() as allowed")).rows[0]
-      .allowed,
+    (
+      await db.query<{ allowed: boolean }>(
+        "select is_community_moderator() as allowed",
+      )
+    ).rows[0].allowed,
     false,
   );
   await assert.rejects(

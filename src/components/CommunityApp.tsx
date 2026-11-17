@@ -35,6 +35,15 @@ import {
 } from "@/lib/community";
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
 import { CommunityCodeWorkspace } from "./CommunityCodeWorkspace";
+import { ImageCarousel } from "./ImageCarousel";
+import { previewUrlsFor } from "./previewUrlsFor";
+import {
+  PREVIEW_LIMITS,
+  PREVIEW_MIME,
+  previewAlt,
+  previewPath,
+} from "@/lib/community-previews";
+import { IMPORT_TEXT_LIMIT, importKind, splitHtmlDocument } from "@/lib/import-files";
 import { OpenFullPreview } from "./OpenFullPreview";
 import { CopyButton } from "./CopyButton";
 import { RequestStatus } from "./RequestStatus";
@@ -46,6 +55,7 @@ import {
   parseLocalDraft,
 } from "@/lib/community-resilience";
 
+type PreviewDraft = { id: string; blob: Blob; url: string; name: string };
 type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
 const button = "btn btn-primary";
 const secondary = "btn btn-secondary";
@@ -403,6 +413,10 @@ function CommunityGallery({
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
+  const previewUrls = previewUrlsFor(
+    client,
+    items.flatMap((item) => item.previews ?? []),
+  );
   useEffect(() => {
     let alive = true;
     setItems([]);
@@ -551,7 +565,20 @@ function CommunityGallery({
       )}
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <li key={item.id} className="min-w-0 rounded-[28px] bg-surface p-6">
+          <li key={item.id} className="min-w-0 rounded-[28px] bg-surface">
+            {(item.previews ?? []).length > 0 && (
+              <div className="p-3 pb-0">
+                <ImageCarousel
+                  label={`${item.title} preview images`}
+                  href={`/community/project/?id=${item.id}`}
+                  slides={item.previews.map((path, position) => ({
+                    src: previewUrls[path],
+                    alt: previewAlt(item.title, position, item.previews.length),
+                  }))}
+                />
+              </div>
+            )}
+            <div className="p-6">
             <p className="font-mono text-xs uppercase text-accent-deep">
               {item.kind === "website" ? "Website type" : "Component"} ·{" "}
               {item.status}
@@ -584,6 +611,7 @@ function CommunityGallery({
             >
               View code &amp; preview →
             </Link>
+            </div>
           </li>
         ))}
       </ul>
@@ -610,66 +638,111 @@ function CommunityGallery({
 function CommunityPreview({
   source,
   title,
+  fill = false,
 }: {
   source: SampleSource;
   title: string;
+  /** Stretch to the workspace height (editor layout) instead of a fixed 500px frame. */
+  fill?: boolean;
 }) {
   const [document, setDocument] = useState<string | null>(null);
+  const [run, setRun] = useState(0);
   const [error, setError] = useState("");
   useEffect(() => {
     setDocument(null);
   }, [source.html, source.css, source.js]);
+  function start() {
+    try {
+      setDocument(communityDocument(source, title));
+      setRun((count) => count + 1);
+      setError("");
+    } catch (error) {
+      setDocument(null);
+      setError(message(error));
+    }
+  }
   return (
     <section
-      className="mt-5 rounded-2xl bg-stage p-4"
+      className="preview-frame"
+      data-fill={fill || undefined}
       aria-label="Project preview"
     >
-      <div className="mb-3 flex flex-wrap gap-3">
+      <div className="preview-bar">
+        <p className="preview-address" title={title}>
+          <span
+            className="preview-dot"
+            data-live={!!document || undefined}
+            aria-hidden="true"
+          />
+          <span className="truncate">
+            <span className="preview-label">Preview · </span>
+            {document ? "Running" : "Stopped"}
+          </span>
+        </p>
+        {document ? (
+          <>
+            <button
+              type="button"
+              className="btn btn-secondary preview-action"
+              onClick={start}
+              aria-label="Reload preview"
+            >
+              <span aria-hidden="true">↻</span>
+              <span className="preview-label">Reload</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary preview-action"
+              onClick={() => setDocument(null)}
+              aria-label="Stop preview"
+            >
+              <span aria-hidden="true">■</span>
+              <span className="preview-label">Stop</span>
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary preview-action"
+            onClick={start}
+          >
+            <span aria-hidden="true">▶</span> Run
+          </button>
+        )}
         <OpenFullPreview
           title={title}
           getDocument={() => communityDocument(source, title)}
-          className={secondary}
-        />
-        <button
-          className={button}
-          onClick={() => {
-            try {
-              setDocument(communityDocument(source, title));
-              setError("");
-            } catch (error) {
-              setError(message(error));
-            }
-          }}
+          className="btn btn-secondary preview-action"
         >
-          Run preview
-        </button>
-        {document && (
-          <button className={secondary} onClick={() => setDocument(null)}>
-            Stop preview
-          </button>
-        )}
+          <span aria-hidden="true">↗</span>
+          <span className="preview-label">Open</span>
+        </OpenFullPreview>
       </div>
-      <p className="mb-3 text-xs text-muted">
-        Community code runs only when you choose. External scripts, fetch
-        requests, embedded pages, popups, and form submissions are blocked. Stop
-        or reload the page if a sample misbehaves.
+      <p className="preview-note">
+        Runs only when you choose. External scripts, fetch requests, embedded
+        pages, popups and form submissions are blocked. Stop or reload the page
+        if a sample misbehaves.
       </p>
       {error && (
-        <p role="alert" className="text-red">
+        <p role="alert" className="px-4 pb-3 text-red">
           {error}
         </p>
       )}
       {document ? (
         <SandboxPreview
+          key={run}
           title={`Preview: ${title}`}
           sandbox="allow-scripts"
           referrerPolicy="no-referrer"
           srcDoc={document}
-          className="h-[500px] w-full rounded-xl border border-rule bg-surface"
+          className="preview-iframe"
         />
       ) : (
-        <div className="grid h-48 place-items-center rounded-xl border border-dashed border-rule bg-surface p-6 text-center text-muted">
-          Select Run preview to see this project.
+        <div className="preview-empty">
+          <span aria-hidden="true" className="preview-play">
+            ▶
+          </span>
+          Select Run to see this project here.
         </div>
       )}
     </section>
@@ -696,6 +769,15 @@ function CommunityEditor({
   const [submitted, setSubmitted] = useState<string | null>(null);
   const revision = useRef(0);
   const recovery = useDraftRecovery(draft, setDraft, setTagText);
+  const [images, setImages] = useState<PreviewDraft[]>([]);
+  const imagesRef = useRef<PreviewDraft[]>([]);
+  imagesRef.current = images;
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+  useEffect(
+    () => () => imagesRef.current.forEach((image) => URL.revokeObjectURL(image.url)),
+    [],
+  );
   function change(next: Partial<CommunityDraft>) {
     revision.current++;
     recovery.markDirty();
@@ -744,6 +826,89 @@ function CommunityEditor({
       alive = false;
     };
   }, [client]);
+  function removeImage(id: string) {
+    setImages((old) => {
+      old.filter((image) => image.id === id).forEach((image) => URL.revokeObjectURL(image.url));
+      return old.filter((image) => image.id !== id);
+    });
+    setSubmitted(null);
+  }
+  function moveImage(id: string, delta: number) {
+    setImages((old) => {
+      const from = old.findIndex((image) => image.id === id);
+      const to = from + delta;
+      if (from < 0 || to < 0 || to >= old.length) return old;
+      const next = [...old];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
+    setSubmitted(null);
+  }
+  async function importFiles(files: File[]) {
+    if (!files.length) return;
+    setImporting(true);
+    setError("");
+    const version = revision.current;
+    const notes: string[] = [];
+    const problems: string[] = [];
+    const code: Partial<Record<"html" | "css" | "js", string[]>> = {};
+    const pictures: File[] = [];
+    for (const file of files) {
+      const kind = importKind(file);
+      if (!kind) problems.push(`${file.name}: not an HTML, CSS, JavaScript, PNG, JPEG or WebP file.`);
+      else if (kind === "image") pictures.push(file);
+      else if (file.size > IMPORT_TEXT_LIMIT) problems.push(`${file.name}: larger than 100 KB.`);
+      else {
+        try {
+          const text = await file.text();
+          if (kind === "html") {
+            const parts = splitHtmlDocument(text);
+            (code.html ??= []).push(parts.source.html);
+            if (parts.source.css) (code.css ??= []).push(parts.source.css);
+            if (parts.source.js) (code.js ??= []).push(parts.source.js);
+            notes.push(...parts.warnings);
+          } else (code[kind] ??= []).push(text);
+        } catch {
+          problems.push(`${file.name}: could not be read.`);
+        }
+      }
+    }
+    const next: Partial<CommunityDraft> = {};
+    for (const key of ["html", "css", "js"] as const)
+      if (code[key]?.length) next[key] = code[key]!.join("\n\n");
+    const imported = Object.keys(next).map((key) => key.toUpperCase());
+    if (imported.length && version === revision.current) change(next);
+    else if (imported.length) problems.push("Your newer edits were kept; import again to replace them.");
+    let added = 0;
+    for (const file of pictures) {
+      if (imagesRef.current.length + added >= PREVIEW_LIMITS.maxImages) {
+        problems.push(`${file.name}: up to ${PREVIEW_LIMITS.maxImages} preview images.`);
+        continue;
+      }
+      try {
+        const { prepareImage } = await import("@/lib/image-resize");
+        const blob = await prepareImage(file);
+        const id = crypto.randomUUID();
+        setImages((old) => [...old, { id, blob, url: URL.createObjectURL(blob), name: file.name }]);
+        imagesRef.current = [...imagesRef.current, { id, blob, url: "", name: file.name }];
+        added++;
+      } catch (error) {
+        problems.push(error instanceof Error ? error.message : String(error));
+      }
+    }
+    setSubmitted(null);
+    const done = [
+      imported.length && `replaced the ${imported.join(", ")} ${imported.length > 1 ? "tabs" : "tab"}`,
+      added && `added ${added} preview ${added > 1 ? "images" : "image"}`,
+    ].filter(Boolean);
+    setStatus(
+      done.length
+        ? `Imported: ${done.join(" and ")}.${notes.length ? " " + notes.join(" ") : ""}`
+        : "",
+    );
+    if (problems.length) setError(problems.join(" "));
+    setImporting(false);
+  }
   async function format() {
     const size = sourceError(draft);
     if (size) {
@@ -806,7 +971,14 @@ function CommunityEditor({
     setSubmitting(true);
     setError("");
     const submittedRevision = revision.current;
+    const uploaded: string[] = [];
     try {
+      for (const image of images) {
+        const path = previewPath(session.user.id, crypto.randomUUID(), image.blob.type);
+        const { error } = await client.uploadPreview(path, image.blob);
+        if (error) throw error;
+        uploaded.push(path);
+      }
       const { data, error } = await client.rpc("submit_community_project", {
         p_title: draft.title.trim(),
         p_description: draft.description.trim(),
@@ -817,8 +989,13 @@ function CommunityEditor({
         p_js: draft.js,
         p_license_accepted: draft.licenseAccepted,
         p_remix_of: draft.remixOf,
+        p_previews: uploaded,
       });
-      if (error) setError(message(error));
+      if (error) {
+        // Nothing references these files yet, so the owner policy lets us delete them.
+        if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
+        setError(message(error));
+      }
       else if (submittedRevision === revision.current) {
         setSubmitted(String(data));
         setStatus(
@@ -830,6 +1007,7 @@ function CommunityEditor({
         );
       }
     } catch (error) {
+      if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
       setError(message(error));
     } finally {
       submitPending.current = false;
@@ -904,6 +1082,98 @@ function CommunityEditor({
           />
         </label>
       </div>
+      <section
+        aria-labelledby="previews-heading"
+        className="mt-4 rounded-[28px] bg-surface p-6"
+      >
+        <h2 id="previews-heading" className="font-display text-xl font-bold">
+          Import your work &amp; show it off
+        </h2>
+        <p className="mt-2 text-sm text-body">
+          Import an <code>.html</code> page (its styles and scripts are split into the tabs
+          below), or separate <code>.css</code> / <code>.js</code> files. Add up to{" "}
+          {PREVIEW_LIMITS.maxImages} screenshots of the component or your site&apos;s landing
+          page. They appear on your project card; more than one becomes a swipeable carousel,
+          and the first is the cover. Images are resized in your browser and location data is
+          removed. They stay private until a moderator approves the project.
+        </p>
+        <input
+          ref={fileInput}
+          type="file"
+          multiple
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden="true"
+          accept={`.html,.htm,.css,.js,.mjs,${PREVIEW_MIME.join(",")}`}
+          onChange={(event) => {
+            const files = [...(event.target.files ?? [])];
+            event.target.value = "";
+            void importFiles(files);
+          }}
+        />
+        <button
+          type="button"
+          className={`${secondary} mt-4`}
+          disabled={importing || submitting}
+          aria-busy={importing}
+          onClick={() => fileInput.current?.click()}
+        >
+          {importing && <Spinner />}
+          Import files or screenshots
+        </button>
+        {images.length > 0 && (
+          <ul aria-label="Preview images" className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {images.map((image, position) => (
+              <li key={image.id} className="min-w-0 rounded-2xl bg-paper p-2">
+                {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
+                <img
+                  src={image.url}
+                  alt={previewAlt(draft.title, position, images.length)}
+                  className="aspect-[16/10] w-full rounded-xl object-cover"
+                />
+                <p className="mt-2 truncate text-xs text-muted">
+                  {position === 0 ? "Cover · " : ""}
+                  {image.name}
+                </p>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    disabled={position === 0 || submitting}
+                    aria-label={`Move ${image.name} earlier`}
+                    onClick={() => moveImage(image.id, -1)}
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    disabled={position === images.length - 1 || submitting}
+                    aria-label={`Move ${image.name} later`}
+                    onClick={() => moveImage(image.id, 1)}
+                  >
+                    →
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    disabled={submitting}
+                    aria-label={`Remove ${image.name}`}
+                    onClick={() => removeImage(image.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        {images.length > 0 && !session && (
+          <p className="mt-3 text-sm text-muted">
+            Screenshots are not saved with local drafts. Sign in first, then add them before you submit.
+          </p>
+        )}
+      </section>
       <div className="my-4 flex flex-wrap gap-2">
         <button className={secondary} onClick={recovery.forget}>
           Remove saved copy
@@ -940,6 +1210,7 @@ function CommunityEditor({
         onChange={(language, value) => change({ [language]: value })}
         preview={
           <CommunityPreview
+            fill
             source={draft}
             title={draft.title || "Your project"}
           />
@@ -1024,6 +1295,7 @@ function CommunityDetail({
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [active, setActive] = useState<SampleLanguage>("html");
+  const previewUrls = previewUrlsFor(client, project?.previews ?? []);
   useEffect(() => {
     setProject(null);
     setError("");
@@ -1130,7 +1402,22 @@ function CommunityDetail({
           </p>
         )}
       </div>
-      <CommunityPreview source={project} title={project.title} />
+      {project.previews?.length > 0 && (
+        <div className="mt-4 rounded-[28px] bg-surface p-3">
+          <ImageCarousel
+            label={`${project.title} preview images`}
+            fit="contain"
+            aspect="aspect-[16/10] max-h-[32rem]"
+            slides={project.previews.map((path, position) => ({
+              src: previewUrls[path],
+              alt: previewAlt(project.title, position, project.previews.length),
+            }))}
+          />
+        </div>
+      )}
+      <div className="mt-4">
+        <CommunityPreview source={project} title={project.title} />
+      </div>
       <div className="my-4 flex flex-wrap gap-2">
         <Link
           className={button}

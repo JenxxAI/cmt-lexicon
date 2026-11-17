@@ -1,0 +1,36 @@
+# Version updates. Security updates are configured separately in
+# Settings → Code security and are not limited by this file.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Asia/Manila
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Minor and patch bumps arrive as one PR per group, so CI runs once.
+      # Major versions are not grouped: each opens its own PR to review.
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Asia/Manila
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]

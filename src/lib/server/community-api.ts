@@ -1,3 +1,9 @@
+import {
+  PREVIEW_BUCKET,
+  PREVIEW_LIMITS,
+  isPreviewMime,
+  isPreviewPath,
+} from "../community-previews";
 import { createClient, type Session, type User } from "@supabase/supabase-js";
 import { randomBytes } from "node:crypto";
 import { BASE_PATH } from "../base-path";
@@ -40,7 +46,7 @@ function profile(user: User) {
     },
   };
 }
-async function readBody(request: Request) {
+async function readBody(request: Request, limit = 350_000) {
   const reader = request.body?.getReader();
   if (!reader) return {};
   const chunks: Uint8Array[] = [];
@@ -49,7 +55,7 @@ async function readBody(request: Request) {
     const { value, done } = await reader.read();
     if (done) break;
     size += value.length;
-    if (size > 350_000) {
+    if (size > limit) {
       await reader.cancel();
       throw new Error("Body too large");
     }
@@ -221,6 +227,51 @@ export async function communityApi(request: Request): Promise<Response> {
         setCookie(sessionName, "", 0);
         return fail(401, "Session expired; sign in again");
       }
+    }
+    if (action === "image" && request.method === "GET") {
+      const path = url.searchParams.get("path");
+      if (!isPreviewPath(path)) return fail(400);
+      const { data, error } = await api.storage
+        .from(PREVIEW_BUCKET)
+        .download(path);
+      if (error || !data || !isPreviewMime(data.type)) return fail(404);
+      headers.set("Content-Type", data.type);
+      headers.set("X-Content-Type-Options", "nosniff");
+      headers.set("Content-Security-Policy", "sandbox; default-src 'none'");
+      return new Response(data, { headers });
+    }
+    if (action === "image-upload" && request.method === "POST") {
+      if (!user) return fail(401);
+      const { path, mime, encoded } = await readBody(request, 700_000);
+      if (
+        !isPreviewPath(path) ||
+        !path.startsWith(user.id + "/") ||
+        typeof mime !== "string" ||
+        !isPreviewMime(mime) ||
+        typeof encoded !== "string"
+      )
+        return fail(400);
+      const bytes = Buffer.from(encoded, "base64");
+      if (!bytes.length || bytes.length > PREVIEW_LIMITS.maxBytes)
+        return fail(400);
+      const { error } = await api.storage
+        .from(PREVIEW_BUCKET)
+        .upload(path, bytes, { contentType: mime, upsert: false });
+      return error ? fail(400) : json({ data: null, error: null });
+    }
+    if (action === "image-remove" && request.method === "POST") {
+      if (!user) return fail(401);
+      const { paths } = await readBody(request);
+      if (
+        !Array.isArray(paths) ||
+        paths.length > PREVIEW_LIMITS.maxImages ||
+        !paths.every(
+          (path) => isPreviewPath(path) && path.startsWith(user.id + "/"),
+        )
+      )
+        return fail(400);
+      const { error } = await api.storage.from(PREVIEW_BUCKET).remove(paths);
+      return error ? fail(400) : json({ data: null, error: null });
     }
     if (action === "session" && request.method === "GET")
       return json({

@@ -71,6 +71,18 @@ const client = {
       return result;
     },
   },
+  async uploadPreview(path: string, image: Blob) {
+    const encoded = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(",")[1]);
+      reader.onerror = () => reject(new Error("Image could not be read"));
+      reader.readAsDataURL(image);
+    });
+    return request<null>("image-upload/", { path, encoded, mime: image.type });
+  },
+  removePreviews(paths: string[]) {
+    return request<null>("image-remove/", { paths });
+  },
   projects(options: {
     view: string;
     page: number;

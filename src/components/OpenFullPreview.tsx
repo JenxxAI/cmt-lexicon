@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { storePreview } from "@/lib/full-preview";
 import { withBasePath } from "@/lib/base-path";
 
@@ -7,10 +7,12 @@ export function OpenFullPreview({
   title,
   getDocument,
   className,
+  children = "Open full preview ↗",
 }: {
   title: string;
   getDocument: () => string;
   className?: string;
+  children?: ReactNode;
 }) {
   const [error, setError] = useState("");
   return (
@@ -43,7 +45,7 @@ export function OpenFullPreview({
           }
         }}
       >
-        Open full preview ↗
+        {children}
       </a>
       {error && (
         <p role="alert" className="w-full text-sm text-red">

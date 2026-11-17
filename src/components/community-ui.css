@@ -85,9 +85,6 @@
   outline-color: var(--color-hi);
   outline-offset: -3px;
 }
-.community-ui .bg-code > div:has(> button) {
-  padding: 4px;
-}
 .community-ui .community-dialog {
   width: min(28rem, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
@@ -165,34 +162,307 @@
   background: var(--color-accent-deep);
   border-radius: 50%;
 }
-.community-ui .workspace-panes {
+/* IDE layout: file rail, editor, preview. Rail and preview are light cards, the editor stays dark. */
+.community-ui .ide {
+  /* One height drives both columns: the editor fills it, the preview frame stretches to it. */
+  --ide-height: 34rem;
+  --workspace-editor-height: calc(var(--ide-height) - 8rem);
   display: grid;
   gap: 0.75rem;
-  padding: 0 0.75rem;
+  padding: 0.75rem;
+  background: var(--color-paper);
+  border-radius: 1.25rem;
+  margin: 0 0.75rem;
 }
-.community-ui .workspace-panes > section {
-  margin: 0;
+.community-ui .ide > * {
   min-width: 0;
 }
-.community-ui .code-workspace:modal {
-  position: fixed;
-  inset: 0;
+.community-ui .ide-files {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  padding: 0.75rem;
+  background: var(--color-surface);
+  border-radius: 1rem;
+}
+.community-ui .ide-heading {
   margin: 0;
-  height: 100dvh;
-  max-height: none;
-  overflow: auto;
-  border-radius: 0;
+  padding: 0 0.25rem;
+  font: 600 0.75rem/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.community-ui .ide-tabs {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+}
+.community-ui .ide-tab {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.75rem 0.35rem 0.5rem;
+  border-radius: 0.75rem;
+  color: var(--color-ink);
+  text-align: left;
+}
+.community-ui .ide-tab[aria-selected="true"] {
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 0 2px var(--color-accent-deep);
+}
+.community-ui .ide-tab-name {
+  font: 600 0.875rem/1.2 var(--font-mono);
+}
+.community-ui .ide-tab-size {
+  margin-left: auto;
+  white-space: nowrap;
+  padding-left: 0.5rem;
+  font: 0.75rem/1 var(--font-mono);
+  color: var(--color-muted);
+}
+.community-ui .ide-tab-size[data-over] {
+  font-weight: 700;
+  color: var(--color-red);
+}
+.community-ui .ide-glyph {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  font: 700 0.7rem/1 var(--font-mono);
+  color: var(--color-ink);
+  background: var(--color-line);
+}
+.community-ui .ide-glyph[data-kind="html"] {
+  background: var(--color-accent);
+}
+.community-ui .ide-glyph[data-kind="css"] {
+  background: var(--color-blue-soft);
+  color: var(--color-blue);
+}
+.community-ui .ide-glyph[data-kind="js"] {
+  background: var(--color-hi);
+}
+.community-ui .ide-meter {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+.community-ui .ide-meter progress {
+  width: 100%;
+  height: 0.5rem;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+.community-ui .ide-meter progress::-webkit-progress-bar {
+  background: var(--color-line);
+}
+.community-ui .ide-meter progress::-webkit-progress-value {
+  background: var(--color-accent-deep);
+  border-radius: 999px;
+}
+.community-ui .ide-meter progress::-moz-progress-bar {
+  background: var(--color-accent-deep);
+  border-radius: 999px;
+}
+.community-ui .ide-meter progress[data-over]::-webkit-progress-value {
+  background: var(--color-red);
+}
+.community-ui .ide-meter progress[data-over]::-moz-progress-bar {
+  background: var(--color-red);
+}
+.community-ui .ide-editor {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--ide-height);
+  overflow: hidden;
+  border-radius: 1rem;
+  color: var(--color-on-code);
+}
+.community-ui .ide-editor > [role="tabpanel"]:not([hidden]) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.community-ui .ide-editor > [role="tabpanel"] > :last-child {
+  margin-top: auto;
+}
+.community-ui .ide-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-dim) 30%, transparent);
+  font: 600 0.8rem/1 var(--font-mono);
+}
+
+/* Preview pane: browser-style bar with a status pill, then the sandboxed frame. */
+.community-ui .preview-frame {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-radius: 1rem;
+}
+.community-ui .preview-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: var(--color-line);
+}
+.community-ui .preview-address {
+  display: flex;
+  flex: 1 1 8rem;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 1rem;
+  background: var(--color-surface);
+  border-radius: 999px;
+  font: 600 0.8rem/1 var(--font-mono);
+  color: var(--color-body);
+}
+.community-ui .preview-dot {
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--color-dim);
+}
+.community-ui .preview-dot[data-live] {
+  background: var(--color-green);
+}
+.community-ui .preview-action {
+  padding: 0.5rem 1rem;
+}
+.community-ui .preview-note {
+  margin: 0;
+  padding: 0.75rem 1rem 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+.community-ui .preview-iframe {
+  display: block;
+  width: 100%;
+  height: 500px;
+  margin-top: 0.75rem;
+  border: 0;
+  background: var(--color-surface);
+}
+.community-ui .preview-empty {
+  display: grid;
+  gap: 0.75rem;
+  place-content: center;
+  place-items: center;
+  height: 12rem;
+  margin: 0.75rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--color-rule);
+  border-radius: 0.75rem;
+  background: var(--color-stage);
+  text-align: center;
+  color: var(--color-muted);
+}
+.community-ui .preview-play {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-accent-deep);
+}
+.community-ui .preview-frame[data-fill] {
+  min-height: var(--ide-height);
+}
+.community-ui .preview-frame[data-fill] .preview-iframe,
+.community-ui .preview-frame[data-fill] .preview-empty {
+  flex: 1;
+  min-height: 12rem;
+}
+.community-ui .preview-frame[data-fill] .preview-empty {
+  height: auto;
+}
+/* Narrow pane: buttons become icon-only (each keeps an accessible name). */
+@container (max-width: 36rem) {
+  .community-ui .preview-label {
+    display: none;
+  }
+}
+@media (max-width: 799px) {
+  .community-ui .ide {
+    --ide-height: 24rem;
+  }
+  /* Phone: three equal tabs that fit without sideways scrolling. */
+  .community-ui .ide-tab {
+    flex: 1 1 0;
+    justify-content: center;
+    padding-inline: 0.4rem;
+  }
+  .community-ui .ide-tab .ide-glyph,
+  .community-ui .ide-tab-size {
+    display: none;
+  }
+  .community-ui .ide-tab-name {
+    font-size: 0.8rem;
+  }
 }
 @media (min-width: 800px) {
-  .community-ui .code-workspace:modal .workspace-panes {
+  .community-ui .ide {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
+    grid-template-areas: "files files" "editor preview";
   }
-  .community-ui .code-workspace:modal {
-    --workspace-editor-height: max(24rem, calc(100dvh - 15rem));
+  .community-ui .ide-files {
+    grid-area: files;
+    grid-template-columns: auto 1fr minmax(10rem, 14rem);
+    align-items: center;
   }
-  .community-ui .code-workspace:modal iframe {
-    height: var(--workspace-editor-height);
+  .community-ui .ide-editor {
+    grid-area: editor;
+  }
+  .community-ui .preview-frame {
+    grid-area: preview;
+  }
+}
+@media (min-width: 1100px) {
+  .community-ui .ide {
+    grid-template-columns: 14.5rem minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "files editor preview";
+    align-items: stretch;
+  }
+  .community-ui .ide-files {
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+  .community-ui .ide-tabs {
+    flex-direction: column;
+  }
+}
+.community-ui .code-workspace:modal .ide {
+  --ide-height: max(28rem, calc(100dvh - 11rem));
+}
+.community-ui .code-workspace:modal .preview-iframe {
+  height: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .community-ui .ide-tab {
+    transition: none;
   }
 }
 

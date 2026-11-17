@@ -23,6 +23,7 @@
   --color-skel: #bebebe;
   --color-skel-soft: #d6d6d6;
   --color-code: #1c1c1e;
+  --color-on-code: #ffffff; /* text on the always-dark code panel; unlike surface it must not flip in dark mode */
 
   /* Status and sample colors (contrast checked: white on blue/green/red >= 5:1, each on its soft tint >= 4.5:1). */
   --color-blue: #1d4ed8;
