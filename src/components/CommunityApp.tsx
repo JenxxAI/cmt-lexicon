@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import "./community-ui.css";
@@ -16,13 +17,13 @@ import {
   type AuthDialogState,
 } from "@/lib/community-ui";
 import { useEffect, useRef, useState } from "react";
-import type { Session, SupabaseClient } from "@supabase/supabase-js";
+import type { CommunitySession as Session } from "@/lib/community-session";
+import type { CommunityClient as SupabaseClient } from "@/lib/supabase";
 import { withBasePath } from "@/lib/base-path";
 import { getCommunityClient } from "@/lib/supabase";
 import {
   COMMUNITY_LIMITS,
   EMPTY_DRAFT,
-  SUMMARY_COLUMNS,
   communityDocument,
   downloadCommunity,
   draftError,
@@ -35,9 +36,8 @@ import {
 import type { SampleLanguage, SampleSource } from "@/lib/sample-source";
 import { CommunityCodeWorkspace } from "./CommunityCodeWorkspace";
 import { ImageCarousel } from "./ImageCarousel";
-import { useSignedPreviewUrls } from "./useSignedPreviewUrls";
+import { previewUrlsFor } from "./previewUrlsFor";
 import {
-  PREVIEW_BUCKET,
   PREVIEW_LIMITS,
   PREVIEW_MIME,
   previewAlt,
@@ -187,8 +187,8 @@ export function CommunityApp({
       .getSession()
       .then(({ data, error }) => {
         if (!alive) return;
-        setSession(data.session);
-        hadSession.current = !!data.session;
+        setSession(data?.session ?? null);
+        hadSession.current = !!data?.session;
         if (error) setError(message(error));
         setReady(true);
       })
@@ -253,12 +253,7 @@ export function CommunityApp({
     try {
       const result = signOut
         ? await client.auth.signOut()
-        : await client.auth.signInWithOAuth({
-            provider: "github",
-            options: {
-              redirectTo: `${window.location.origin}${withBasePath("/community/auth/")}`,
-            },
-          });
+        : await client.auth.signInWithOAuth();
       if (result.error) throw result.error;
       if (signOut) {
         setNotice("");
@@ -287,12 +282,7 @@ export function CommunityApp({
           (session ? (
             <CommunityAccountMenu
               handle={displayName(session.user)}
-              avatar={
-                session.user.identities?.find(
-                  (identity) => identity.provider === "github",
-                )?.identity_data?.avatar_url ??
-                session.user.user_metadata.avatar_url
-              }
+              avatar={session.user.user_metadata.avatar_url}
               signOutDisabled={authBusy || offline}
               onSignOut={() => setDialog({ kind: "confirm-sign-out" })}
             />
@@ -423,7 +413,7 @@ function CommunityGallery({
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
-  const previewUrls = useSignedPreviewUrls(
+  const previewUrls = previewUrlsFor(
     client,
     items.flatMap((item) => item.previews ?? []),
   );
@@ -440,21 +430,7 @@ function CommunityGallery({
     )
       return;
     setLoading(true);
-    let request = client
-      .from("community_projects")
-      .select(SUMMARY_COLUMNS, { count: "exact" })
-      .order("created_at", { ascending: false })
-      .order("id", { ascending: false })
-      .range(page * 12, page * 12 + 11);
-    if (view === "browse") request = request.eq("status", "approved");
-    if (view === "mine") request = request.eq("owner_id", session!.user.id);
-    if (view === "moderate") request = request.eq("status", "pending");
-    if (kind !== "all") request = request.eq("kind", kind);
-    if (search.trim())
-      request = request.ilike(
-        "title",
-        `%${search.trim().replace(/[\\%_]/g, (value) => "\\" + value)}%`,
-      );
+    const request = client.projects({ view, page, kind, search });
     Promise.resolve(request)
       .then(({ data, error, count }) => {
         if (!alive) return;
@@ -753,7 +729,7 @@ function CommunityPreview({
         </p>
       )}
       {document ? (
-        <iframe
+        <SandboxPreview
           key={run}
           title={`Preview: ${title}`}
           sandbox="allow-scripts"
@@ -818,9 +794,7 @@ function CommunityEditor({
     }
     const version = revision.current;
     let alive = true;
-    Promise.resolve(
-      client.from("community_projects").select("*").eq("id", id).single(),
-    )
+    Promise.resolve(client.project(id))
       .then(({ data, error }) => {
         if (!alive || version !== revision.current) return;
         if (error) {
@@ -1001,9 +975,7 @@ function CommunityEditor({
     try {
       for (const image of images) {
         const path = previewPath(session.user.id, crypto.randomUUID(), image.blob.type);
-        const { error } = await client.storage
-          .from(PREVIEW_BUCKET)
-          .upload(path, image.blob, { contentType: image.blob.type, cacheControl: "31536000" });
+        const { error } = await client.uploadPreview(path, image.blob);
         if (error) throw error;
         uploaded.push(path);
       }
@@ -1021,7 +993,7 @@ function CommunityEditor({
       });
       if (error) {
         // Nothing references these files yet, so the owner policy lets us delete them.
-        if (uploaded.length) await client.storage.from(PREVIEW_BUCKET).remove(uploaded).catch(() => {});
+        if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
         setError(message(error));
       }
       else if (submittedRevision === revision.current) {
@@ -1035,7 +1007,7 @@ function CommunityEditor({
         );
       }
     } catch (error) {
-      if (uploaded.length) await client.storage.from(PREVIEW_BUCKET).remove(uploaded).catch(() => {});
+      if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
       setError(message(error));
     } finally {
       submitPending.current = false;
@@ -1323,7 +1295,7 @@ function CommunityDetail({
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [active, setActive] = useState<SampleLanguage>("html");
-  const previewUrls = useSignedPreviewUrls(client, project?.previews ?? []);
+  const previewUrls = previewUrlsFor(client, project?.previews ?? []);
   useEffect(() => {
     setProject(null);
     setError("");
@@ -1336,9 +1308,7 @@ function CommunityDetail({
     }
     let alive = true;
     setLoading(true);
-    Promise.resolve(
-      client.from("community_projects").select("*").eq("id", id).single(),
-    )
+    Promise.resolve(client.project(id))
       .then(({ data, error }) => {
         if (!alive) return;
         if (error) setError(message(error));

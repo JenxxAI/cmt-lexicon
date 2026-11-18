@@ -3,7 +3,7 @@
 import { CommunityAccountMenu } from "./CommunityAccountMenu";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { CommunitySession as Session } from "@/lib/community-session";
 import { displayName } from "@/lib/community-ui";
 
 // Session state is only a display hint; protected data remains behind RLS.
@@ -12,7 +12,7 @@ export function HeaderAccount() {
   useEffect(() => {
     let alive = true;
     let unsubscribe: (() => void) | undefined;
-    // Keep the auth SDK out of the glossary's initial JavaScript bundle.
+    // Load only the session display adapter; credentials stay HttpOnly.
     import("@/lib/supabase")
       .then(({ getCommunityClient }) => {
         if (!alive) return;
@@ -35,11 +35,7 @@ export function HeaderAccount() {
   return session ? (
     <CommunityAccountMenu
       handle={handle}
-      avatar={
-        session.user.identities?.find(
-          (identity) => identity.provider === "github",
-        )?.identity_data?.avatar_url ?? session.user.user_metadata.avatar_url
-      }
+      avatar={session.user.user_metadata.avatar_url}
     />
   ) : (
     <Link href="/community/auth/" className="site-sign-in">

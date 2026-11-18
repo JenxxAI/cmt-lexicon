@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 import { useEffect, useState } from "react";
 import { withBasePath } from "@/lib/base-path";
 import {
@@ -109,7 +110,7 @@ export function FullPreview() {
           }
         >
           {running ? (
-            <iframe
+            <SandboxPreview
               title={`Full preview: ${snapshot.title}`}
               srcDoc={snapshot.document}
               sandbox="allow-scripts"

@@ -87,13 +87,7 @@ assert.equal(quoted.warnings.length, 1);
 assert.equal(splitHtmlDocument("1 < 2 and 3 <4").source.html, "1 < 2 and 3 <4", "plain text with < is kept");
 assert.equal(splitHtmlDocument("<p>İstanbul</p><style>a{}</style>").source.css, "a{}", "non-ASCII does not shift indexes");
 
-// ---- site CSP lets the page show signed Supabase images and local blob thumbnails
-const csp = JSON.parse(readFileSync("vercel.json", "utf8")).headers[0].headers.find(
-  (h: { key: string }) => h.key === "Content-Security-Policy",
-).value as string;
-const imgSrc = csp.split(";").map((d) => d.trim()).find((d) => d.startsWith("img-src "))!;
-assert(imgSrc.includes("https://*.supabase.co") && imgSrc.includes("blob:"), imgSrc);
-assert(!/img-src[^;]*\*(?!\.supabase)/.test(csp), "no open img-src wildcard");
+assert.ok(readFileSync("src/proxy.ts", "utf8").includes("img-src 'self' data: blob:"), "site policy supports local thumbnails and same-origin images");
 
 // ---- database: migration, policies and RPC
 async function main() {
@@ -113,7 +107,7 @@ async function main() {
     grant select, insert, delete on storage.objects to anon, authenticated;
     grant execute on function storage.foldername(text) to anon, authenticated;`);
   for (const file of [
-    "202610270001_community.sql",
+    "20261028014154_community.sql",
     "20261028024314_restrict_anonymous_community_writes.sql",
     "20261111000001_community_previews.sql",
   ])

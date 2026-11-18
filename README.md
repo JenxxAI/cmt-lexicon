@@ -35,13 +35,13 @@ npm run dev        # http://localhost:3000
 | `npm run validate` | Check every `content/components/*.json` against the schema |
 | `npm test` | Search quality tests (beginner phrases must find the right component) |
 | `npm run typecheck` | TypeScript check |
-| `npm run build` | Validate, export, and build a fully static site into `out/` |
+| `npm run build` | Validate and build server-rendered pages plus the Community server API |
 
 The JSON export keeps component `entries` and `count` compatible; asset topics live in `assets` with their own `assetCount` and detail URLs. The text cheat sheet includes both.
 
 ## Stack
 
-Next.js (static export) · React · TypeScript · Tailwind CSS 4 · Zod. No database and no API: content is JSON files in the repo.
+Next.js (server-rendered glossary and server-backed Community) · React · TypeScript · Tailwind CSS 4 · Zod. Curated content is JSON; Community uses Supabase through a same-origin API.
 
 ## Add a component
 
@@ -73,7 +73,7 @@ Run `npm run validate` after editing content. Validation checks filenames, IDs, 
 
 Set `NEXT_PUBLIC_SITE_URL` to the public origin (for example, your own HTTPS domain) before building the site. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used if available. Without either, canonical links, social cards, the sitemap, and robots.txt use the published URL in `src/lib/site.ts`, taken from this repository’s homepage metadata. Override it when deploying to a different domain. `public/sitemap.xml` is generated and should not be committed.
 
-**GitHub Pages project sites** (`https://<user>.github.io/<repo>/`) need the repository path as a build-time prefix: set `NEXT_PUBLIC_BASE_PATH=/<repo>` (and `NEXT_PUBLIC_SITE_URL=https://<user>.github.io`), then verify the export with `npm run check:base-path -- /<repo>`. Leave it unset for Vercel, Netlify and custom domains. Full steps, including a ready-to-use GitHub Actions workflow, are in [docs/github-pages.md](docs/github-pages.md).
+**Hosting:** deploy with Vercel’s Next.js preset and default output directory. Secure Community login requires a server and is no longer compatible with GitHub Pages static hosting. `NEXT_PUBLIC_BASE_PATH` still supports a subpath on a server-capable host. See [community setup](docs/community-setup.md) for required server variables.
 
 ### Interactive website samples
 
@@ -87,7 +87,7 @@ The shared code editor uses file tabs, an Explorer sidebar, line numbers, syntax
 
 ## Community library
 
-`/community/` hosts user-created components and website templates, separate from the curated glossary. GitHub sign-in and project persistence use Supabase; publication requires a designated moderator's approval. The editor also supports local drafts and standalone HTML exports. See [community setup](docs/community-setup.md) for provisioning, OAuth redirects, public environment variables, moderator setup, server-enforced limits, and the launch smoke test. Without configuration, publishing is disabled and the local editor remains usable.
+`/community/` hosts user-created components and website templates, separate from the curated glossary. GitHub sign-in and project persistence use Supabase; publication requires a designated moderator's approval. The editor also supports local drafts and standalone HTML exports. See [community setup](docs/community-setup.md) for provisioning, OAuth redirects, server environment variables, moderator setup, server-enforced limits, and the launch smoke test. Without configuration, publishing is disabled and the local editor remains usable.
 
 ### Feedback
 
