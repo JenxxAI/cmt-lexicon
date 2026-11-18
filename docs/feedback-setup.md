@@ -6,7 +6,7 @@ The footer offers Bug / Feedback / Suggest a component, a message, optional repl
 
 Until all public settings are provided, the form shows a GitHub issue fallback and cannot submit. This PR does not deploy a database migration, function, or secrets.
 
-1. Apply `supabase/migrations/20261031015512_footer_feedback.sql` to the project's database using the SQL editor or your normal migration workflow. It creates `public.feedback_inbox`, the service-only `receive_feedback` function and private `feedback-screenshots` bucket. Do not add public storage policies or client table grants.
+1. Apply `supabase/migrations/20261101154951_footer_feedback.sql` to the project's database using the SQL editor or your normal migration workflow. It creates `public.feedback_inbox`, the service-only `receive_feedback` function and private `feedback-screenshots` bucket. Do not add public storage policies or client table grants.
 2. Create a Cloudflare Turnstile widget for your production hostname. Choose Managed mode. Add localhost only for development. The client uses action `feedback`; the server checks both action and the requesting origin's hostname. Never use Cloudflare test keys in production.
 3. In Supabase Edge Function secrets set:
    - `FEEDBACK_ALLOWED_ORIGINS=https://cmt-lexicon.vercel.app` (comma-separated exact origins if needed; no trailing slash, no wildcard).

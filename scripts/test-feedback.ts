@@ -47,7 +47,7 @@ async function main() {
     create table storage.buckets(id text, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);`);
   await db.exec(
     readFileSync(
-      "supabase/migrations/20261031015512_footer_feedback.sql",
+      "supabase/migrations/20261101154951_footer_feedback.sql",
       "utf8",
     ),
   );

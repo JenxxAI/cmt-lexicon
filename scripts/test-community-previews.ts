@@ -107,7 +107,7 @@ async function main() {
     grant select, insert, delete on storage.objects to anon, authenticated;
     grant execute on function storage.foldername(text) to anon, authenticated;`);
   for (const file of [
-    "202610270001_community.sql",
+    "20261028014154_community.sql",
     "20261028024314_restrict_anonymous_community_writes.sql",
     "20261111000001_community_previews.sql",
   ])

@@ -57,7 +57,7 @@ async function main() {
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to anon,authenticated; grant execute on function auth.uid() to anon,authenticated;`);
   await db.exec(
-    readFileSync("supabase/migrations/202610270001_community.sql", "utf8"),
+    readFileSync("supabase/migrations/20261028014154_community.sql", "utf8"),
   );
   await db.exec(
     readFileSync(
