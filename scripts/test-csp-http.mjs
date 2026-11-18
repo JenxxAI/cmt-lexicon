@@ -25,7 +25,7 @@ for (const path of [
   seen.add(nonce);
   assert.doesNotMatch(scriptPolicy, /unsafe-inline|unsafe-eval/);
   assert.match(response.headers.get("cache-control") ?? "", /no-store/);
-  const tags = [...(await response.text()).matchAll(/<script\b([^>]*)>/g)];
+  const tags = [...(await response.text()).matchAll(/<script\b([^>]*)>/gi)];
   assert.ok(tags.length > 0);
   for (const [, attrs] of tags) {
     if (!/\bsrc=/.test(attrs))
