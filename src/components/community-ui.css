@@ -470,3 +470,105 @@
   width: 100%;
   white-space: nowrap;
 }
+
+/* Account feedback uses the same surfaces and accents as the editor. */
+.community-ui .auth-card {
+  max-width: 38rem;
+  margin: 2rem auto;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border-radius: 2rem;
+  background: var(--color-surface);
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+.community-ui .auth-emblem {
+  display: grid;
+  place-items: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  margin-bottom: 1.5rem;
+  border-radius: 1.25rem;
+  color: var(--color-ink);
+  background: var(--color-line);
+}
+.community-ui .auth-eyebrow {
+  margin-bottom: 0.65rem;
+  font: 600 0.7rem/1.5 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-deep);
+}
+.community-ui .auth-description {
+  margin-top: 1rem;
+  color: var(--color-body);
+  line-height: 1.7;
+}
+.community-ui .auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+.community-ui .auth-footnote {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--color-body);
+}
+.community-ui .auth-feedback {
+  animation: auth-feedback-in 280ms ease-out;
+}
+.community-ui .auth-feedback[data-tone="success"] .auth-emblem {
+  color: var(--color-green);
+  background: var(--color-green-soft);
+}
+.community-ui .auth-feedback[data-tone="error"] .auth-emblem {
+  color: var(--color-red);
+  background: var(--color-red-soft);
+}
+.community-ui .auth-check {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 0;
+  animation: auth-check-in 420ms ease-out;
+}
+.community-ui .community-dialog::backdrop {
+  backdrop-filter: blur(6px);
+  animation: auth-backdrop-in 220ms ease-out;
+}
+@keyframes auth-feedback-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes auth-check-in {
+  from {
+    stroke-dashoffset: 24;
+  }
+}
+@keyframes auth-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (max-width: 480px) {
+  .community-ui .auth-actions {
+    flex-direction: column;
+  }
+  .community-ui .auth-actions .btn {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .community-ui .auth-feedback,
+  .community-ui .auth-check,
+  .community-ui .community-dialog::backdrop {
+    animation: none;
+  }
+}

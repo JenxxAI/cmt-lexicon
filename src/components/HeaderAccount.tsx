@@ -1,6 +1,7 @@
 "use client";
 
 import { CommunityAccountMenu } from "./CommunityAccountMenu";
+import { GitHubIcon } from "./GitHubIcon";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { CommunitySession as Session } from "@/lib/community-session";
@@ -39,7 +40,7 @@ export function HeaderAccount() {
     />
   ) : (
     <Link href="/community/auth/" className="site-sign-in">
-      Sign in
+      <GitHubIcon size={18} /> Sign in
     </Link>
   );
 }

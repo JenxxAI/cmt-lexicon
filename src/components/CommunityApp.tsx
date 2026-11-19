@@ -7,6 +7,7 @@ import { CommunityShell } from "./CommunityShell";
 import type { ReactNode } from "react";
 import { CommunityAccountMenu } from "./CommunityAccountMenu";
 import { AuthDialog } from "./AuthDialog";
+import { GitHubIcon } from "./GitHubIcon";
 import { Spinner } from "./Spinner";
 import {
   consumeSignIn,
@@ -43,7 +44,11 @@ import {
   previewAlt,
   previewPath,
 } from "@/lib/community-previews";
-import { IMPORT_TEXT_LIMIT, importKind, splitHtmlDocument } from "@/lib/import-files";
+import {
+  IMPORT_TEXT_LIMIT,
+  importKind,
+  splitHtmlDocument,
+} from "@/lib/import-files";
 import { OpenFullPreview } from "./OpenFullPreview";
 import { CopyButton } from "./CopyButton";
 import { RequestStatus } from "./RequestStatus";
@@ -123,15 +128,11 @@ export function CommunityApp({
     return () => window.clearTimeout(timeout);
   }, [awaitingReturn, ready, session]);
   useEffect(() => {
-    if (dialog?.kind !== "signed-in") return;
-    const timeout = window.setTimeout(() => setDialog(null), 2500);
-    return () => window.clearTimeout(timeout);
-  }, [dialog]);
-  useEffect(() => {
     function restored(event: PageTransitionEvent) {
       if (!event.persisted) return;
       consumeSignIn();
       authPending.current = false;
+      setAuthBusy(false);
       setDialog((current) =>
         current?.kind === "redirecting"
           ? { kind: "error", retry: "in", cancelled: true }
@@ -248,6 +249,7 @@ export function CommunityApp({
       markSignIn();
       setDialog({ kind: "redirecting" });
     }
+    let leaving = false;
     setAuthBusy(true);
     setError("");
     try {
@@ -255,6 +257,7 @@ export function CommunityApp({
         ? await client.auth.signOut()
         : await client.auth.signInWithOAuth();
       if (result.error) throw result.error;
+      leaving = !signOut;
       if (signOut) {
         setNotice("");
         setDialog({ kind: "signed-out" });
@@ -267,8 +270,10 @@ export function CommunityApp({
         detail: message(error),
       });
     } finally {
-      authPending.current = false;
-      setAuthBusy(false);
+      if (!leaving) {
+        authPending.current = false;
+        setAuthBusy(false);
+      }
     }
   }
   return (
@@ -293,7 +298,8 @@ export function CommunityApp({
               disabled={authBusy || offline}
               onClick={() => authenticate()}
             >
-              Sign in with GitHub
+              {authBusy ? <Spinner /> : <GitHubIcon />}
+              {authBusy ? "Opening GitHub…" : "Sign in with GitHub"}
             </button>
           ))
         }
@@ -355,18 +361,69 @@ export function CommunityApp({
               />
             )}
             {view === "auth" && (
-              <section className="my-8 rounded-[28px] bg-surface p-6">
+              <section className="auth-card">
+                <div className="auth-emblem">
+                  <GitHubIcon size={30} />
+                </div>
+                <p className="auth-eyebrow">Your creative space</p>
                 <h2 className="font-display text-2xl font-bold">
-                  {session ? "You are signed in" : "Sign-in has not completed"}
+                  {awaitingReturn
+                    ? "Finishing your sign-in…"
+                    : session
+                      ? "You're ready to create"
+                      : "A place for what you build"}
                 </h2>
-                <p className="my-4 text-body">
+                <p className="auth-description">
                   {session
-                    ? "Return to the editor to load your saved local draft, or check your submissions."
-                    : "Use the GitHub sign-in button to try again. If you opened this link in another browser, return to the browser where you started signing in."}
+                    ? "Pick up your saved draft, share a new project, or see how your submissions are doing."
+                    : "Sign in with GitHub to share your work and manage your submissions. You can browse and experiment without an account."}
                 </p>
-                <Link href="/community/create/" className={button}>
-                  Return to the editor
-                </Link>
+                <div className="auth-actions">
+                  {session ? (
+                    <>
+                      <Link href="/community/create/" className={button}>
+                        Open the editor
+                      </Link>
+                      <Link href="/community/mine/" className={secondary}>
+                        My submissions
+                      </Link>
+                      <button
+                        className={secondary}
+                        disabled={authBusy || offline}
+                        onClick={() => setDialog({ kind: "confirm-sign-out" })}
+                      >
+                        Sign out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className={button}
+                        disabled={authBusy || offline || awaitingReturn}
+                        aria-busy={authBusy || awaitingReturn}
+                        data-auth-trigger
+                        onClick={() => authenticate()}
+                      >
+                        {authBusy || awaitingReturn ? (
+                          <Spinner />
+                        ) : (
+                          <GitHubIcon />
+                        )}
+                        {awaitingReturn
+                          ? "Checking your session…"
+                          : authBusy
+                            ? "Opening GitHub…"
+                            : "Continue with GitHub"}
+                      </button>
+                      <Link href="/community/" className={secondary}>
+                        Keep browsing
+                      </Link>
+                    </>
+                  )}
+                </div>
+                <p className="auth-footnote">
+                  Your saved local drafts stay in this browser.
+                </p>
               </section>
             )}
           </>
@@ -579,38 +636,38 @@ function CommunityGallery({
               </div>
             )}
             <div className="p-6">
-            <p className="font-mono text-xs uppercase text-accent-deep">
-              {item.kind === "website" ? "Website type" : "Component"} ·{" "}
-              {item.status}
-            </p>
-            <h2 className="mt-3 break-words font-display text-2xl font-bold">
-              <Link
-                className="inline-flex min-h-11 items-center hover:text-accent-deep"
-                href={`/community/project/?id=${item.id}`}
-              >
-                {item.title}
-              </Link>
-            </h2>
-            <p className="mt-2 break-words text-sm text-body">
-              {item.description}
-            </p>
-            <p className="mt-4 text-sm text-muted">By @{item.author} · MIT</p>
-            <ul aria-label="Tags" className="mt-3 flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <li
-                  key={tag}
-                  className="rounded-full bg-paper px-3 py-1 text-xs text-muted"
+              <p className="font-mono text-xs uppercase text-accent-deep">
+                {item.kind === "website" ? "Website type" : "Component"} ·{" "}
+                {item.status}
+              </p>
+              <h2 className="mt-3 break-words font-display text-2xl font-bold">
+                <Link
+                  className="inline-flex min-h-11 items-center hover:text-accent-deep"
+                  href={`/community/project/?id=${item.id}`}
                 >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={`/community/project/?id=${item.id}`}
-              className={`${secondary} mt-5`}
-            >
-              View code &amp; preview →
-            </Link>
+                  {item.title}
+                </Link>
+              </h2>
+              <p className="mt-2 break-words text-sm text-body">
+                {item.description}
+              </p>
+              <p className="mt-4 text-sm text-muted">By @{item.author} · MIT</p>
+              <ul aria-label="Tags" className="mt-3 flex flex-wrap gap-2">
+                {item.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full bg-paper px-3 py-1 text-xs text-muted"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={`/community/project/?id=${item.id}`}
+                className={`${secondary} mt-5`}
+              >
+                View code &amp; preview →
+              </Link>
             </div>
           </li>
         ))}
@@ -775,7 +832,8 @@ function CommunityEditor({
   const fileInput = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
   useEffect(
-    () => () => imagesRef.current.forEach((image) => URL.revokeObjectURL(image.url)),
+    () => () =>
+      imagesRef.current.forEach((image) => URL.revokeObjectURL(image.url)),
     [],
   );
   function change(next: Partial<CommunityDraft>) {
@@ -828,7 +886,9 @@ function CommunityEditor({
   }, [client]);
   function removeImage(id: string) {
     setImages((old) => {
-      old.filter((image) => image.id === id).forEach((image) => URL.revokeObjectURL(image.url));
+      old
+        .filter((image) => image.id === id)
+        .forEach((image) => URL.revokeObjectURL(image.url));
       return old.filter((image) => image.id !== id);
     });
     setSubmitted(null);
@@ -855,9 +915,13 @@ function CommunityEditor({
     const pictures: File[] = [];
     for (const file of files) {
       const kind = importKind(file);
-      if (!kind) problems.push(`${file.name}: not an HTML, CSS, JavaScript, PNG, JPEG or WebP file.`);
+      if (!kind)
+        problems.push(
+          `${file.name}: not an HTML, CSS, JavaScript, PNG, JPEG or WebP file.`,
+        );
       else if (kind === "image") pictures.push(file);
-      else if (file.size > IMPORT_TEXT_LIMIT) problems.push(`${file.name}: larger than 100 KB.`);
+      else if (file.size > IMPORT_TEXT_LIMIT)
+        problems.push(`${file.name}: larger than 100 KB.`);
       else {
         try {
           const text = await file.text();
@@ -878,19 +942,30 @@ function CommunityEditor({
       if (code[key]?.length) next[key] = code[key]!.join("\n\n");
     const imported = Object.keys(next).map((key) => key.toUpperCase());
     if (imported.length && version === revision.current) change(next);
-    else if (imported.length) problems.push("Your newer edits were kept; import again to replace them.");
+    else if (imported.length)
+      problems.push(
+        "Your newer edits were kept; import again to replace them.",
+      );
     let added = 0;
     for (const file of pictures) {
       if (imagesRef.current.length + added >= PREVIEW_LIMITS.maxImages) {
-        problems.push(`${file.name}: up to ${PREVIEW_LIMITS.maxImages} preview images.`);
+        problems.push(
+          `${file.name}: up to ${PREVIEW_LIMITS.maxImages} preview images.`,
+        );
         continue;
       }
       try {
         const { prepareImage } = await import("@/lib/image-resize");
         const blob = await prepareImage(file);
         const id = crypto.randomUUID();
-        setImages((old) => [...old, { id, blob, url: URL.createObjectURL(blob), name: file.name }]);
-        imagesRef.current = [...imagesRef.current, { id, blob, url: "", name: file.name }];
+        setImages((old) => [
+          ...old,
+          { id, blob, url: URL.createObjectURL(blob), name: file.name },
+        ]);
+        imagesRef.current = [
+          ...imagesRef.current,
+          { id, blob, url: "", name: file.name },
+        ];
         added++;
       } catch (error) {
         problems.push(error instanceof Error ? error.message : String(error));
@@ -898,7 +973,8 @@ function CommunityEditor({
     }
     setSubmitted(null);
     const done = [
-      imported.length && `replaced the ${imported.join(", ")} ${imported.length > 1 ? "tabs" : "tab"}`,
+      imported.length &&
+        `replaced the ${imported.join(", ")} ${imported.length > 1 ? "tabs" : "tab"}`,
       added && `added ${added} preview ${added > 1 ? "images" : "image"}`,
     ].filter(Boolean);
     setStatus(
@@ -974,7 +1050,11 @@ function CommunityEditor({
     const uploaded: string[] = [];
     try {
       for (const image of images) {
-        const path = previewPath(session.user.id, crypto.randomUUID(), image.blob.type);
+        const path = previewPath(
+          session.user.id,
+          crypto.randomUUID(),
+          image.blob.type,
+        );
         const { error } = await client.uploadPreview(path, image.blob);
         if (error) throw error;
         uploaded.push(path);
@@ -993,10 +1073,10 @@ function CommunityEditor({
       });
       if (error) {
         // Nothing references these files yet, so the owner policy lets us delete them.
-        if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
+        if (uploaded.length)
+          await client.removePreviews(uploaded).catch(() => {});
         setError(message(error));
-      }
-      else if (submittedRevision === revision.current) {
+      } else if (submittedRevision === revision.current) {
         setSubmitted(String(data));
         setStatus(
           "Submitted for review. Only you and moderators can see it until it is approved.",
@@ -1007,7 +1087,8 @@ function CommunityEditor({
         );
       }
     } catch (error) {
-      if (uploaded.length) await client.removePreviews(uploaded).catch(() => {});
+      if (uploaded.length)
+        await client.removePreviews(uploaded).catch(() => {});
       setError(message(error));
     } finally {
       submitPending.current = false;
@@ -1090,12 +1171,14 @@ function CommunityEditor({
           Import your work &amp; show it off
         </h2>
         <p className="mt-2 text-sm text-body">
-          Import an <code>.html</code> page (its styles and scripts are split into the tabs
-          below), or separate <code>.css</code> / <code>.js</code> files. Add up to{" "}
-          {PREVIEW_LIMITS.maxImages} screenshots of the component or your site&apos;s landing
-          page. They appear on your project card; more than one becomes a swipeable carousel,
-          and the first is the cover. Images are resized in your browser and location data is
-          removed. They stay private until a moderator approves the project.
+          Import an <code>.html</code> page (its styles and scripts are split
+          into the tabs below), or separate <code>.css</code> / <code>.js</code>{" "}
+          files. Add up to {PREVIEW_LIMITS.maxImages} screenshots of the
+          component or your site&apos;s landing page. They appear on your
+          project card; more than one becomes a swipeable carousel, and the
+          first is the cover. Images are resized in your browser and location
+          data is removed. They stay private until a moderator approves the
+          project.
         </p>
         <input
           ref={fileInput}
@@ -1122,7 +1205,10 @@ function CommunityEditor({
           Import files or screenshots
         </button>
         {images.length > 0 && (
-          <ul aria-label="Preview images" className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul
+            aria-label="Preview images"
+            className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          >
             {images.map((image, position) => (
               <li key={image.id} className="min-w-0 rounded-2xl bg-paper p-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
@@ -1170,7 +1256,8 @@ function CommunityEditor({
         )}
         {images.length > 0 && !session && (
           <p className="mt-3 text-sm text-muted">
-            Screenshots are not saved with local drafts. Sign in first, then add them before you submit.
+            Screenshots are not saved with local drafts. Sign in first, then add
+            them before you submit.
           </p>
         )}
       </section>
