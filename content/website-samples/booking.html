@@ -1,21 +1,747 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>A little time for you — sample</title><style>
-/* THEME_TOKENS */
-*{box-sizing:border-box}html{scroll-padding-top:20px}body{margin:0;background:var(--color-paper);color:var(--color-ink);font:16px/1.55 system-ui,sans-serif}a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent-deep);outline-offset:3px}header,main,footer{max-width:1040px;margin:auto;padding:24px}header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.brand{font-size:22px;font-weight:800;text-decoration:none}nav{display:flex;flex-wrap:wrap;gap:18px}nav a,.brand{display:inline-flex;min-height:44px;align-items:center}h1{font-size:clamp(36px,6vw,62px);line-height:1.08;letter-spacing:-.045em;margin:16px 0;max-width:700px}h2{font-size:26px;line-height:1.2;letter-spacing:-.025em}h3{font-size:20px;margin:12px 0 8px}p{color:var(--color-body)}.eyebrow{color:var(--color-accent-deep);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.hero{border-radius:28px;background:var(--color-accent-soft);padding:clamp(24px,5vw,56px);margin-bottom:32px}.hero p{max-width:540px}.button,button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:999px;padding:12px 22px;background:var(--color-ink);color:var(--color-surface);text-decoration:none;font:inherit;font-weight:600;cursor:pointer}.secondary{background:var(--color-line);color:var(--color-ink)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:20px 0}.card{background:var(--color-surface);border-radius:24px;padding:24px;min-width:0}.card p{color:var(--color-muted)}.tile{height:110px;background:var(--color-accent-soft);border-radius:16px;display:grid;place-items:center;font-size:44px;font-weight:800;color:var(--color-accent-deep)}.split{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px}.sidebar{align-self:start;background:var(--color-surface);border-radius:24px;padding:20px}.sidebar a{display:flex;min-height:44px;align-items:center;text-decoration:none}.sidebar a:hover{text-decoration:underline}.stack{display:grid;gap:16px}.row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.muted,footer{color:var(--color-muted)}.stat{font-size:40px;font-weight:800;letter-spacing:-.04em}.pill{display:inline-block;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent-deep);padding:6px 12px;font-size:13px;font-weight:600}.line{border-bottom:1px solid var(--color-rule);padding:20px 0}.line:last-child{border-bottom:0}label{display:block;font-weight:600;margin:16px 0 6px}input,select{font:inherit;color:var(--color-ink);background:var(--color-surface);border:1px solid var(--color-muted);border-radius:12px;min-height:44px;width:100%;padding:10px 12px}form{max-width:560px}form button{margin-top:20px}.bar{height:20px;border-radius:999px;background:var(--color-line);overflow:hidden}.bar span{display:block;height:100%;background:var(--color-accent);border-radius:inherit}details{border-bottom:1px solid var(--color-rule);padding:12px 0}summary{min-height:44px;cursor:pointer;font-weight:600;padding:10px 0}pre{overflow:auto;max-width:100%;border-radius:16px;background:var(--color-ink);color:var(--color-surface);padding:20px}blockquote{font-size:24px;margin:20px 0}.avatar{width:52px;height:52px;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent-deep);display:grid;place-items:center;font-weight:800}.linklist a{display:flex;min-height:56px;align-items:center;justify-content:space-between;background:var(--color-surface);border-radius:16px;padding:16px 24px;text-decoration:none}.linklist a:hover{background:var(--color-accent-soft)}#status{min-height:24px;color:var(--color-accent-deep)}[hidden]{display:none!important}@media(max-width:640px){header,main,footer{padding:16px}.grid,.split{grid-template-columns:1fr}.sidebar nav{display:flex}.hero{padding:24px}.stat{font-size:32px}}
-</style></head><body>
-<header><a class="brand" href="#">Still studio</a><span class="pill">Sample website</span></header>
-<main><section class="hero"><span class="eyebrow">Movement · Rest · Everyday wellbeing</span><h1>A slower pace.<br>A stronger you.</h1><p>Small-group sessions in a welcoming space. Find a time that works for your day.</p><a class="button" href="#explore">Choose a session →</a></section><section id="explore" class="card"><h2>Reserve your next session</h2><p>45 minutes · Small group · $20 per session</p><form data-message="Sample reservation selected. No booking or payment was made."><label for="session">Session</label><select id="session"><option>Morning stretch · 8:00 AM</option><option>Mindful movement · 12:00 PM</option><option>Evening unwind · 6:00 PM</option></select><label for="date">Preferred date</label><input id="date" type="date" required><label for="name">Your name</label><input id="name" required><button>Preview reservation</button></form></section><p id="status" role="status"></p></main><footer>Illustrative website for learning. No real accounts, messages, bookings, or payments. Changes reset on reload.</footer><script>
-// Keep fragment navigation inside the preview and the exported document.
-document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
-  event.preventDefault();
-  const id = link.getAttribute('href').slice(1);
-  if (!id) { window.scrollTo(0, 0); return; }
-  const target = document.getElementById(id);
-  if (target) { target.scrollIntoView(); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
-}));
-
-document.querySelectorAll('[data-message]').forEach(button=>button.addEventListener('click',()=>{document.getElementById('status').textContent=button.dataset.message;}));
-document.querySelectorAll('form').forEach(form=>form.addEventListener('submit',event=>{event.preventDefault();document.getElementById('status').textContent=form.dataset.message || 'Sample submitted locally. No information was sent.';}));
-const search=document.getElementById('filter');if(search)search.addEventListener('input',()=>{let count=0;document.querySelectorAll('[data-search]').forEach(item=>{item.hidden=!item.textContent.toLowerCase().includes(search.value.toLowerCase());if(!item.hidden)count++;});document.getElementById('status').textContent=count+' matching results.';});
-document.querySelectorAll('[data-like]').forEach(button=>button.addEventListener('click',()=>{const active=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(active));button.textContent=active?'Liked · 25':'Like · 24';}));
-</script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Roam stays — sample</title>
+    <style>
+      /* THEME_TOKENS */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          15px/1.6 system-ui,
+          sans-serif;
+        background: var(--canvas);
+        color: var(--ink);
+      }
+      a {
+        color: inherit;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button,
+      a,
+      input,
+      select,
+      summary {
+        touch-action: manipulation;
+      }
+      button,
+      .button {
+        min-height: 44px;
+        padding: 10px 20px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        background: var(--primary);
+        color: var(--on-primary);
+        font-weight: 650;
+        border-radius: 8px;
+      }
+      button:hover,
+      .button:hover {
+        filter: brightness(0.93);
+      }
+      :focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 4px;
+      }
+      input,
+      select {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        background: var(--surface);
+        color: var(--ink);
+        max-width: 100%;
+        border-radius: 6px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(40px, 6vw, 76px);
+        line-height: 1.04;
+        letter-spacing: -0.055em;
+      }
+      h2 {
+        font-size: 28px;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+      }
+      h3 {
+        line-height: 1.3;
+      }
+      nav {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        text-decoration: none;
+      }
+      header,
+      .wrap,
+      footer {
+        max-width: 1160px;
+        margin: auto;
+        padding: 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-weight: 850;
+        font-size: 25px;
+        letter-spacing: -0.05em;
+        text-decoration: none;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .grid > * {
+        min-width: 0;
+      }
+      .tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 30px;
+        font-size: 12px;
+        background: var(--soft);
+      }
+      .secondary {
+        background: var(--surface);
+        color: var(--ink);
+        border-color: var(--line);
+      }
+      #status {
+        min-height: 24px;
+        margin: 16px 0;
+        color: var(--ink);
+      }
+      footer {
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+      }
+      dialog {
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        width: min(560px, calc(100% - 32px));
+        max-height: 85dvh;
+        padding: 28px;
+      }
+      dialog::backdrop {
+        background: rgb(0 0 0 / 0.45);
+        backdrop-filter: blur(4px);
+      }
+      dialog p {
+        line-height: 1.8;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .art {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .art:before,
+      .art:after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+      }
+      .art:before {
+        width: 90%;
+        height: 90%;
+        border-radius: 50%;
+        left: -10%;
+        top: 35%;
+        background: var(--art-1);
+        transform: rotate(-20deg);
+      }
+      .art:after {
+        width: 70%;
+        height: 110%;
+        border-radius: 45% 45% 0 0;
+        right: -12%;
+        top: 25%;
+        background: var(--art-2);
+        transform: rotate(24deg);
+      }
+      @media (max-width: 700px) {
+        header,
+        .wrap,
+        footer {
+          padding: 20px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          gap: 10px;
+        }
+        h1 {
+          font-size: 44px;
+        }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        button,
+        .button {
+          transition:
+            filter 0.18s,
+            transform 0.18s;
+        }
+        button:active,
+        .button:active {
+          transform: translateY(1px);
+        }
+        dialog[open] {
+          animation: appear 0.2s ease-out;
+        }
+        @keyframes appear {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+      }
+      :root {
+        --canvas: #fff;
+        --surface: #fff;
+        --ink: #182330;
+        --muted: #536172;
+        --primary: #075ac4;
+        --on-primary: #fff;
+        --soft: #eaf3ff;
+        --line: #d5dce3;
+        --focus: #864d00;
+        --navy: #063580;
+        --yellow: #ffcf49;
+        --art-1: #568b79;
+        --art-2: #aac7b0;
+      }
+      .blue {
+        background: var(--navy);
+        color: var(--on-primary);
+      }
+      .blue nav a {
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: 30px;
+      }
+      .blue nav a:first-child {
+        border-color: currentColor;
+      }
+      .hero {
+        padding: 36px 24px 65px;
+        max-width: 1160px;
+        margin: auto;
+      }
+      .hero h1 {
+        font-size: clamp(36px, 5vw, 58px);
+        margin-bottom: 16px;
+      }
+      .hero p {
+        font-size: 20px;
+      }
+      .search {
+        margin-top: -52px;
+        background: var(--yellow);
+        border: 4px solid var(--yellow);
+        border-radius: 10px;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 0.8fr auto;
+        gap: 4px;
+      }
+      .search label {
+        background: var(--surface);
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: 5px;
+      }
+      .search input,
+      .search select {
+        border: 0;
+        padding: 0;
+        min-height: 32px;
+        width: 100%;
+        min-width: 0;
+      }
+      .search button {
+        border-radius: 5px;
+      }
+      .benefits {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        padding: 20px 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .offer {
+        background: var(--soft);
+        border: 1px solid var(--line);
+        padding: 24px;
+        border-radius: 12px;
+        margin: 20px 0 36px;
+      }
+      .destinations .art {
+        height: 160px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        background: #c5e0ed;
+      }
+      .destinations article:nth-child(2) .art {
+        background: #e7d3b4;
+        --art-1: #b78360;
+        --art-2: #d8aa86;
+      }
+      .destinations article:nth-child(3) .art {
+        background: #bcd8c8;
+        --art-1: #347463;
+        --art-2: #78a18a;
+      }
+      .destinations h3 {
+        margin-bottom: 4px;
+      }
+      .results-heading {
+        margin: 40px 0 20px;
+      }
+      .stay {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .stay .art {
+        height: 170px;
+        background: #d8e7ee;
+      }
+      .stay:nth-child(2) .art {
+        background: #f1ddc8;
+        --art-1: #bc8661;
+        --art-2: #d3af8c;
+      }
+      .stay:nth-child(3) .art {
+        background: #d5e6db;
+        --art-1: #6a9680;
+        --art-2: #a7bf9a;
+      }
+      .stay-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .stay h3 {
+        margin-bottom: 4px;
+      }
+      .rating {
+        font-weight: 700;
+        color: var(--primary);
+        margin: 16px 0;
+      }
+      .price {
+        margin-top: auto;
+        padding-top: 18px;
+      }
+      .price strong {
+        font-size: 24px;
+      }
+      .stay button {
+        width: 100%;
+        margin-top: 16px;
+      }
+      .terms {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      #review dl {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      #review dd {
+        margin: 0;
+        text-align: right;
+        font-weight: 700;
+      }
+      .review-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 900px) {
+        .search {
+          grid-template-columns: 1fr 1fr;
+        }
+        .search label:first-child,
+        .search button {
+          grid-column: 1/-1;
+        }
+      }
+      @media (max-width: 450px) {
+        .search {
+          grid-template-columns: 1fr;
+        }
+        .search label {
+          grid-column: 1/-1;
+        }
+        .hero {
+          padding-top: 20px;
+        }
+        .benefits {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blue">
+      <header>
+        <a class="brand" href="#stays">roam<span aria-hidden="true">.</span></a
+        ><span>Find a stay. Make a memory.</span>
+        <nav aria-label="Travel">
+          <a href="#stays">⌂ Stays</a><a href="#destinations">Destinations</a
+          ><a href="#offers">Offers</a>
+        </nav>
+      </header>
+      <section class="hero">
+        <span class="eyebrow">A change of scenery starts here</span>
+        <h1>Your next good getaway.</h1>
+        <p>From city weekends to slower mornings by the sea.</p>
+      </section>
+    </div>
+    <main class="wrap">
+      <form class="search" id="search">
+        <label
+          >Where are you going?<input
+            id="destination"
+            type="search"
+            placeholder="Try Lisbon, Porto or Sintra" /></label
+        ><label>Check-in<input id="checkin" type="date" required /></label
+        ><label>Check-out<input id="checkout" type="date" required /></label
+        ><label
+          >Guests<select id="guests">
+            <option>2 adults</option>
+            <option>1 adult</option>
+            <option>3 adults</option>
+          </select></label
+        ><button>Search stays</button>
+      </form>
+      <div class="benefits">
+        <span>✓ Clear pricing, including taxes</span
+        ><span>✓ Flexible sample stays</span
+        ><span>✓ No real payment required</span>
+      </div>
+      <section class="offer row" id="offers">
+        <div>
+          <span class="eyebrow">A little further for a little less</span>
+          <h2>Make a weekend of it.</h2>
+          <p>
+            Explore three hand-picked stays, each with its own point of view.
+          </p>
+        </div>
+        <a class="button" href="#stays">Explore stays →</a>
+      </section>
+      <section id="destinations">
+        <h2>Where will you go next?</h2>
+        <p class="muted">A few places to inspire your next chapter.</p>
+        <div class="grid destinations">
+          <article>
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated coastal hills"
+            ></div>
+            <h3>Lisbon</h3>
+            <p class="muted">Sunlit streets & ocean air</p>
+          </article>
+          <article>
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated warm terracotta rooftops"
+            ></div>
+            <h3>Porto</h3>
+            <p class="muted">Riverside walks & hidden corners</p>
+          </article>
+          <article>
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated green woodland hills"
+            ></div>
+            <h3>Sintra</h3>
+            <p class="muted">Forest trails & quiet retreats</p>
+          </article>
+        </div>
+      </section>
+      <section id="stays">
+        <div class="row results-heading">
+          <div>
+            <h2>Find your kind of stay</h2>
+            <span class="muted" id="result-count"
+              >3 hand-picked properties</span
+            >
+          </div>
+          <span class="tag">Prices per night · EUR</span>
+        </div>
+        <div class="grid">
+          <article class="stay" data-city="lisbon">
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated landscape for The Blue House"
+            ></div>
+            <div class="stay-content">
+              <h3>The Blue House</h3>
+              <span class="muted">Lisbon · Guesthouse near the coast</span>
+              <p class="rating">9.4 / 10 · Wonderful</p>
+              <span class="terms"
+                >Free cancellation until 48h before check-in.</span
+              >
+              <div class="price">
+                <strong>€120</strong> <span class="muted">/ night</span>
+              </div>
+              <span class="terms">Taxes included · Demo availability</span
+              ><button data-stay="0">See availability →</button>
+            </div>
+          </article>
+          <article class="stay" data-city="porto">
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated landscape for Riverside Rooms"
+            ></div>
+            <div class="stay-content">
+              <h3>Riverside Rooms</h3>
+              <span class="muted">Porto · A small city hideaway</span>
+              <p class="rating">9.1 / 10 · Wonderful</p>
+              <span class="terms"
+                >Free cancellation until 48h before check-in.</span
+              >
+              <div class="price">
+                <strong>€95</strong> <span class="muted">/ night</span>
+              </div>
+              <span class="terms">Taxes included · Demo availability</span
+              ><button data-stay="1">See availability →</button>
+            </div>
+          </article>
+          <article class="stay" data-city="sintra">
+            <div
+              class="art"
+              role="img"
+              aria-label="Illustrated landscape for Forest & Fern"
+            ></div>
+            <div class="stay-content">
+              <h3>Forest & Fern</h3>
+              <span class="muted">Sintra · A peaceful garden retreat</span>
+              <p class="rating">9.6 / 10 · Exceptional</p>
+              <span class="terms"
+                >Free cancellation until 48h before check-in.</span
+              >
+              <div class="price">
+                <strong>€145</strong> <span class="muted">/ night</span>
+              </div>
+              <span class="terms">Taxes included · Demo availability</span
+              ><button data-stay="2">See availability →</button>
+            </div>
+          </article>
+        </div>
+        <p id="no-results" hidden>
+          No stays match that destination. Try Lisbon, Porto, Sintra, or clear
+          your search.
+        </p>
+      </section>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <dialog id="review" aria-labelledby="review-title">
+      <span class="eyebrow">Review your sample stay</span>
+      <h2 id="review-title"></h2>
+      <dl>
+        <dt>Dates</dt>
+        <dd id="review-dates"></dd>
+        <dt>Guests</dt>
+        <dd id="review-guests"></dd>
+        <dt>Total, taxes included</dt>
+        <dd id="review-price"></dd>
+      </dl>
+      <p class="terms">
+        Check-in from 15:00; check-out by 11:00, Europe/Lisbon time. Free
+        cancellation until 48 hours before arrival. This demo makes no real
+        reservation.
+      </p>
+      <div class="review-actions">
+        <button id="reserve">Confirm sample reservation</button
+        ><button class="secondary" data-close>Change selection</button>
+      </div>
+      <p id="confirmation" role="status"></p>
+      <button id="cancel-reservation" class="secondary" hidden>
+        Cancel sample reservation
+      </button>
+    </dialog>
+    <footer>
+      UI Lexicon · Interactive learning sample. Fictional content; no real
+      accounts, subscriptions, bookings, or payments. Changes reset on reload.
+    </footer>
+    <script>
+      const status = document.getElementById("status");
+      document.querySelectorAll('a[href^="#"]').forEach((a) =>
+        a.addEventListener("click", (e) => {
+          const target = document.getElementById(
+            a.getAttribute("href").slice(1),
+          );
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView();
+            target.tabIndex = -1;
+            target.focus({ preventScroll: true });
+          }
+        }),
+      );
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) =>
+          b.addEventListener("click", () => b.closest("dialog").close()),
+        );
+      const start = document.getElementById("checkin"),
+        end = document.getElementById("checkout");
+      const dateString = (d) =>
+        [
+          d.getFullYear(),
+          String(d.getMonth() + 1).padStart(2, "0"),
+          String(d.getDate()).padStart(2, "0"),
+        ].join("-");
+      const today = new Date();
+      start.min = dateString(today);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      start.value = dateString(tomorrow);
+      tomorrow.setDate(tomorrow.getDate() + 2);
+      end.value = dateString(tomorrow);
+      end.min = start.value;
+      function validDates() {
+        end.setCustomValidity(
+          end.value <= start.value
+            ? "Choose a check-out date after check-in."
+            : "",
+        );
+        return document.getElementById("search").reportValidity();
+      }
+      start.addEventListener("change", () => {
+        end.min = start.value;
+        end.setCustomValidity("");
+      });
+      end.addEventListener("change", () => end.setCustomValidity(""));
+      document.getElementById("search").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!validDates()) return;
+        const q = document
+          .getElementById("destination")
+          .value.trim()
+          .toLowerCase();
+        let n = 0;
+        document.querySelectorAll("[data-city]").forEach((a) => {
+          a.hidden = !a.dataset.city.includes(q);
+          if (!a.hidden) n++;
+        });
+        document.getElementById("no-results").hidden = n !== 0;
+        document.getElementById("result-count").textContent =
+          n + " matching properties";
+        status.textContent = n + " sample stays for your selected dates.";
+      });
+      const names = ["The Blue House", "Riverside Rooms", "Forest & Fern"],
+        prices = [120, 95, 145];
+      document.querySelectorAll("[data-stay]").forEach((b) =>
+        b.addEventListener("click", () => {
+          if (!validDates()) return;
+          const i = Number(b.dataset.stay),
+            n = (Date.parse(end.value) - Date.parse(start.value)) / 86400000;
+          document.getElementById("review-title").textContent = names[i];
+          document.getElementById("review-dates").textContent =
+            start.value + " → " + end.value;
+          document.getElementById("review-guests").textContent =
+            document.getElementById("guests").value;
+          document.getElementById("review-price").textContent =
+            "€" + n * prices[i] + " / " + n + " nights";
+          document.getElementById("confirmation").textContent = "";
+          document.getElementById("reserve").hidden = false;
+          document.getElementById("cancel-reservation").hidden = true;
+          document.getElementById("review").showModal();
+        }),
+      );
+      document.getElementById("reserve").addEventListener("click", (e) => {
+        e.currentTarget.hidden = true;
+        document.getElementById("confirmation").textContent =
+          "Sample confirmed · DEMO-2048. Nothing was charged or sent.";
+        const cancel = document.getElementById("cancel-reservation");
+        cancel.hidden = false;
+        cancel.focus();
+      });
+      document
+        .getElementById("cancel-reservation")
+        .addEventListener("click", (e) => {
+          e.currentTarget.hidden = true;
+          document.getElementById("confirmation").textContent =
+            "Sample reservation cancelled. No charges apply.";
+          document.querySelector("#review [data-close]").focus();
+        });
+    </script>
+  </body>
+</html>

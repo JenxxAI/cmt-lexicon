@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -245,10 +246,10 @@ export function WebsiteEditor({ initialCode, id, name }: { initialCode: string; 
         <div className={`min-w-0 overflow-hidden rounded-[24px] border border-rule bg-stage p-2 sm:p-4 ${pane === "preview" ? "" : "max-lg:hidden"}`}>
           {phone ? (
             <div className="mx-auto w-full max-w-[390px] rounded-[40px] border border-muted bg-ink p-2.5 shadow-xl">
-              <iframe title={frameTitle} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[max(520px,calc(100dvh-24rem))] w-full rounded-[28px] border-0 bg-paper" />
+              <SandboxPreview title={frameTitle} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[max(520px,calc(100dvh-24rem))] w-full rounded-[28px] border-0 bg-paper" />
             </div>
           ) : (
-            <iframe title={frameTitle} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[max(420px,calc(100dvh-19rem))] w-full rounded-xl border-0 bg-paper" />
+            <SandboxPreview title={frameTitle} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[max(420px,calc(100dvh-19rem))] w-full rounded-xl border-0 bg-paper" />
           )}
         </div>
       </div>

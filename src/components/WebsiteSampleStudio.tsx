@@ -1,4 +1,5 @@
 "use client";
+import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -26,10 +27,10 @@ export function WebsiteSampleStudio({ initialCode, id, name }: { initialCode: st
       <div className="overflow-hidden rounded-2xl border border-rule bg-stage p-2 sm:p-6">
         {phone ? (
           <div className="mx-auto w-full max-w-[414px] rounded-[44px] border border-muted bg-ink p-2.5 shadow-xl">
-            <iframe title={`${name} phone sample`} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[640px] w-full rounded-[28px] border-0 bg-paper" />
+            <SandboxPreview title={`${name} phone sample`} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[640px] w-full rounded-[28px] border-0 bg-paper" />
           </div>
         ) : (
-          <iframe title={`${name} sample`} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[640px] w-full rounded-xl border-0 bg-paper" />
+          <SandboxPreview title={`${name} sample`} sandbox="allow-scripts allow-forms" srcDoc={doc} className="block h-[640px] w-full rounded-xl border-0 bg-paper" />
         )}
       </div>
     </section>
