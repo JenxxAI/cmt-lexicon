@@ -86,7 +86,7 @@ export default async function WebsitePage({
             </dl>
           </div>
           <div className="min-w-0">
-            <PromptPanel {...entry.prompts} />
+            <PromptPanel {...entry.prompts} showTokens={false} />
           </div>
         </div>
         {sample && (

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { WebsiteTypeSummary } from "@/lib/schema";
-import { estimateTokens } from "@/lib/tokens";
 import { CopyButton } from "./CopyButton";
 
 export function WebsiteCard({ entry }: { entry: WebsiteTypeSummary }) {
@@ -16,10 +15,7 @@ export function WebsiteCard({ entry }: { entry: WebsiteTypeSummary }) {
       </h3>
       <p className="mt-1 text-sm text-muted">{entry.aliases.slice(0, 3).join(" · ")}</p>
       <p className="mb-5 mt-3 text-body">{entry.definition}</p>
-      <div className="mt-auto flex items-center justify-between gap-3">
-        <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
-          ~{estimateTokens(entry.shortPrompt)} tokens
-        </span>
+      <div className="mt-auto flex items-center justify-end gap-3">
         <CopyButton text={entry.shortPrompt} className="relative z-10" />
       </div>
     </article>

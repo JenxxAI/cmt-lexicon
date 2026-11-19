@@ -6,7 +6,7 @@ import { CopyButton } from "./CopyButton";
 
 type Mode = "short" | "detailed";
 
-export function PromptPanel({ short, detailed, customized = 0, onReset }: { short: string; detailed: string; customized?: number; onReset?: () => void }) {
+export function PromptPanel({ short, detailed, customized = 0, onReset, showTokens = true }: { short: string; detailed: string; customized?: number; onReset?: () => void; showTokens?: boolean }) {
   const [mode, setMode] = useState<Mode>("short");
   const text = mode === "short" ? short : detailed;
   const otherLabel = mode === "short" ? "Detailed" : "Short";
@@ -43,12 +43,16 @@ export function PromptPanel({ short, detailed, customized = 0, onReset }: { shor
 
       <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
-            ~{estimateTokens(text)} tokens
-          </span>
-          <span className="text-[13px] text-muted">
-            {otherLabel} is ~{estimateTokens(otherText)}
-          </span>
+          {showTokens && (
+            <>
+              <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
+                ~{estimateTokens(text)} tokens
+              </span>
+              <span className="text-[13px] text-muted">
+                {otherLabel} is ~{estimateTokens(otherText)}
+              </span>
+            </>
+          )}
         </div>
         <CopyButton text={text} variant="solid" />
       </div>
