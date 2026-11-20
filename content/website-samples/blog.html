@@ -1,21 +1,615 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Stories for slower living — sample</title><style>
-/* THEME_TOKENS */
-*{box-sizing:border-box}html{scroll-padding-top:20px}body{margin:0;background:var(--color-paper);color:var(--color-ink);font:16px/1.55 system-ui,sans-serif}a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent-deep);outline-offset:3px}header,main,footer{max-width:1040px;margin:auto;padding:24px}header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.brand{font-size:22px;font-weight:800;text-decoration:none}nav{display:flex;flex-wrap:wrap;gap:18px}nav a,.brand{display:inline-flex;min-height:44px;align-items:center}h1{font-size:clamp(36px,6vw,62px);line-height:1.08;letter-spacing:-.045em;margin:16px 0;max-width:700px}h2{font-size:26px;line-height:1.2;letter-spacing:-.025em}h3{font-size:20px;margin:12px 0 8px}p{color:var(--color-body)}.eyebrow{color:var(--color-accent-deep);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.hero{border-radius:28px;background:var(--color-accent-soft);padding:clamp(24px,5vw,56px);margin-bottom:32px}.hero p{max-width:540px}.button,button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:999px;padding:12px 22px;background:var(--color-ink);color:var(--color-surface);text-decoration:none;font:inherit;font-weight:600;cursor:pointer}.secondary{background:var(--color-line);color:var(--color-ink)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:20px 0}.card{background:var(--color-surface);border-radius:24px;padding:24px;min-width:0}.card p{color:var(--color-muted)}.tile{height:110px;background:var(--color-accent-soft);border-radius:16px;display:grid;place-items:center;font-size:44px;font-weight:800;color:var(--color-accent-deep)}.split{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px}.sidebar{align-self:start;background:var(--color-surface);border-radius:24px;padding:20px}.sidebar a{display:flex;min-height:44px;align-items:center;text-decoration:none}.sidebar a:hover{text-decoration:underline}.stack{display:grid;gap:16px}.row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.muted,footer{color:var(--color-muted)}.stat{font-size:40px;font-weight:800;letter-spacing:-.04em}.pill{display:inline-block;border-radius:999px;background:var(--color-accent-soft);color:var(--color-accent-deep);padding:6px 12px;font-size:13px;font-weight:600}.line{border-bottom:1px solid var(--color-rule);padding:20px 0}.line:last-child{border-bottom:0}label{display:block;font-weight:600;margin:16px 0 6px}input,select{font:inherit;color:var(--color-ink);background:var(--color-surface);border:1px solid var(--color-muted);border-radius:12px;min-height:44px;width:100%;padding:10px 12px}form{max-width:560px}form button{margin-top:20px}.bar{height:20px;border-radius:999px;background:var(--color-line);overflow:hidden}.bar span{display:block;height:100%;background:var(--color-accent);border-radius:inherit}details{border-bottom:1px solid var(--color-rule);padding:12px 0}summary{min-height:44px;cursor:pointer;font-weight:600;padding:10px 0}pre{overflow:auto;max-width:100%;border-radius:16px;background:var(--color-ink);color:var(--color-surface);padding:20px}blockquote{font-size:24px;margin:20px 0}.avatar{width:52px;height:52px;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent-deep);display:grid;place-items:center;font-weight:800}.linklist a{display:flex;min-height:56px;align-items:center;justify-content:space-between;background:var(--color-surface);border-radius:16px;padding:16px 24px;text-decoration:none}.linklist a:hover{background:var(--color-accent-soft)}#status{min-height:24px;color:var(--color-accent-deep)}[hidden]{display:none!important}@media(max-width:640px){header,main,footer{padding:16px}.grid,.split{grid-template-columns:1fr}.sidebar nav{display:flex}.hero{padding:24px}.stat{font-size:32px}}
-</style></head><body>
-<header><a class="brand" href="#">Field notes</a><span class="pill">Sample website</span></header>
-<main><section class="hero"><span class="eyebrow">Ideas, observations & small discoveries</span><h1>Pay attention to<br>the everyday.</h1><p>Notes on creating, living well, and finding inspiration in unexpected places.</p><a class="button" href="#explore">Read the latest →</a></section><section id="explore"><h2>From the notebook</h2><div class="grid"><article class="card" data-search><div class="tile" aria-hidden="true">01</div><h3>The pleasure of starting again</h3><p>Essay · 6 min read · How small changes create room for something new.</p></article><article class="card" data-search><div class="tile" aria-hidden="true">02</div><h3>A desk with breathing room</h3><p>Spaces · 4 min read · Make a little space for the work you love.</p></article><article class="card" data-search><div class="tile" aria-hidden="true">03</div><h3>Walk without a destination</h3><p>Everyday · 3 min read · An invitation to let curiosity lead.</p></article></div><details><summary>Read: The pleasure of starting again</summary><p>You do not need a new year to begin again. Sometimes all it takes is a fresh page, an open window, and permission to start small.</p><p>Choose one thing to make easier today. Let that be enough.</p></details></section><p id="status" role="status"></p></main><footer>Illustrative website for learning. No real accounts, messages, bookings, or payments. Changes reset on reload.</footer><script>
-// Keep fragment navigation inside the preview and the exported document.
-document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
-  event.preventDefault();
-  const id = link.getAttribute('href').slice(1);
-  if (!id) { window.scrollTo(0, 0); return; }
-  const target = document.getElementById(id);
-  if (target) { target.scrollIntoView(); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
-}));
-
-document.querySelectorAll('[data-message]').forEach(button=>button.addEventListener('click',()=>{document.getElementById('status').textContent=button.dataset.message;}));
-document.querySelectorAll('form').forEach(form=>form.addEventListener('submit',event=>{event.preventDefault();document.getElementById('status').textContent=form.dataset.message || 'Sample submitted locally. No information was sent.';}));
-const search=document.getElementById('filter');if(search)search.addEventListener('input',()=>{let count=0;document.querySelectorAll('[data-search]').forEach(item=>{item.hidden=!item.textContent.toLowerCase().includes(search.value.toLowerCase());if(!item.hidden)count++;});document.getElementById('status').textContent=count+' matching results.';});
-document.querySelectorAll('[data-like]').forEach(button=>button.addEventListener('click',()=>{const active=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(active));button.textContent=active?'Liked · 25':'Like · 24';}));
-</script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Margin journal — sample</title>
+    <style>
+      /* THEME_TOKENS */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          15px/1.6 system-ui,
+          sans-serif;
+        background: var(--canvas);
+        color: var(--ink);
+      }
+      a {
+        color: inherit;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button,
+      a,
+      input,
+      select,
+      summary {
+        touch-action: manipulation;
+      }
+      button,
+      .button {
+        min-height: 44px;
+        padding: 10px 20px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        background: var(--primary);
+        color: var(--on-primary);
+        font-weight: 650;
+        border-radius: 8px;
+      }
+      button:hover,
+      .button:hover {
+        filter: brightness(0.93);
+      }
+      :focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 4px;
+      }
+      input,
+      select {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        background: var(--surface);
+        color: var(--ink);
+        max-width: 100%;
+        border-radius: 6px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(40px, 6vw, 76px);
+        line-height: 1.04;
+        letter-spacing: -0.055em;
+      }
+      h2 {
+        font-size: 28px;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+      }
+      h3 {
+        line-height: 1.3;
+      }
+      nav {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        text-decoration: none;
+      }
+      header,
+      .wrap,
+      footer {
+        max-width: 1160px;
+        margin: auto;
+        padding: 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-weight: 850;
+        font-size: 25px;
+        letter-spacing: -0.05em;
+        text-decoration: none;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .grid > * {
+        min-width: 0;
+      }
+      .tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 30px;
+        font-size: 12px;
+        background: var(--soft);
+      }
+      .secondary {
+        background: var(--surface);
+        color: var(--ink);
+        border-color: var(--line);
+      }
+      #status {
+        min-height: 24px;
+        margin: 16px 0;
+        color: var(--ink);
+      }
+      footer {
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+      }
+      dialog {
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        width: min(560px, calc(100% - 32px));
+        max-height: 85dvh;
+        padding: 28px;
+      }
+      dialog::backdrop {
+        background: rgb(0 0 0 / 0.45);
+        backdrop-filter: blur(4px);
+      }
+      dialog p {
+        line-height: 1.8;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .art {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .art:before,
+      .art:after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+      }
+      .art:before {
+        width: 90%;
+        height: 90%;
+        border-radius: 50%;
+        left: -10%;
+        top: 35%;
+        background: var(--art-1);
+        transform: rotate(-20deg);
+      }
+      .art:after {
+        width: 70%;
+        height: 110%;
+        border-radius: 45% 45% 0 0;
+        right: -12%;
+        top: 25%;
+        background: var(--art-2);
+        transform: rotate(24deg);
+      }
+      @media (max-width: 700px) {
+        header,
+        .wrap,
+        footer {
+          padding: 20px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          gap: 10px;
+        }
+        h1 {
+          font-size: 44px;
+        }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        button,
+        .button {
+          transition:
+            filter 0.18s,
+            transform 0.18s;
+        }
+        button:active,
+        .button:active {
+          transform: translateY(1px);
+        }
+        dialog[open] {
+          animation: appear 0.2s ease-out;
+        }
+        @keyframes appear {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+      }
+      :root {
+        --canvas: #f5f2ed;
+        --surface: #fff;
+        --ink: #202024;
+        --muted: #5c5b63;
+        --primary: #2d2e87;
+        --on-primary: #fff;
+        --soft: #e9e6f5;
+        --line: #d2cdd7;
+        --focus: #5853c4;
+        --art-1: #768870;
+        --art-2: #b9c4ab;
+      }
+      .masthead {
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+      .hero {
+        background: var(--primary);
+        color: var(--on-primary);
+        text-align: center;
+        padding: 62px 24px 100px;
+      }
+      .hero h1 {
+        max-width: 750px;
+        margin: 20px auto;
+      }
+      .hero p {
+        max-width: 490px;
+        margin: 0 auto 24px;
+      }
+      .hero .button {
+        background: var(--surface);
+        color: var(--primary);
+        border-radius: 99px;
+      }
+      .feature {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        margin: -58px auto 48px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        box-shadow: 0 16px 30px rgb(32 32 36 / 0.06);
+      }
+      .feature .art {
+        min-height: 330px;
+        background: #d9d8c1;
+      }
+      .feature-copy {
+        padding: 40px;
+      }
+      .feature h2 {
+        font:
+          40px/1.15 Georgia,
+          serif;
+        letter-spacing: -0.03em;
+      }
+      .feature button {
+        border-radius: 99px;
+      }
+      .art span {
+        position: absolute;
+        z-index: 2;
+        left: 24px;
+        top: 24px;
+        font:
+          italic 38px Georgia,
+          serif;
+        color: #273d34;
+      }
+      .topics {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 24px 0;
+      }
+      .topics button {
+        border-radius: 99px;
+        background: transparent;
+        color: var(--ink);
+        border-color: var(--line);
+      }
+      .topics button[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--surface);
+      }
+      .story {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 24px;
+      }
+      .story .art {
+        height: 210px;
+        margin-bottom: 20px;
+        background: #ede0cc;
+      }
+      .story:nth-child(2) .art {
+        background: #d6d5ec;
+        --art-1: #8a7eae;
+        --art-2: #b6a5cf;
+      }
+      .story:nth-child(3) .art {
+        background: #e5b49b;
+        --art-1: #995e4b;
+        --art-2: #d58d68;
+      }
+      .story h3 {
+        font:
+          27px/1.2 Georgia,
+          serif;
+      }
+      .story button {
+        background: transparent;
+        color: var(--primary);
+        padding-left: 0;
+      }
+      .subscribe {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        background: var(--soft);
+        padding: 36px;
+        margin-top: 50px;
+      }
+      .subscribe h2 {
+        font:
+          34px Georgia,
+          serif;
+      }
+      .subscribe form {
+        display: flex;
+        gap: 10px;
+        align-items: end;
+        flex-wrap: wrap;
+      }
+      .subscribe label {
+        flex: 1;
+      }
+      #article h2 {
+        font:
+          36px Georgia,
+          serif;
+      }
+      @media (max-width: 700px) {
+        .feature,
+        .subscribe {
+          grid-template-columns: 1fr;
+        }
+        .feature .art {
+          min-height: 220px;
+        }
+        .feature-copy,
+        .subscribe {
+          padding: 24px;
+        }
+        .hero {
+          padding-top: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="masthead">
+      <header>
+        <a class="brand" href="#latest"
+          >margin<span aria-hidden="true">.</span></a
+        >
+        <nav aria-label="Journal">
+          <a href="#latest">The journal</a><a href="#newsletter">Letters</a
+          ><span class="tag">Issue 08 / Autumn</span>
+        </nav>
+      </header>
+    </div>
+    <section class="hero">
+      <span class="eyebrow">An independent journal for curious minds</span>
+      <h1>Good stories.<br />A different perspective.</h1>
+      <p>
+        On making things, noticing more, and finding a little meaning in the
+        everyday.
+      </p>
+      <a class="button" href="#latest">Find your next read ↗</a>
+    </section>
+    <main class="wrap">
+      <article class="feature">
+        <div
+          class="art"
+          role="img"
+          aria-label="Abstract sage hills beneath a pale sky"
+        >
+          <span>A slower kind<br />of Sunday.</span>
+        </div>
+        <div class="feature-copy">
+          <span class="eyebrow">Editor's letter · Living</span>
+          <h2>The art of doing a little less.</h2>
+          <p class="muted">
+            What happens when we stop filling every quiet moment? An invitation
+            to leave a little room.
+          </p>
+          <p class="muted">By Alex Rivers · October 12 · 6 min read</p>
+          <button data-read="0">Read the story ↗</button>
+        </div>
+      </article>
+      <section id="latest">
+        <div class="row">
+          <h2>Fresh perspectives</h2>
+          <span class="muted">A few things worth your time.</span>
+        </div>
+        <div class="topics" role="group" aria-label="Filter stories">
+          <button data-topic="all" aria-pressed="true">All stories</button
+          ><button data-topic="Living" aria-pressed="false">Living</button
+          ><button data-topic="Design" aria-pressed="false">Design</button
+          ><button data-topic="Travel" aria-pressed="false">Travel</button>
+        </div>
+        <div class="grid">
+          <article class="story" data-category="Living">
+            <div
+              class="art"
+              role="img"
+              aria-label="Layered sand and sage shapes"
+            ></div>
+            <p class="eyebrow">Living / 5 min</p>
+            <h3>Make room for the ordinary.</h3>
+            <p class="muted">
+              Small rituals that turn a familiar day into something worth
+              remembering.
+            </p>
+            <p class="muted">Alex Rivers · October 10</p>
+            <button data-read="1">Read story ↗</button>
+          </article>
+          <article class="story" data-category="Design">
+            <div
+              class="art"
+              role="img"
+              aria-label="Sculptural lavender arches"
+            ></div>
+            <p class="eyebrow">Design / 4 min</p>
+            <h3>Objects with a second life.</h3>
+            <p class="muted">
+              A thoughtful approach to the things we choose to keep around us.
+            </p>
+            <p class="muted">Sam Ellis · October 8</p>
+            <button data-read="2">Read story ↗</button>
+          </article>
+          <article class="story" data-category="Travel">
+            <div
+              class="art"
+              role="img"
+              aria-label="Terracotta hills in warm afternoon light"
+            ></div>
+            <p class="eyebrow">Travel / 7 min</p>
+            <h3>Take the long way home.</h3>
+            <p class="muted">
+              A weekend without an itinerary, and the discoveries along the way.
+            </p>
+            <p class="muted">Robin Lane · October 4</p>
+            <button data-read="3">Read story ↗</button>
+          </article>
+        </div>
+      </section>
+      <section class="subscribe" id="newsletter">
+        <div>
+          <span class="eyebrow">A letter, not another notification</span>
+          <h2>Stay a little curious.</h2>
+          <p class="muted">
+            A monthly collection of stories and small discoveries.
+          </p>
+        </div>
+        <form id="subscribe">
+          <label
+            >Email address<input
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="you@example.com" /></label
+          ><button>Subscribe ↗</button>
+        </form>
+      </section>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <dialog id="article" aria-labelledby="article-title">
+      <span class="eyebrow">Margin / The journal</span>
+      <h2 id="article-title"></h2>
+      <p id="article-copy"></p>
+      <p class="muted">
+        An original sample story from the Margin editorial team.
+      </p>
+      <button data-close>Back to the journal</button>
+    </dialog>
+    <footer>
+      UI Lexicon · Interactive learning sample. Fictional content; no real
+      accounts, subscriptions, bookings, or payments. Changes reset on reload.
+    </footer>
+    <script>
+      const status = document.getElementById("status");
+      document.querySelectorAll('a[href^="#"]').forEach((a) =>
+        a.addEventListener("click", (e) => {
+          const target = document.getElementById(
+            a.getAttribute("href").slice(1),
+          );
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView();
+            target.tabIndex = -1;
+            target.focus({ preventScroll: true });
+          }
+        }),
+      );
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) =>
+          b.addEventListener("click", () => b.closest("dialog").close()),
+        );
+      const titles = [
+        "The art of doing a little less.",
+        "Make room for the ordinary.",
+        "Objects with a second life.",
+        "Take the long way home.",
+      ];
+      const stories = [
+        "Leave one hour of your Sunday unplanned. Open a window, make something warm, and let your attention settle on what is already there. Rest does not need to become another project.",
+        "The first cup of tea, a walk around the block, a page before bed: small rituals give a day its shape. Choose one that makes you feel present, and protect a little space for it.",
+        "Before buying something new, look again at what you have. A repaired chair holds a story that a perfect replacement cannot. Good design can begin with care.",
+        "On the quieter road, we found a bookshop, a shaded bench, and a conversation that lasted all afternoon. Sometimes the best part of a journey is the part you did not plan.",
+      ];
+      document.querySelectorAll("[data-read]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const i = Number(b.dataset.read);
+          document.getElementById("article-title").textContent = titles[i];
+          document.getElementById("article-copy").textContent = stories[i];
+          document.getElementById("article").showModal();
+        }),
+      );
+      document.querySelectorAll("[data-topic]").forEach((b) =>
+        b.addEventListener("click", () => {
+          document
+            .querySelectorAll("[data-topic]")
+            .forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+          let n = 0;
+          document.querySelectorAll("[data-category]").forEach((a) => {
+            a.hidden =
+              b.dataset.topic !== "all" &&
+              a.dataset.category !== b.dataset.topic;
+            if (!a.hidden) n++;
+          });
+          status.textContent = n + " stories shown.";
+        }),
+      );
+      document.getElementById("subscribe").addEventListener("submit", (e) => {
+        e.preventDefault();
+        status.textContent =
+          "You’re on the sample list! No email was stored or sent.";
+        e.target.reset();
+      });
+    </script>
+  </body>
+</html>
