@@ -5,7 +5,7 @@ import Link from "next/link";
 import "./community-ui.css";
 import { CommunityShell } from "./CommunityShell";
 import type { ReactNode } from "react";
-import { CommunityAccountMenu } from "./CommunityAccountMenu";
+import { HeaderAccount } from "./HeaderAccount";
 import { AuthDialog } from "./AuthDialog";
 import { GitHubIcon } from "./GitHubIcon";
 import { Spinner } from "./Spinner";
@@ -281,28 +281,7 @@ export function CommunityApp({
       <CommunityShell
         view={view}
         moderator={!!moderator}
-        account={
-          ready &&
-          client &&
-          (session ? (
-            <CommunityAccountMenu
-              handle={displayName(session.user)}
-              avatar={session.user.user_metadata.avatar_url}
-              signOutDisabled={authBusy || offline}
-              onSignOut={() => setDialog({ kind: "confirm-sign-out" })}
-            />
-          ) : (
-            <button
-              className={button}
-              data-auth-trigger
-              disabled={authBusy || offline}
-              onClick={() => authenticate()}
-            >
-              {authBusy ? <Spinner /> : <GitHubIcon />}
-              {authBusy ? "Opening GitHub…" : "Sign in with GitHub"}
-            </button>
-          ))
-        }
+        account={<HeaderAccount />}
       >
         {children}
         {offline && (

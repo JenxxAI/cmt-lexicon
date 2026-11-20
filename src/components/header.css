@@ -464,3 +464,64 @@
     animation: none;
   }
 }
+
+/* Keep navigation scrollable while account actions stay at the bottom. */
+.site-sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.site-sidebar-heading {
+  flex-shrink: 0;
+}
+.site-sidebar-links {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar-account {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+.sidebar-account:has(.sidebar-sign-out) {
+  padding-top: 16px;
+  border-top: 1px solid var(--color-rule);
+}
+.sidebar-sign-out {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--color-body);
+  background: transparent;
+  text-align: left;
+}
+.sidebar-sign-out:hover {
+  background: var(--color-line);
+  color: var(--color-ink);
+}
+.site-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 2px);
+}
+.site-drawer-inner > .sidebar-account {
+  margin-top: auto;
+}
+.account-placeholder {
+  display: inline-block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-line);
+  vertical-align: middle;
+}
+@media (max-width: 767px) {
+  .site-sidebar {
+    display: none;
+  }
+}
