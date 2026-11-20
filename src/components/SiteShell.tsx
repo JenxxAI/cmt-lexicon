@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { SidebarAccount } from "./SidebarAccount";
 import { Header, SiteNavigation } from "./Header";
 
 export function SiteShell({
@@ -65,20 +66,23 @@ export function SiteShell({
               </svg>
             </button>
           </div>
-          <nav aria-label="Main">
-            <SiteNavigation compact={collapsed} />
-          </nav>
-          {renderSidebar && (
-            <section
-              className="site-sidebar-community"
-              aria-label="Community workspace"
-            >
-              {!collapsed && (
-                <h2 className="site-sidebar-section-title">Workspace</h2>
-              )}
-              {renderSidebar(collapsed)}
-            </section>
-          )}
+          <div className="site-sidebar-links">
+            <nav aria-label="Main">
+              <SiteNavigation compact={collapsed} />
+            </nav>
+            {renderSidebar && (
+              <section
+                className="site-sidebar-community"
+                aria-label="Community workspace"
+              >
+                {!collapsed && (
+                  <h2 className="site-sidebar-section-title">Workspace</h2>
+                )}
+                {renderSidebar(collapsed)}
+              </section>
+            )}
+          </div>
+          <SidebarAccount compact={collapsed} />
         </aside>
         <div className="site-page-content">{children}</div>
       </div>

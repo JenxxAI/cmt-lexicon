@@ -5,15 +5,16 @@ import { usePathname } from "next/navigation";
 import { useRef, type ReactNode } from "react";
 import { SITE } from "@/lib/site";
 import { ThemeToggle } from "./ThemeToggle";
+import { SidebarAccount } from "./SidebarAccount";
 import { HeaderAccount } from "./HeaderAccount";
 import "./header.css";
 
 const destinations = [
   ["/", "Components", "/components/"],
   ["/websites/", "Website types", "/websites"],
-  ["/community/", "Community", "/community"],
   ["/assets/", "Icons & assets", "/assets"],
   ["/cheat-sheet/", "Cheat sheet", "/cheat-sheet"],
+  ["/community/", "Community", "/community"],
 ] as const;
 
 export function Header({
@@ -104,6 +105,7 @@ export function Header({
               </section>
             )}
           </div>
+          <SidebarAccount onOpen={close} />
         </div>
       </dialog>
     </header>
@@ -115,9 +117,9 @@ export function SiteNavigation({ compact = false }: { compact?: boolean }) {
   const symbols = [
     "M4 4h16v16H4zM9 4v16M9 10h11",
     "M3 4h18v16H3zM3 9h18",
-    "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 4a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4",
     "m12 3 9 9-9 9-9-9z",
     "M5 3h14v18H5zM8 8h8M8 12h8M8 16h5",
+    "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 4a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4",
   ];
   return (
     <>
