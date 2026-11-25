@@ -1,19 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { SidebarAccount } from "./SidebarAccount";
 import { Header, SiteNavigation } from "./Header";
 
+// Retain the user's width choice across client-side route remounts.
+let compactSidebar = false;
+const sidebarListeners = new Set<() => void>();
+function subscribeSidebar(listener: () => void) {
+  sidebarListeners.add(listener);
+  return () => {
+    sidebarListeners.delete(listener);
+  };
+}
+function toggleSidebar() {
+  compactSidebar = !compactSidebar;
+  sidebarListeners.forEach((listener) => listener());
+}
+
 export function SiteShell({
   children,
   account,
-  collapsedByDefault = false,
   renderSidebar,
 }: {
   children: ReactNode;
   account?: ReactNode;
-  collapsedByDefault?: boolean;
   renderSidebar?: (compact: boolean) => ReactNode;
 }) {
   const pathname = usePathname();
@@ -35,7 +47,11 @@ export function SiteShell({
     observer.observe(header);
     return () => observer.disconnect();
   }, []);
-  const [collapsed, setCollapsed] = useState(collapsedByDefault);
+  const collapsed = useSyncExternalStore(
+    subscribeSidebar,
+    () => compactSidebar,
+    () => false,
+  );
   return (
     <div
       ref={shell}
@@ -51,7 +67,7 @@ export function SiteShell({
               className="site-sidebar-toggle"
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
               aria-expanded={!collapsed}
-              onClick={() => setCollapsed(!collapsed)}
+              onClick={toggleSidebar}
             >
               <svg
                 aria-hidden="true"

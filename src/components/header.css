@@ -251,7 +251,7 @@
   }
 }
 
-/* Navigation motion: brief, gentle movement without delaying interactions. */
+/* Fade route content; sidebar labels and icons stay stationary. */
 .site-shell-body {
   transition: grid-template-columns 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -265,7 +265,7 @@
     color 160ms ease;
 }
 .site-sidebar :is(a, button) > span {
-  animation: sidebar-label-in 180ms ease-out;
+  animation: none;
 }
 .site-page-content {
   animation: site-page-in 220ms ease-out;
@@ -302,24 +302,12 @@
     opacity: 0;
   }
 }
-@keyframes sidebar-label-in {
-  from {
-    opacity: 0;
-    transform: translateX(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
 @keyframes site-page-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -523,5 +511,26 @@
 @media (max-width: 767px) {
   .site-sidebar {
     display: none;
+  }
+}
+
+/* Community button effects must not nudge sidebar items on hover or press. */
+.site-sidebar :is(a, button),
+.site-shell .site-sidebar :is(a, button):not(:disabled):hover,
+.site-shell .site-sidebar :is(a, button):not(:disabled):active {
+  transform: none;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.site-sidebar a[aria-current="page"]:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-sidebar :is(a, button),
+  .site-shell .site-sidebar :is(a, button):not(:disabled):hover,
+  .site-shell .site-sidebar :is(a, button):not(:disabled):active {
+    transition: none;
   }
 }
