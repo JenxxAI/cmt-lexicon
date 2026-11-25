@@ -68,7 +68,6 @@ export function CommunityShell({
   return (
     <SiteShell
       account={account}
-      collapsedByDefault={view === "create"}
       renderSidebar={navigation}
     >
       <main id="main" className="pt-8">

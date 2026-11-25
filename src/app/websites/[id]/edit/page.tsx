@@ -26,7 +26,7 @@ export default async function EditPage({ params }: { params: Promise<Params> }) 
   const entry = getWebsiteType((await params).id);
   if (!entry) notFound();
   return (
-    <SiteShell collapsedByDefault>
+    <SiteShell>
       <main id="main" className="pb-6 pt-4">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted">
           <Link href="/websites/" className="inline-flex min-h-11 items-center hover:text-accent-deep">Website types</Link>
