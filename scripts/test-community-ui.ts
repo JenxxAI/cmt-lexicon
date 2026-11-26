@@ -153,7 +153,7 @@ for (const rule of [
 const app = readFileSync("src/components/CommunityApp.tsx", "utf8");
 assert.ok(app.includes('className="community-ui"'));
 assert.ok(app.includes("submitPending.current"));
-// The backend calls (including arguments and redirect URI) are a UI-only change boundary.
+// Keep auth calls and the existing code submission contract unchanged.
 const compact = (value: string) => value.replace(/\s+/g, "");
 const source = compact(app);
 const originalCalls = [
@@ -161,6 +161,7 @@ const originalCalls = [
   "client.auth.signOut()",
   "client.auth.signInWithOAuth()",
   'client.rpc("submit_community_project", {\n        p_title: draft.title.trim(),\n        p_description: draft.description.trim(),\n        p_kind: draft.kind,\n        p_tags: [...new Set(draft.tags)],\n        p_html: draft.html,\n        p_css: draft.css,\n        p_js: draft.js,\n        p_license_accepted: draft.licenseAccepted,\n        p_remix_of: draft.remixOf,\n        p_previews: uploaded,\n      })',
+  'client.rpc("submit_community_showcase", { p_title: draft.title.trim(), p_description: draft.description.trim(), p_kind: draft.kind, p_tags: [...new Set(draft.tags)], p_repository_url: githubRepositoryUrl(draft.repositoryUrl ?? ""), p_permission_accepted: draft.licenseAccepted, p_previews: uploaded, })',
   'client.rpc("withdraw_community_project", { p_id: project.id })',
   'client.rpc("review_community_project", {\n              p_id: project.id,\n              p_decision: decision,\n              p_note: note,\n            })',
 ];

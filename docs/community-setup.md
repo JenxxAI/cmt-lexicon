@@ -94,3 +94,14 @@ To check the policy locally, run the production server on port 3218 and run `nod
 ## Hosted isolation verification
 
 Use two disposable, non-moderator accounts with one known pending fixture each. For each account, confirm its own fixture is visible (count 1) and the other fixture is hidden (count 0). Anonymous reads of both pending fixtures should return 0. Use only these fixture IDs and record counts and HTTP statuses. Use local transaction tests or isolated staging data for write checks. Production verification requires project access and both fixtures.
+
+
+## GitHub showcases
+
+Apply `20261126062208_community_github_showcases.sql` **before deploying the showcase UI/API**. It adds `repository_url`, extends the license constraint, and introduces `submit_community_showcase`. The updated gallery selects this new column; deploying the app first would make gallery requests fail. Existing code submissions and their RPC signature remain supported after migration. Do not replay older migrations or repair history merely to skip this one.
+
+Authors choose **GitHub showcase**, enter a public repository root URL, title, description, component/website type and optional tags, and upload 1–4 screenshots. They confirm permission to showcase the project and screenshots. The repository keeps its own license; showcases contain no imported code and offer no MIT export or remix. Moderators should verify public accessibility, attribution/permission and matching screenshots before approval. A link alone does not prove repository ownership.
+
+The existing GitHub session checks, submission quotas, pending-row RLS, image ownership validation and private storage policies also cover showcases. No new OAuth scopes or keys are required. Links are HTTPS GitHub repository roots only, rendered as external links with `noopener noreferrer ugc`; there is no remote fetching, automatic import, or execution. Draft metadata and the sharing mode survive local restoration; screenshots must be added again and consent reconfirmed.
+
+`npm test` applies the migration to isolated in-memory PostgreSQL and checks valid submissions, unsafe URLs, consent, image ownership, missing images, anonymous/revoked-session denial, pending isolation, approval/withdrawal image visibility, shared quotas, legacy code submissions and blocked MIT remixes of showcases. Before production release, apply the migration through the normal reviewed Supabase workflow and smoke-test a real author submission plus moderator approval. Local tests do not establish hosted migration or OAuth status.

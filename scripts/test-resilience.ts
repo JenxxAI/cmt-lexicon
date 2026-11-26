@@ -38,6 +38,24 @@ async function main() {
   );
   assert.equal(parseLocalDraft(saved).title, "Unsaved work");
   assert.equal(parseLocalDraft(saved).licenseAccepted, false);
+  const showcase = parseLocalDraft(
+    JSON.stringify({
+      ...EMPTY_DRAFT,
+      submissionType: "github",
+      repositoryUrl: "https://github.com/maker/project",
+      licenseAccepted: true,
+    }),
+  );
+  assert.equal(showcase.submissionType, "github");
+  assert.equal(showcase.repositoryUrl, "https://github.com/maker/project");
+  assert.equal(showcase.licenseAccepted, false);
+  const legacy = { ...EMPTY_DRAFT };
+  delete legacy.submissionType;
+  delete legacy.repositoryUrl;
+  assert.equal(parseLocalDraft(JSON.stringify(legacy)).submissionType, "code");
+  assert.throws(() =>
+    parseLocalDraft(JSON.stringify({ ...EMPTY_DRAFT, repositoryUrl: 123 })),
+  );
   assert.throws(() => parseLocalDraft("{}"));
   assert.throws(() => parseLocalDraft("x".repeat(2_000_001)));
   assert.throws(

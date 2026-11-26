@@ -6,11 +6,49 @@ import {
   byteLength,
   communityDocument,
   draftError,
+  githubRepositoryUrl,
   sourceError,
 } from "../src/lib/community";
 
 async function main() {
   assert.equal(byteLength("界"), 3);
+  assert.equal(
+    githubRepositoryUrl(" HTTPS://GITHUB.COM/Maker/my.repo/ "),
+    "https://github.com/Maker/my.repo",
+  );
+  const invalidRepositories = [
+    "javascript:alert(1)",
+    "http://github.com/maker/repo",
+    "https://github.com.evil.test/maker/repo",
+    "https://github.com@evil.test/maker/repo",
+    "https://user:pass@github.com/maker/repo",
+    "https://github.com/maker/repo?token=secret",
+    "https://github.com/maker/repo#readme",
+    "https://github.com/maker/repo/tree/main",
+    "https://github.com/maker/..",
+    "https://github.com/maker/.",
+    "https://github.com/maker/%2e%2e",
+    "https://github.com/maker/repo\\evil",
+  ];
+  for (const url of invalidRepositories)
+    assert.equal(githubRepositoryUrl(url), null, url);
+  const showcaseDraft = {
+    ...EMPTY_DRAFT,
+    title: "My project",
+    description: "A helpful project with a useful interface.",
+    submissionType: "github" as const,
+    repositoryUrl: "https://github.com/maker/project",
+    licenseAccepted: true,
+  };
+  assert.equal(draftError(showcaseDraft), null);
+  assert.match(
+    draftError({ ...showcaseDraft, repositoryUrl: "javascript:alert(1)" })!,
+    /repository URL/,
+  );
+  assert.match(
+    draftError({ ...showcaseDraft, licenseAccepted: false })!,
+    /permission/,
+  );
   assert.match(
     sourceError({ html: "界".repeat(33334), css: "", js: "" })!,
     /100 KB/,
@@ -74,6 +112,12 @@ async function main() {
   await db.exec(
     readFileSync(
       "supabase/migrations/20261117045756_require_active_community_session.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261126062208_community_github_showcases.sql",
       "utf8",
     ),
   );
@@ -331,9 +375,154 @@ async function main() {
   assert.ok(
     (await db.query("select id from community_projects")).rows.length > 0,
   );
+  // Link-only showcases share the same quotas, RLS, and storage privacy as code projects.
+  // Reset only this in-memory test database's fixtures for independent quota assertions.
+  await db.exec(
+    "reset role; delete from community_private.submission_events; update auth.sessions set not_after=null;",
+  );
+  const cover = owner + "/20000000-0000-4000-8000-000000000001.webp";
+  await as(owner);
+  await putImage(cover);
+  const showcase = (
+    url = "https://github.com/maker/project",
+    accepted = true,
+    previews = [cover],
+  ) =>
+    db.query<{ id: string }>(
+      "select submit_community_showcase($1,$2,$3,$4,$5,$6,$7) as id",
+      [
+        "Showcase project",
+        "A useful project with a clear interface.",
+        "website",
+        ["showcase"],
+        url,
+        accepted,
+        previews,
+      ],
+    );
+  await assert.rejects(showcase(undefined, false), /permission/);
+  await assert.rejects(showcase(undefined, true, []), /screenshot/);
+  for (const url of invalidRepositories)
+    await assert.rejects(showcase(url), /repository URL/);
+  await assert.rejects(
+    showcase(undefined, true, [image]),
+    /own preview images/,
+  );
+  await assert.rejects(
+    showcase(undefined, true, [cover.replace(".webp", ".png")]),
+    /uploading/,
+  );
+  const showcaseId = (await showcase()).rows[0].id;
+  const stored = (
+    await db.query<{
+      repository_url: string;
+      license: string;
+      html: string;
+      css: string;
+      js: string;
+      status: string;
+    }>(
+      "select repository_url,license,html,css,js,status from community_projects where id=$1",
+      [showcaseId],
+    )
+  ).rows[0];
+  assert.deepEqual(stored, {
+    repository_url: "https://github.com/maker/project",
+    license: "Repository",
+    html: "",
+    css: "",
+    js: "",
+    status: "pending",
+  });
+  await assert.rejects(submit({ remix: showcaseId }), /unavailable/);
+  await as(null);
+  await assert.rejects(showcase(), /permission denied/);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        showcaseId,
+      ])
+    ).rows.length,
+    0,
+  );
+  assert.equal(
+    (await db.query("select id from storage.objects where name=$1", [cover]))
+      .rows.length,
+    0,
+  );
+  await as(other);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        showcaseId,
+      ])
+    ).rows.length,
+    0,
+  );
+  await assert.rejects(showcase(), /session expired/);
+  await as(moderator);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        showcaseId,
+      ])
+    ).rows.length,
+    1,
+  );
+  await db.query("select review_community_project($1,'approved','')", [
+    showcaseId,
+  ]);
+  await as(null);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        showcaseId,
+      ])
+    ).rows.length,
+    1,
+  );
+  assert.equal(
+    (await db.query("select id from storage.objects where name=$1", [cover]))
+      .rows.length,
+    1,
+  );
+  await as(owner);
+  await assert.rejects(submit({ remix: showcaseId }), /unavailable/);
+  for (let i = 0; i < 4; i++) await submit();
+  await assert.rejects(showcase(), /Submission limit/);
+  await db.query("select withdraw_community_project($1)", [showcaseId]);
+  await as(null);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        showcaseId,
+      ])
+    ).rows.length,
+    0,
+  );
+  assert.equal(
+    (await db.query("select id from storage.objects where name=$1", [cover]))
+      .rows.length,
+    0,
+  );
+  await db.exec("reset role");
+  // Even privileged direct writes cannot mislabel repository code as MIT.
+  await assert.rejects(
+    db.query("update community_projects set license='MIT' where id=$1", [
+      showcaseId,
+    ]),
+    /check constraint/,
+  );
+  await assert.rejects(
+    db.query(
+      "update community_projects set html='<h1>Injected</h1>' where id=$1",
+      [showcaseId],
+    ),
+    /check constraint/,
+  );
   await db.close();
   console.log(
-    "Community checks passed: UTF-8 limits, preview CSP, anonymous denial, private pending rows, moderator-only approval, direct-write denial, rejected feedback, remix attribution, withdrawal, hourly/daily quotas.",
+    "Community checks passed: UTF-8 limits, preview CSP, anonymous denial, private pending rows, moderator-only approval, direct-write denial, rejected feedback, remix attribution, withdrawal, hourly/daily quotas, GitHub showcase URLs, consent, screenshots, license separation and shared access controls.",
   );
 }
 main().catch((error) => {
