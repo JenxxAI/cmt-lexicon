@@ -238,6 +238,10 @@ export function Explorer({ entries, websites, assetGuide }: { entries: EntrySumm
             <button type="button" onClick={clearAll} className="min-h-11 rounded-full bg-surface px-4 text-sm hover:bg-line">Clear</button>
           )}
         </div>
+        <p className="mt-2 text-xs text-muted">
+          Token counts are rough estimates for prompt text only; actual counts
+          vary by model and context.
+        </p>
 
         {visible.length > 0 ? (
           <ul className="mt-5 grid grid-cols-1 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">

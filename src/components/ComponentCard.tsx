@@ -29,7 +29,7 @@ export function ComponentCard({ entry }: { entry: EntrySummary }) {
         </p>
         <div className="mt-auto flex items-center justify-between gap-3 pt-3.5 max-sm:mt-0 max-sm:shrink-0 max-sm:pt-0">
           <span className="max-sm:hidden rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
-            ~{estimateTokens(entry.shortPrompt)} tokens
+            ~{estimateTokens(entry.shortPrompt)} estimated prompt tokens
           </span>
           <CopyButton compactOnMobile text={entry.shortPrompt} className="relative z-10" />
         </div>
