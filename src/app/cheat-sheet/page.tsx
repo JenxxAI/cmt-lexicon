@@ -32,10 +32,7 @@ export default function CheatSheetPage() {
   return (
     <SiteShell>
       <main id="main" className="pb-8 pt-8">
-        <p className="font-mono text-xs uppercase tracking-wide text-muted">
-          Less typing. Clearer requests.
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-bold sm:text-6xl">
+        <h1 className="font-display text-4xl font-bold sm:text-6xl">
           Prompt cheat sheet
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-body">

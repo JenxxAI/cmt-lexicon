@@ -8,10 +8,7 @@ export const metadata = publicPageMetadata("/community/", {
 export default function Page() {
   return (
     <CommunityApp view="browse">
-      <p className="font-mono text-xs uppercase tracking-widest text-accent-deep">
-        Community · HTML / CSS / JavaScript
-      </p>
-      <h1 className="mt-4 max-w-3xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
+      <h1 className="max-w-3xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
         Made by the community.
       </h1>
       <p className="mt-5 max-w-2xl text-lg text-body">
