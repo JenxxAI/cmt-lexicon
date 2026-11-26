@@ -46,16 +46,22 @@ export function PromptPanel({ short, detailed, customized = 0, onReset, showToke
           {showTokens && (
             <>
               <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
-                ~{estimateTokens(text)} tokens
+                ~{estimateTokens(text)} estimated prompt tokens
               </span>
               <span className="text-[13px] text-muted">
-                {otherLabel} is ~{estimateTokens(otherText)}
+                {otherLabel}: ~{estimateTokens(otherText)} estimated prompt tokens
               </span>
             </>
           )}
         </div>
         <CopyButton text={text} variant="solid" />
       </div>
+      {showTokens && (
+        <p className="mt-2 text-xs text-muted">
+          Rough estimate for prompt text only; actual counts vary by model and
+          context.
+        </p>
+      )}
     </section>
   );
 }

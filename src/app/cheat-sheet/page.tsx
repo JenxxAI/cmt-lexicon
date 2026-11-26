@@ -40,6 +40,10 @@ export default function CheatSheetPage() {
           own. {entries.length} components and {assets.topics.length} asset
           topics, all in one place.
         </p>
+        <p className="mt-2 max-w-2xl text-sm text-muted">
+          Token counts are rough estimates for prompt text only; actual counts
+          vary by model and context.
+        </p>
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <CopyButton
             text={buildCheatSheet(entries, assets.topics)}
@@ -134,8 +138,9 @@ export default function CheatSheetPage() {
                     {entry.prompts.short}
                   </p>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-mono text-xs text-muted">
-                      ~{estimateTokens(entry.prompts.short)} tokens
+                    <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
+                      ~{estimateTokens(entry.prompts.short)} estimated prompt
+                      tokens
                     </span>
                     <CopyButton
                       text={entry.prompts.short}
@@ -181,8 +186,8 @@ export default function CheatSheetPage() {
                   {topic.prompt}
                 </p>
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-mono text-xs text-muted">
-                    ~{estimateTokens(topic.prompt)} tokens
+                  <span className="rounded-lg bg-hi px-2.5 py-1 font-mono text-xs font-medium">
+                    ~{estimateTokens(topic.prompt)} estimated prompt tokens
                   </span>
                   <CopyButton
                     text={topic.prompt}
