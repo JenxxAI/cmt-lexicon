@@ -18,10 +18,7 @@ export default function AssetsPage() {
   return (
     <SiteShell>
       <main id="main" className="pb-8 pt-8">
-        <p className="font-mono text-[13px] uppercase text-muted">
-          The visual vocabulary
-        </p>
-        <h1 className="mt-2 font-display text-5xl font-bold tracking-tight sm:text-7xl">
+        <h1 className="font-display text-5xl font-bold tracking-tight sm:text-7xl">
           Icons &amp; assets
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-body">

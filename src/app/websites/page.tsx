@@ -14,10 +14,7 @@ export default function WebsitesPage() {
   return (
     <SiteShell>
       <main id="main" className="pt-8 sm:pt-12">
-        <p className="font-mono text-sm uppercase text-accent-deep">
-          From idea to blueprint
-        </p>
-        <h1 className="mt-3 font-display text-5xl font-bold tracking-tight sm:text-6xl">
+        <h1 className="font-display text-5xl font-bold tracking-tight sm:text-6xl">
           Website types
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted">
