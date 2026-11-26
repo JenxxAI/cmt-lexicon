@@ -3,7 +3,7 @@ import { CommunityApp } from "@/components/CommunityApp";
 export const metadata = publicPageMetadata("/community/", {
   title: "Community — browse",
   description:
-    "Discover components and website templates shared by other makers. Every published project has been reviewed. Go from an idea to working HTML, CSS, and JavaScript.",
+    "Discover interactive components, website templates, and GitHub showcases shared by other makers. Every published submission has been reviewed.",
 });
 export default function Page() {
   return (
@@ -12,9 +12,8 @@ export default function Page() {
         Made by the community.
       </h1>
       <p className="mt-5 max-w-2xl text-lg text-body">
-        Discover components and website templates shared by other makers. Every
-        published project has been reviewed. Go from an idea to working HTML,
-        CSS, and JavaScript.
+        Discover interactive components, website templates, and GitHub showcases
+        shared by other makers. Every published submission has been reviewed.
       </p>
     </CommunityApp>
   );

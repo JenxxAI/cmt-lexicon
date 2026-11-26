@@ -28,6 +28,7 @@ import {
   communityDocument,
   downloadCommunity,
   draftError,
+  githubRepositoryUrl,
   isProjectId,
   sourceError,
   type CommunityDraft,
@@ -75,6 +76,23 @@ function message(error: unknown) {
 function preserveDraft() {
   return window.dispatchEvent(
     new Event(PRESERVE_DRAFT_EVENT, { cancelable: true }),
+  );
+}
+
+function RepositoryLink({ url }: { url: string }) {
+  const href = githubRepositoryUrl(url);
+  if (!href) return null;
+  return (
+    <a
+      className={`${secondary} mt-4 max-w-full`}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer ugc"
+      aria-label="View repository on GitHub (opens in a new tab)"
+    >
+      <GitHubIcon size={16} />
+      View on GitHub <span aria-hidden="true">↗</span>
+    </a>
   );
 }
 
@@ -630,7 +648,10 @@ function CommunityGallery({
               <p className="mt-2 break-words text-sm text-body">
                 {item.description}
               </p>
-              <p className="mt-4 text-sm text-muted">By @{item.author} · MIT</p>
+              <p className="mt-4 text-sm text-muted">
+                By @{item.author} ·{" "}
+                {item.repository_url ? "GitHub showcase" : "MIT"}
+              </p>
               <ul aria-label="Tags" className="mt-3 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
                   <li
@@ -645,8 +666,15 @@ function CommunityGallery({
                 href={`/community/project/?id=${item.id}`}
                 className={`${secondary} mt-5`}
               >
-                View code &amp; preview →
+                {item.repository_url
+                  ? "View showcase →"
+                  : "View code & preview →"}
               </Link>
+              {item.repository_url && (
+                <div>
+                  <RepositoryLink url={item.repository_url} />
+                </div>
+              )}
             </div>
           </li>
         ))}
@@ -796,6 +824,7 @@ function CommunityEditor({
     ...EMPTY_DRAFT,
     tags: [],
   }));
+  const showcase = draft.submissionType === "github";
   const [tagText, setTagText] = useState("");
   const [busy, setBusy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -839,6 +868,12 @@ function CommunityEditor({
           return;
         }
         const project = data as CommunityProject;
+        if (project.repository_url) {
+          setError(
+            "GitHub showcases use their repository's license and cannot be remixed here.",
+          );
+          return;
+        }
         recovery.markDirty();
         setDraft({
           html: project.html,
@@ -899,6 +934,10 @@ function CommunityEditor({
           `${file.name}: not an HTML, CSS, JavaScript, PNG, JPEG or WebP file.`,
         );
       else if (kind === "image") pictures.push(file);
+      else if (showcase)
+        problems.push(
+          `${file.name}: choose a PNG, JPEG or WebP screenshot for a GitHub showcase.`,
+        );
       else if (file.size > IMPORT_TEXT_LIMIT)
         problems.push(`${file.name}: larger than 100 KB.`);
       else {
@@ -1000,7 +1039,7 @@ function CommunityEditor({
       setDraft(value);
       setTagText(value.tags.join(", "));
       setStatus(
-        "Local draft restored. Confirm the sharing license before submitting.",
+        "Local draft restored. Confirm sharing permission before submitting.",
       );
       setSubmitted(null);
     } catch {
@@ -1010,10 +1049,14 @@ function CommunityEditor({
     }
   }
   async function submit() {
-    if (submitPending.current || busy || submitted) return;
+    if (submitPending.current || busy || importing || submitted) return;
     const invalid = draftError(draft);
     if (invalid) {
       setError(invalid);
+      return;
+    }
+    if (showcase && !images.length) {
+      setError("Add at least one screenshot for your showcase.");
       return;
     }
     if (!client || !session) {
@@ -1038,18 +1081,28 @@ function CommunityEditor({
         if (error) throw error;
         uploaded.push(path);
       }
-      const { data, error } = await client.rpc("submit_community_project", {
-        p_title: draft.title.trim(),
-        p_description: draft.description.trim(),
-        p_kind: draft.kind,
-        p_tags: [...new Set(draft.tags)],
-        p_html: draft.html,
-        p_css: draft.css,
-        p_js: draft.js,
-        p_license_accepted: draft.licenseAccepted,
-        p_remix_of: draft.remixOf,
-        p_previews: uploaded,
-      });
+      const { data, error } = showcase
+        ? await client.rpc("submit_community_showcase", {
+            p_title: draft.title.trim(),
+            p_description: draft.description.trim(),
+            p_kind: draft.kind,
+            p_tags: [...new Set(draft.tags)],
+            p_repository_url: githubRepositoryUrl(draft.repositoryUrl ?? ""),
+            p_permission_accepted: draft.licenseAccepted,
+            p_previews: uploaded,
+          })
+        : await client.rpc("submit_community_project", {
+            p_title: draft.title.trim(),
+            p_description: draft.description.trim(),
+            p_kind: draft.kind,
+            p_tags: [...new Set(draft.tags)],
+            p_html: draft.html,
+            p_css: draft.css,
+            p_js: draft.js,
+            p_license_accepted: draft.licenseAccepted,
+            p_remix_of: draft.remixOf,
+            p_previews: uploaded,
+          });
       if (error) {
         // Nothing references these files yet, so the owner policy lets us delete them.
         if (uploaded.length)
@@ -1087,8 +1140,72 @@ function CommunityEditor({
         Drafts are stored only in this browser, including on shared devices. Do
         not include secrets. Use Remove saved copy to clear the stored draft.
       </p>
+      <fieldset
+        className="mb-5 rounded-[28px] bg-surface p-6"
+        disabled={submitting || importing}
+      >
+        <legend className="px-2 font-display text-lg font-bold">
+          How would you like to share?
+        </legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(["code", "github"] as const).map((mode) => (
+            <label
+              key={mode}
+              className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-colors ${showcase === (mode === "github") ? "border-accent-deep bg-accent-soft" : "border-rule bg-surface"}`}
+            >
+              <input
+                type="radio"
+                name="submission-type"
+                value={mode}
+                checked={showcase === (mode === "github")}
+                className="mt-1 size-5 shrink-0 accent-accent"
+                onChange={() =>
+                  change({ submissionType: mode, licenseAccepted: false })
+                }
+              />
+              <span>
+                <span className="flex items-center gap-2 font-semibold">
+                  {mode === "github" && <GitHubIcon size={16} />}
+                  {mode === "github" ? "GitHub showcase" : "Interactive code"}
+                </span>
+                <span className="mt-1 block text-sm text-body">
+                  {mode === "github"
+                    ? "Share your repository with screenshots. No code upload needed."
+                    : "Build, preview, and share HTML, CSS, and JavaScript."}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <RequestStatus pending={busy}>Working on your project…</RequestStatus>
       <div className="grid gap-5 rounded-[28px] bg-surface p-6 md:grid-cols-2">
+        {showcase && (
+          <label className="text-sm font-semibold md:col-span-2">
+            GitHub repository URL
+            <input
+              type="url"
+              className={field}
+              value={draft.repositoryUrl ?? ""}
+              maxLength={180}
+              onChange={(event) =>
+                change({ repositoryUrl: event.target.value })
+              }
+              placeholder="https://github.com/owner/repository"
+              aria-describedby="repository-help"
+              autoCapitalize="none"
+              spellCheck={false}
+            />
+            <span
+              id="repository-help"
+              className="mt-2 block text-sm font-normal text-muted"
+            >
+              Link to a public repository you own or have permission to
+              showcase. Its existing license still applies. We don’t import or
+              run repository code.
+            </span>
+          </label>
+        )}
         <label className="text-sm font-semibold">
           Project title
           <input
@@ -1147,18 +1264,29 @@ function CommunityEditor({
         className="mt-4 rounded-[28px] bg-surface p-6"
       >
         <h2 id="previews-heading" className="font-display text-xl font-bold">
-          Import your work &amp; show it off
+          {showcase
+            ? "Give your project a cover"
+            : "Import your work & show it off"}
         </h2>
-        <p className="mt-2 text-sm text-body">
-          Import an <code>.html</code> page (its styles and scripts are split
-          into the tabs below), or separate <code>.css</code> / <code>.js</code>{" "}
-          files. Add up to {PREVIEW_LIMITS.maxImages} screenshots of the
-          component or your site&apos;s landing page. They appear on your
-          project card; more than one becomes a swipeable carousel, and the
-          first is the cover. Images are resized in your browser and location
-          data is removed. They stay private until a moderator approves the
-          project.
-        </p>
+        {showcase ? (
+          <p className="mt-2 text-sm text-body">
+            Add 1–4 screenshots of your project. The first is your cover. Use
+            PNG, JPEG or WebP; images are resized and location data is removed.
+            Screenshots stay private until your showcase is approved. Add them
+            again when restoring a saved draft.
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-body">
+            Import an <code>.html</code> page (its styles and scripts are split
+            into the tabs below), or separate <code>.css</code> /{" "}
+            <code>.js</code> files. Add up to {PREVIEW_LIMITS.maxImages}{" "}
+            screenshots of the component or your site&apos;s landing page. They
+            appear on your project card; more than one becomes a swipeable
+            carousel, and the first is the cover. Images are resized in your
+            browser and location data is removed. They stay private until a
+            moderator approves the project.
+          </p>
+        )}
         <input
           ref={fileInput}
           type="file"
@@ -1166,7 +1294,11 @@ function CommunityEditor({
           className="sr-only"
           tabIndex={-1}
           aria-hidden="true"
-          accept={`.html,.htm,.css,.js,.mjs,${PREVIEW_MIME.join(",")}`}
+          accept={
+            showcase
+              ? PREVIEW_MIME.join(",")
+              : `.html,.htm,.css,.js,.mjs,${PREVIEW_MIME.join(",")}`
+          }
           onChange={(event) => {
             const files = [...(event.target.files ?? [])];
             event.target.value = "";
@@ -1181,7 +1313,7 @@ function CommunityEditor({
           onClick={() => fileInput.current?.click()}
         >
           {importing && <Spinner />}
-          Import files or screenshots
+          {showcase ? "Add screenshots" : "Import files or screenshots"}
         </button>
         {images.length > 0 && (
           <ul
@@ -1244,44 +1376,76 @@ function CommunityEditor({
         <button className={secondary} onClick={recovery.forget}>
           Remove saved copy
         </button>
-        <button
-          className={secondary}
-          disabled={busy || submitting}
-          onClick={format}
-        >
-          Format with Prettier
-        </button>
+        {!showcase && (
+          <button
+            className={secondary}
+            disabled={busy || submitting}
+            onClick={format}
+          >
+            Format with Prettier
+          </button>
+        )}
         <button className={secondary} onClick={load}>
           Load local draft
         </button>
-        <button
-          className={secondary}
-          onClick={() => {
-            try {
-              downloadCommunity(draft, draft.title || "My project");
-            } catch (error) {
-              setError(message(error));
-            }
-          }}
-        >
-          Export HTML
-        </button>
+        {!showcase && (
+          <button
+            className={secondary}
+            onClick={() => {
+              try {
+                downloadCommunity(draft, draft.title || "My project");
+              } catch (error) {
+                setError(message(error));
+              }
+            }}
+          >
+            Export HTML
+          </button>
+        )}
       </div>
-      <CommunityCodeWorkspace
-        source={draft}
-        title={draft.title}
-        unsaved={recovery.unsaved}
-        saveStatus={recovery.saveStatus}
-        onSave={recovery.saveNow}
-        onChange={(language, value) => change({ [language]: value })}
-        preview={
-          <CommunityPreview
-            fill
-            source={draft}
-            title={draft.title || "Your project"}
-          />
-        }
-      />
+      {showcase ? (
+        <div className="rounded-[28px] bg-surface p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-xl font-bold">
+              Your showcase draft
+            </h2>
+            <button
+              type="button"
+              className={secondary}
+              onClick={recovery.saveNow}
+            >
+              Save draft
+            </button>
+          </div>
+          <p role="status" className="mt-2 text-sm text-muted">
+            {recovery.saveStatus}
+          </p>
+          <p className="mt-4 font-semibold break-words">
+            {draft.title || "Your project title"}
+          </p>
+          <p className="mt-2 text-sm text-body break-words">
+            {draft.description ||
+              "Tell the community what you built and what makes it useful."}
+          </p>
+          {draft.repositoryUrl && <RepositoryLink url={draft.repositoryUrl} />}
+        </div>
+      ) : (
+        <CommunityCodeWorkspace
+          source={draft}
+          title={draft.title}
+          unsaved={recovery.unsaved}
+          saveStatus={recovery.saveStatus}
+          onSave={recovery.saveNow}
+          onChange={(language, value) => change({ [language]: value })}
+          preview={
+            <CommunityPreview
+              fill
+              source={draft}
+              title={draft.title || "Your project"}
+            />
+          }
+        />
+      )}
       <div className="mt-6 rounded-[28px] bg-surface p-6">
         <label className="flex min-h-11 items-start gap-3 text-sm text-body">
           <input
@@ -1293,9 +1457,9 @@ function CommunityEditor({
             }
           />
           <span>
-            I own this code or have permission to share it, and agree to share
-            it under the MIT license. I have checked keyboard access, readable
-            contrast, and mobile layout.
+            {showcase
+              ? "I own this project or have permission to showcase it and these screenshots. The repository’s own license applies; this does not relicense its code."
+              : "I own this code or have permission to share it, and agree to share it under the MIT license. I have checked keyboard access, readable contrast, and mobile layout."}
           </span>
         </label>
         <p className="my-4 text-sm text-muted">
@@ -1306,7 +1470,7 @@ function CommunityEditor({
         </p>
         <button
           className={button}
-          disabled={submitState.disabled}
+          disabled={submitState.disabled || importing}
           aria-busy={submitState.busy}
           onClick={submit}
         >
@@ -1316,7 +1480,9 @@ function CommunityEditor({
         {!session && (
           <p className="mt-3 text-sm text-muted">
             Check the local-save status above, then sign in with GitHub. You can
-            keep editing or export without signing in.
+            {showcase
+              ? "keep editing your showcase without signing in."
+              : "keep editing or export without signing in."}
           </p>
         )}
       </div>
@@ -1445,15 +1611,21 @@ function CommunityDetail({
       </p>
       <div className="rounded-[28px] bg-surface p-6">
         <p className="font-mono text-xs uppercase text-accent-deep">
-          {project.kind} · {project.status}
+          {project.repository_url ? "GitHub showcase" : project.kind} · {project.status}
         </p>
         <h2 className="mt-3 break-words font-display text-3xl font-bold">
           {project.title}
         </h2>
         <p className="mt-3 break-words text-body">{project.description}</p>
         <p className="mt-4 text-sm text-muted">
-          By @{project.author} · Shared under MIT
+          By @{project.author} ·{" "}
+          {project.repository_url
+            ? "Repository license applies"
+            : "Shared under MIT"}
         </p>
+        {project.repository_url && (
+          <RepositoryLink url={project.repository_url} />
+        )}
         {project.remix_of && (
           <a
             className={`${secondary} mt-3`}
@@ -1481,54 +1653,58 @@ function CommunityDetail({
           />
         </div>
       )}
-      <div className="mt-4">
-        <CommunityPreview source={project} title={project.title} />
-      </div>
-      <div className="my-4 flex flex-wrap gap-2">
-        <Link
-          className={button}
-          href={`/community/create/?remix=${project.id}`}
-        >
-          Remix this project
-        </Link>
-        <button
-          className={secondary}
-          onClick={() => {
-            try {
-              downloadCommunity(project, project.title, project.author);
-            } catch (error) {
-              setError(message(error));
-            }
-          }}
-        >
-          Export HTML
-        </button>
-        <CopyButton
-          text={project[active]}
-          label={`Copy ${active.toUpperCase()}`}
-        />
-      </div>
-      <div className="rounded-2xl bg-code p-4 text-surface">
-        <div className="mb-3 flex gap-2">
-          {(["html", "css", "js"] as const).map((key) => (
-            <button
-              key={key}
-              className="min-h-11 rounded-lg px-4 font-mono text-sm aria-pressed:bg-body"
-              aria-pressed={active === key}
-              onClick={() => setActive(key)}
+      {!project.repository_url && (
+        <>
+          <div className="mt-4">
+            <CommunityPreview source={project} title={project.title} />
+          </div>
+          <div className="my-4 flex flex-wrap gap-2">
+            <Link
+              className={button}
+              href={`/community/create/?remix=${project.id}`}
             >
-              {key.toUpperCase()}
+              Remix this project
+            </Link>
+            <button
+              className={secondary}
+              onClick={() => {
+                try {
+                  downloadCommunity(project, project.title, project.author);
+                } catch (error) {
+                  setError(message(error));
+                }
+              }}
+            >
+              Export HTML
             </button>
-          ))}
-        </div>
-        <pre
-          tabIndex={0}
-          aria-label={`${active.toUpperCase()} source`}
-          className="max-h-96 overflow-auto font-mono text-xs leading-6"
-        >
-          {project[active]}
-        </pre>
-      </div>
+            <CopyButton
+              text={project[active]}
+              label={`Copy ${active.toUpperCase()}`}
+            />
+          </div>
+          <div className="rounded-2xl bg-code p-4 text-surface">
+            <div className="mb-3 flex gap-2">
+              {(["html", "css", "js"] as const).map((key) => (
+                <button
+                  key={key}
+                  className="min-h-11 rounded-lg px-4 font-mono text-sm aria-pressed:bg-body"
+                  aria-pressed={active === key}
+                  onClick={() => setActive(key)}
+                >
+                  {key.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <pre
+              tabIndex={0}
+              aria-label={`${active.toUpperCase()} source`}
+              className="max-h-96 overflow-auto font-mono text-xs leading-6"
+            >
+              {project[active]}
+            </pre>
+          </div>
+        </>
+      )}
       {session?.user.id === project.owner_id &&
         project.status !== "withdrawn" && (
           <button
@@ -1549,9 +1725,9 @@ function CommunityDetail({
               Review this submission
             </h3>
             <p className="my-3 text-sm text-body">
-              Review the source before running it. Check originality, licensing,
-              accessibility, prohibited behavior, and the mobile layout.
-              Approval makes the code public.
+              {project.repository_url
+                ? "Check that the repository is publicly accessible, the submitter has permission to showcase it, and the screenshots match. Review licensing and prohibited content. Approval publishes the link and screenshots, not the repository code."
+                : "Review the source before running it. Check originality, licensing, accessibility, prohibited behavior, and the mobile layout. Approval makes the code public."}
             </p>
             <label className="text-sm font-semibold">
               Note to the author (shown when rejected)

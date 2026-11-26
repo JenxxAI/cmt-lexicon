@@ -342,6 +342,7 @@ export async function communityApi(request: Request): Promise<Response> {
       const allowed = [
         "is_community_moderator",
         "submit_community_project",
+        "submit_community_showcase",
         "review_community_project",
         "withdraw_community_project",
       ];

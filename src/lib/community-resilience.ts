@@ -93,6 +93,11 @@ export function parseLocalDraft(raw: string): CommunityDraft {
     ) ||
     value.title.length > 80 ||
     value.description.length > 600 ||
+    (value.submissionType != null &&
+      !["code", "github"].includes(value.submissionType)) ||
+    (value.repositoryUrl != null &&
+      (typeof value.repositoryUrl !== "string" ||
+        value.repositoryUrl.length > 180)) ||
     !["component", "website"].includes(value.kind) ||
     !Array.isArray(value.tags) ||
     value.tags.length > 165 ||
@@ -110,6 +115,8 @@ export function parseLocalDraft(raw: string): CommunityDraft {
     description: value.description,
     kind: value.kind,
     tags: value.tags,
+    submissionType: value.submissionType ?? "code",
+    repositoryUrl: value.repositoryUrl ?? "",
     licenseAccepted: false,
     remixOf: isProjectId(value.remixOf) ? value.remixOf : null,
   };

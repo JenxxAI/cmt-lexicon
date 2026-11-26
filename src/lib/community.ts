@@ -13,6 +13,8 @@ export type CommunityDraft = SampleSource & {
   description: string;
   kind: CommunityKind;
   tags: string[];
+  submissionType?: "code" | "github";
+  repositoryUrl?: string;
   licenseAccepted: boolean;
   remixOf: string | null;
 };
@@ -30,6 +32,7 @@ export type CommunityProject = SampleSource & {
   review_note: string;
   remix_of: string | null;
   license: string;
+  repository_url: string | null;
   /** Storage paths in the private community-previews bucket; the first is the cover. */
   previews: string[];
 };
@@ -38,12 +41,14 @@ export type CommunitySummary = Omit<
   "html" | "css" | "js" | "review_note"
 >;
 export const SUMMARY_COLUMNS =
-  "id,owner_id,author,title,description,kind,tags,status,created_at,reviewed_at,remix_of,license,previews";
+  "id,owner_id,author,title,description,kind,tags,status,created_at,reviewed_at,remix_of,license,previews,repository_url";
 export const EMPTY_DRAFT: CommunityDraft = {
   title: "",
   description: "",
   kind: "component",
   tags: [],
+  submissionType: "code",
+  repositoryUrl: "",
   licenseAccepted: false,
   remixOf: null,
   html: '<main class="card">\n  <h1>Hello, community.</h1>\n  <p>Make something useful and share it.</p>\n  <button type="button">Say hello</button>\n  <p id="message" role="status"></p>\n</main>',
@@ -64,9 +69,22 @@ export function sourceError(source: SampleSource): string | null {
     return "Project code exceeds 300 KB.";
   return null;
 }
+/** Only repository roots are accepted; never credentials, query strings or arbitrary hosts. */
+export function githubRepositoryUrl(value: string): string | null {
+  const match =
+    /^https:\/\/github\.com\/([a-z0-9](?:[a-z0-9-]{0,37}[a-z0-9])?)\/([a-z0-9_.-]{1,100})\/?$/i.exec(
+      value.trim(),
+    );
+  if (!match || match[2] === "." || match[2] === "..") return null;
+  return `https://github.com/${match[1]}/${match[2]}`;
+}
 export function draftError(draft: CommunityDraft): string | null {
   return (
-    sourceError(draft) ||
+    (draft.submissionType !== "github" ? sourceError(draft) : null) ||
+    (draft.submissionType === "github" &&
+    !githubRepositoryUrl(draft.repositoryUrl ?? "")
+      ? "Enter a GitHub repository URL, such as https://github.com/owner/repository."
+      : null) ||
     (draft.title.trim().length < 3 || draft.title.trim().length > 80
       ? "Use a title between 3 and 80 characters."
       : null) ||
@@ -82,7 +100,9 @@ export function draftError(draft: CommunityDraft): string | null {
       ? "Use up to five tags containing lowercase letters, numbers, or hyphens (32 characters each)."
       : null) ||
     (!draft.licenseAccepted
-      ? "Confirm that you can share this code under the MIT license."
+      ? draft.submissionType === "github"
+        ? "Confirm that you have permission to showcase this project and its screenshots."
+        : "Confirm that you can share this code under the MIT license."
       : null)
   );
 }
