@@ -21,8 +21,11 @@ export async function lookupRepository(
       400,
       "Enter a GitHub repository URL to get suggestions.",
     );
-  const path = new URL(repository).pathname;
-  const response = await fetcher(`https://api.github.com/repos${path}`, {
+  // Assign only the path of a fixed-origin URL. User input cannot alter its host,
+  // protocol, credentials or port, even if repository validation changes later.
+  const endpoint = new URL("https://api.github.com");
+  endpoint.pathname = `/repos${new URL(repository).pathname}`;
+  const response = await fetcher(endpoint, {
     headers: {
       Accept: "application/vnd.github+json",
       "User-Agent": "UI-Lexicon",

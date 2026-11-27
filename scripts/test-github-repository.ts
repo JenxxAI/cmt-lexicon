@@ -63,6 +63,8 @@ async function main() {
   let calls = 0;
   const mock = (async (input, init) => {
     calls++;
+    assert(input instanceof URL);
+    assert.equal(input.origin, "https://api.github.com");
     assert.equal(String(input), "https://api.github.com/repos/maker/project");
     assert.equal(init?.redirect, "error");
     assert(!new Headers(init?.headers).has("authorization"));
@@ -118,7 +120,7 @@ async function main() {
         homepage: 'https://public-domain.com/"<script>bad</script>',
       });
     const escaped = await (await previewRoute(request)).text();
-    assert.doesNotMatch(escaped, /<script>/);
+    assert.doesNotMatch(escaped, /<script\b/i);
     globalThis.fetch = async () => {
       throw new Error("upstream private debug value");
     };
