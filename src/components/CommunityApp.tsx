@@ -7,6 +7,7 @@ import { CommunityShell } from "./CommunityShell";
 import type { ReactNode } from "react";
 import { HeaderAccount } from "./HeaderAccount";
 import { AuthDialog } from "./AuthDialog";
+import { GitHubRepositoryPanel } from "./GitHubRepositoryPanel";
 import { GitHubIcon } from "./GitHubIcon";
 import { Spinner } from "./Spinner";
 import {
@@ -1201,8 +1202,9 @@ function CommunityEditor({
               className="mt-2 block text-sm font-normal text-muted"
             >
               Link to a public repository you own or have permission to
-              showcase. Its existing license still applies. We don’t import or
-              run repository code.
+              showcase. We suggest details from GitHub and preview its public
+              Website link when available. Your edits and the repository’s
+              license are kept.
             </span>
           </label>
         )}
@@ -1259,6 +1261,26 @@ function CommunityEditor({
           />
         </label>
       </div>
+      {showcase && (
+        <GitHubRepositoryPanel
+          repository={draft.repositoryUrl ?? ""}
+          onSuggestions={(suggestions, replace) => {
+            const next: Partial<CommunityDraft> = {};
+            if (suggestions.title && (replace || !draft.title.trim()))
+              next.title = suggestions.title;
+            if (
+              suggestions.description &&
+              (replace || !draft.description.trim())
+            )
+              next.description = suggestions.description;
+            if (suggestions.tags.length && (replace || !tagText.trim())) {
+              next.tags = suggestions.tags;
+              setTagText(suggestions.tags.join(", "));
+            }
+            if (Object.keys(next).length) change(next);
+          }}
+        />
+      )}
       <section
         aria-labelledby="previews-heading"
         className="mt-4 rounded-[28px] bg-surface p-6"
@@ -1611,7 +1633,8 @@ function CommunityDetail({
       </p>
       <div className="rounded-[28px] bg-surface p-6">
         <p className="font-mono text-xs uppercase text-accent-deep">
-          {project.repository_url ? "GitHub showcase" : project.kind} · {project.status}
+          {project.repository_url ? "GitHub showcase" : project.kind} ·{" "}
+          {project.status}
         </p>
         <h2 className="mt-3 break-words font-display text-3xl font-bold">
           {project.title}
@@ -1640,6 +1663,9 @@ function CommunityDetail({
           </p>
         )}
       </div>
+      {project.repository_url && (
+        <GitHubRepositoryPanel repository={project.repository_url} />
+      )}
       {project.previews?.length > 0 && (
         <div className="mt-4 rounded-[28px] bg-surface p-3">
           <ImageCarousel

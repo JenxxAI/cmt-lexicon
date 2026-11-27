@@ -30,5 +30,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static/|_next/image/|preview-frame/?$).*)"],
+  matcher: [
+    "/((?!_next/static/|_next/image/|(?:preview-frame|repository-preview)/?$).*)",
+  ],
 };
