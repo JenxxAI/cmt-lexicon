@@ -831,9 +831,18 @@ function CommunityEditor({
   const [submitting, setSubmitting] = useState(false);
   const submitPending = useRef(false);
   const [error, setError] = useState("");
+  const [descriptionAttempted, setDescriptionAttempted] = useState(false);
   const [status, setStatus] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
   const revision = useRef(0);
+  const descriptionInput = useRef<HTMLTextAreaElement>(null);
+  const descriptionLength = draft.description.trim().length;
+  const descriptionInvalid =
+    descriptionLength < 20 || descriptionLength > 600;
+  const descriptionError =
+    descriptionAttempted && descriptionInvalid
+      ? "Use a description between 20 and 600 characters."
+      : "";
   const recovery = useDraftRecovery(draft, setDraft, setTagText);
   const [images, setImages] = useState<PreviewDraft[]>([]);
   const imagesRef = useRef<PreviewDraft[]>([]);
@@ -1053,7 +1062,19 @@ function CommunityEditor({
     if (submitPending.current || busy || importing || submitted) return;
     const invalid = draftError(draft);
     if (invalid) {
-      setError(invalid);
+      setDescriptionAttempted(true);
+      if (invalid === "Use a description between 20 and 600 characters.") {
+        setError("");
+        descriptionInput.current?.focus();
+        descriptionInput.current?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "instant"
+            : "smooth",
+          block: "center",
+        });
+      } else {
+        setError(invalid);
+      }
       return;
     }
     if (showcase && !images.length) {
@@ -1234,13 +1255,31 @@ function CommunityEditor({
         <label className="text-sm font-semibold md:col-span-2">
           Description
           <textarea
+            ref={descriptionInput}
             className={field}
             rows={3}
             maxLength={600}
             value={draft.description}
             onChange={(event) => change({ description: event.target.value })}
+            aria-invalid={descriptionError ? true : undefined}
+            aria-describedby={`community-description-hint${descriptionError ? " community-description-error" : ""}`}
             placeholder="What does it do, and when would someone use it? (20–600 characters)"
           />
+          <span
+            id="community-description-hint"
+            className={`mt-2 block text-xs ${descriptionError ? "text-red" : "text-muted"}`}
+          >
+            {descriptionLength}/600 characters · 20 minimum
+          </span>
+          {descriptionError && (
+            <span
+              id="community-description-error"
+              role="alert"
+              className="mt-1 block rounded-lg bg-red-soft px-3 py-2 text-sm font-medium text-red"
+            >
+              {descriptionError}
+            </span>
+          )}
         </label>
         <label className="text-sm font-semibold md:col-span-2">
           Tags (comma separated, up to 5)
