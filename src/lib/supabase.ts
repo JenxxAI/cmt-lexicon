@@ -88,10 +88,15 @@ const client = {
     page: number;
     kind: string;
     search: string;
+    source?: string;
+    author?: string;
   }) {
     return request<CommunitySummary[]>(
       `projects/?${new URLSearchParams({ ...options, page: String(options.page) })}`,
     );
+  },
+  bookmark(id: string) {
+    return request<boolean>(`bookmark/?${new URLSearchParams({ id })}`);
   },
   project(id: string) {
     return request<CommunityProject>(`project/?${new URLSearchParams({ id })}`);

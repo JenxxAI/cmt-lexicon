@@ -19,6 +19,7 @@ export function useDraftRecovery(
   draft: CommunityDraft,
   setDraft: Dispatch<SetStateAction<CommunityDraft>>,
   setTags: Dispatch<SetStateAction<string>>,
+  storageKey = DRAFT_KEY,
 ) {
   const latest = useRef(draft);
   latest.current = draft;
@@ -33,7 +34,7 @@ export function useDraftRecovery(
   flush.current = (force = false) => {
     if (!force && !dirty.current) return true;
     try {
-      writeLocalDraft(localStorage, latest.current);
+      writeLocalDraft(localStorage, latest.current, storageKey);
       setSaveStatus("Draft saved in this browser. It has not been submitted.");
       dirty.current = false;
       setUnsaved(false);
@@ -47,7 +48,7 @@ export function useDraftRecovery(
   };
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(DRAFT_KEY);
+      const raw = localStorage.getItem(storageKey);
       const remix = new URL(window.location.href).searchParams.get("remix");
       const restored = raw ? parseLocalDraft(raw) : null;
       if (restored && shouldRestoreDraft(restored, remix)) {
@@ -85,7 +86,7 @@ export function useDraftRecovery(
       window.removeEventListener("beforeunload", leave);
       window.removeEventListener("pagehide", hide);
     };
-  }, [setDraft, setTags]);
+  }, [setDraft, setTags, storageKey]);
   useEffect(() => {
     if (!ready || !dirty.current) return;
     setSaveStatus("Saving your draft in this browser…");
@@ -110,7 +111,7 @@ export function useDraftRecovery(
     },
     forget() {
       try {
-        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(storageKey);
         setUnsaved(true);
         dirty.current = false;
         setSaveStatus(

@@ -291,7 +291,8 @@ export async function communityApi(request: Request): Promise<Response> {
     }
     if (action === "projects" && request.method === "GET") {
       const view = url.searchParams.get("view") ?? "browse";
-      if (!["browse", "mine", "moderate"].includes(view)) return fail(400);
+      if (!["browse", "mine", "moderate", "saved"].includes(view))
+        return fail(400);
       if (view !== "browse" && !user) return fail(401);
       if (view === "moderate") {
         const { data, error } = await api.rpc("is_community_moderator");
@@ -301,13 +302,32 @@ export async function communityApi(request: Request): Promise<Response> {
       if (!Number.isInteger(page) || page < 0 || page > 10000) return fail(400);
       let query = api
         .from("community_projects")
-        .select(SUMMARY_COLUMNS, { count: "exact" })
+        .select(
+          view === "saved"
+            ? `${SUMMARY_COLUMNS},community_bookmarks!inner(user_id)`
+            : SUMMARY_COLUMNS,
+          { count: "exact" },
+        )
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
         .range(page * 12, page * 12 + 11);
       if (view === "mine") query = query.eq("owner_id", user!.id);
       else
-        query = query.eq("status", view === "browse" ? "approved" : "pending");
+        query = query.eq(
+          "status",
+          view === "moderate" ? "pending" : "approved",
+        );
+      if (view === "saved")
+        query = query.eq("community_bookmarks.user_id", user!.id);
+      const source = url.searchParams.get("source") ?? "all";
+      if (!["all", "code", "github"].includes(source)) return fail(400);
+      if (source === "code") query = query.is("repository_url", null);
+      if (source === "github") query = query.not("repository_url", "is", null);
+      const author = url.searchParams.get("author");
+      if (author) {
+        if (!/^[a-zA-Z0-9-]{1,39}$/.test(author)) return fail(400);
+        query = query.eq("status", "approved").ilike("author", author);
+      }
       const kind = url.searchParams.get("kind");
       if (kind && kind !== "all") {
         if (!["component", "website"].includes(kind)) return fail(400);
@@ -323,6 +343,17 @@ export async function communityApi(request: Request): Promise<Response> {
         );
       const { data, error, count } = await query;
       return error ? fail(502) : json({ data, count, error: null });
+    }
+    if (action === "bookmark" && request.method === "GET") {
+      if (!user) return fail(401);
+      const id = url.searchParams.get("id");
+      if (!isProjectId(id)) return fail(400);
+      const { data, error } = await api
+        .from("community_bookmarks")
+        .select("project_id")
+        .eq("user_id", user.id)
+        .eq("project_id", id);
+      return error ? fail(502) : json({ data: !!data?.length, error: null });
     }
     if (action === "project" && request.method === "GET") {
       const id = url.searchParams.get("id") ?? "";
@@ -345,6 +376,8 @@ export async function communityApi(request: Request): Promise<Response> {
         "submit_community_showcase",
         "review_community_project",
         "withdraw_community_project",
+        "edit_community_project",
+        "save_community_project",
       ];
       if (
         typeof body.name !== "string" ||
@@ -363,7 +396,10 @@ export async function communityApi(request: Request): Promise<Response> {
               data: null,
               error: {
                 code: error.code,
-                message: "Community action could not be completed",
+                message:
+                  error.message === "Project already changed"
+                    ? "Project already changed. Reload before editing."
+                    : "Community action could not be completed",
               },
             },
             400,

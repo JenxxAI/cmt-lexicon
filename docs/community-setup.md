@@ -114,3 +114,41 @@ Pasting a valid public GitHub repository URL triggers a debounced metadata looku
 The same-origin metadata endpoint calls only `api.github.com/repos/{owner}/{repo}` without user credentials or redirects, with an eight-second timeout and ten-minute Next fetch cache. No API key, extra OAuth scope or database migration is required. Unauthenticated GitHub API rate limits still apply to uncached lookups.
 
 When GitHub’s About → Website field contains a public HTTPS URL, creation and showcase details display a landing-page frame and an **Open website** link. No deployment is inferred from the repository name. Screenshots remain required and serve as the gallery cover. The live website is loaded by the visitor’s browser, not fetched by the server. URLs with credentials, local hostnames, IP literals or nonstandard ports are rejected. The separate `/repository-preview/` wrapper has a restricted CSP and an opaque sandbox origin; its nested frame permits scripts but not same-origin access, forms, popups or top navigation. The main application CSP is unchanged. Embedding restrictions (CSP/X-Frame-Options), redirects and sandbox-incompatible sites can prevent display; the external link and uploaded screenshots remain available. Website metadata can change independently of moderation, just like the linked repository.
+
+### Editing, private saves, and creator browsing
+
+Apply `supabase/migrations/20261127152939_community_editing_and_bookmarks.sql`
+**before deploying** the editing/saved-project UI. Preview, gallery and existing
+submission APIs retain their existing columns and contracts. New edit/save
+operations require this migration; deploying them first will show action errors.
+Review `supabase migration list --remote` and `supabase db push --remote --dry-run`
+against the intended linked project before applying pending migrations.
+
+Owners can choose **Edit & resubmit** on a project, including rejected or withdrawn
+submissions. The project keeps its ID, author, creation date and remix attribution.
+Every edit returns it to `pending`, clears moderation feedback and removes it from
+public browsing until approved again. Format (code vs GitHub showcase) cannot
+change. Existing screenshots can be retained, reordered or removed; new images
+use the same private upload policies. Local text drafts are isolated by project
+and revision; new screenshots and image ordering are not persisted locally.
+
+The edit RPC checks the active session, ownership and revision while locking the
+row. Any intervening edit, review or withdrawal invalidates stale forms.
+Moderation also requires the opened revision, preventing stale approvals of unseen
+edits. During rollout, old clients may review only untouched revision-zero rows;
+refresh onto the new deployment to review edited or previously reviewed projects. Existing
+submission validators and the 5/hour, 20/day quota apply equally to edits. Invalid
+edits roll back atomically. No direct project UPDATE grant is added.
+
+Saved projects are private to the signed-in account and appear at
+`/community/saved/`. Bookmark inserts require an approved project; rows are
+protected by active-session ownership RLS. Saved gallery queries also require
+`approved` status, so withdrawn/rejected/pending content is hidden without losing
+the bookmark. Unsave remains available through the RPC for hidden projects.
+Creator pages (`/community/creator/?author=...`) show only approved submissions
+and the already-public GitHub username; no additional profile data is exposed.
+
+Local verification uses the in-memory Postgres suite (`npm test`) to cover
+ownership, moderation reset, stale revision rejection, image validation, quota
+sharing, bookmark isolation, revoked sessions and public visibility. Authenticated
+browser verification still requires a disposable GitHub-backed account.

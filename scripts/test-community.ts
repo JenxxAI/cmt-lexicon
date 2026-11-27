@@ -520,6 +520,218 @@ async function main() {
     ),
     /check constraint/,
   );
+  // Apply the additive migration to an existing populated database.
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261127152939_community_editing_and_bookmarks.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    "delete from community_private.submission_events; update auth.sessions set not_after=null;",
+  );
+  for (const id of [owner, other, moderator]) {
+    const result = await db.query<{ id: string }>(
+      "insert into auth.sessions values(gen_random_uuid(),$1,null) returning id",
+      [id],
+    );
+    sessions.set(id, result.rows[0].id);
+  }
+  await as(owner);
+  const editable = (await submit()).rows[0].id;
+  const edit = (
+    id = editable,
+    revision = 0,
+    accepted = true,
+    repo: string | null = null,
+    previews: string[] = [],
+  ) =>
+    db.query(
+      "select edit_community_project($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+      [
+        id,
+        revision,
+        "Updated project",
+        "An updated description for this project.",
+        "website",
+        ["updated"],
+        "<h1>Updated</h1>",
+        "",
+        "",
+        repo,
+        accepted,
+        previews,
+      ],
+    );
+  await as(null);
+  await assert.rejects(edit(), /permission denied/);
+  await as(other);
+  await assert.rejects(edit(), /unavailable/);
+  await as(owner);
+  await assert.rejects(edit(editable, 0, false), /license/);
+  await assert.rejects(
+    edit(editable, 0, true, "https://github.com/maker/project"),
+    /format/,
+  );
+  await as(moderator);
+  await db.query("select review_community_project($1,'approved','')", [
+    editable,
+  ]);
+  await as(owner);
+  await assert.rejects(edit(), /already changed/); // Moderation also changes the revision.
+  const beforeEdit = (
+    await db.query(
+      "select id,owner_id,created_at from community_projects where id=$1",
+      [editable],
+    )
+  ).rows[0];
+  await edit(editable, 1);
+  assert.deepEqual(
+    (
+      await db.query(
+        "select id,owner_id,created_at from community_projects where id=$1",
+        [editable],
+      )
+    ).rows[0],
+    beforeEdit,
+  );
+  assert.deepEqual(
+    (
+      await db.query(
+        "select title,status,reviewed_at,review_note,revision from community_projects where id=$1",
+        [editable],
+      )
+    ).rows[0],
+    {
+      title: "Updated project",
+      status: "pending",
+      reviewed_at: null,
+      review_note: "",
+      revision: 2,
+    },
+  );
+  await assert.rejects(edit(editable, 1), /already changed/);
+  await as(null);
+  assert.equal(
+    (
+      await db.query("select id from community_projects where id=$1", [
+        editable,
+      ])
+    ).rows.length,
+    0,
+  );
+  await as(owner);
+  await assert.rejects(
+    db.query("select save_community_project($1,true)", [editable]),
+    /row-level security/,
+  );
+  await as(moderator);
+  await assert.rejects(
+    db.query("select review_community_project($1,'approved','',1)", [editable]),
+    /already changed/,
+  );
+  await assert.rejects(
+    db.query("select review_community_project($1,'approved','')", [editable]),
+    /already changed/,
+  );
+  await db.query("select review_community_project($1,'approved','',2)", [
+    editable,
+  ]);
+  await as(owner);
+  await db.query("select save_community_project($1,true)", [editable]);
+  await db.query("select save_community_project($1,true)", [editable]); // Idempotent.
+  assert.equal(
+    (await db.query("select * from community_bookmarks")).rows.length,
+    1,
+  );
+  await as(other);
+  assert.equal(
+    (await db.query("select * from community_bookmarks")).rows.length,
+    0,
+  );
+  await assert.rejects(
+    db.query(
+      "insert into community_bookmarks(user_id,project_id) values($1,$2)",
+      [owner, editable],
+    ),
+    /row-level security/,
+  );
+  await db.query("delete from community_bookmarks where user_id=$1", [owner]);
+  await as(owner);
+  assert.equal(
+    (await db.query("select * from community_bookmarks")).rows.length,
+    1,
+  );
+  await as(owner, "00000000-0000-4000-8000-000000000099");
+  assert.equal(
+    (await db.query("select * from community_bookmarks")).rows.length,
+    0,
+  );
+  await assert.rejects(
+    db.query("select save_community_project($1,false)", [editable]),
+    /session expired/,
+  );
+  await assert.rejects(edit(editable, 3), /session expired/);
+  await as(null);
+  await assert.rejects(
+    db.query("select * from community_bookmarks"),
+    /permission denied/,
+  );
+  await assert.rejects(
+    db.query("select save_community_project($1,true)", [editable]),
+    /permission denied/,
+  );
+  await as(owner);
+  await edit(editable, 3); // Approved -> pending hides it from the saved gallery.
+  assert.equal(
+    (
+      await db.query(
+        "select p.id from community_projects p join community_bookmarks b on b.project_id=p.id where p.status='approved'",
+      )
+    ).rows.length,
+    0,
+  );
+  await db.query("select save_community_project($1,false)", [editable]);
+  assert.equal(
+    (await db.query("select * from community_bookmarks")).rows.length,
+    0,
+  );
+  // A withdrawn showcase can be resubmitted using its existing owned images.
+  await edit(showcaseId, 0, true, "https://github.com/maker/updated", [cover]);
+  assert.deepEqual(
+    (
+      await db.query(
+        "select repository_url,license,html,status from community_projects where id=$1",
+        [showcaseId],
+      )
+    ).rows[0],
+    {
+      repository_url: "https://github.com/maker/updated",
+      license: "Repository",
+      html: "",
+      status: "pending",
+    },
+  );
+  await assert.rejects(
+    edit(showcaseId, 1, true, "https://github.com/maker/updated", []),
+    /screenshot/,
+  );
+  await assert.rejects(
+    edit(showcaseId, 1, true, "https://github.com/maker/updated", [image]),
+    /own preview images/,
+  );
+  // Creation + three edits share the same quota ledger; failures did not consume quota.
+  await edit(editable, 4);
+  await assert.rejects(edit(editable, 5), /Submission limit/);
+  await db.exec("reset role");
+  assert.equal(
+    (
+      await db.query<{ n: number }>(
+        "select count(*)::int as n from community_projects where title='Updated project'",
+      )
+    ).rows[0].n,
+    2,
+  );
   await db.close();
   console.log(
     "Community checks passed: UTF-8 limits, preview CSP, anonymous denial, private pending rows, moderator-only approval, direct-write denial, rejected feedback, remix attribution, withdrawal, hourly/daily quotas, GitHub showcase URLs, consent, screenshots, license separation and shared access controls.",

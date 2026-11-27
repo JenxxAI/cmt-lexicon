@@ -124,11 +124,12 @@ export function parseLocalDraft(raw: string): CommunityDraft {
 export function writeLocalDraft(
   storage: Pick<Storage, "setItem">,
   draft: CommunityDraft,
+  key = DRAFT_KEY,
 ): void {
   const raw = JSON.stringify(draft);
   const checked = parseLocalDraft(raw);
   // Persist only draft fields; consent must be confirmed again after restoration.
-  storage.setItem(DRAFT_KEY, JSON.stringify(checked));
+  storage.setItem(key, JSON.stringify(checked));
 }
 
 export function shouldRestoreDraft(

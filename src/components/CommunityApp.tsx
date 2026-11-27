@@ -3,6 +3,7 @@ import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import "./community-ui.css";
+import { ProjectBookmark } from "./ProjectBookmark";
 import { CommunityBrowseCard } from "./CommunityBrowseCard";
 import { CommunityShell } from "./CommunityShell";
 import type { ReactNode } from "react";
@@ -63,8 +64,23 @@ import {
   parseLocalDraft,
 } from "@/lib/community-resilience";
 
-type PreviewDraft = { id: string; blob: Blob; url: string; name: string };
-type View = "browse" | "create" | "project" | "mine" | "moderate" | "auth";
+type PreviewDraft = {
+  id: string;
+  blob?: Blob;
+  path?: string;
+  url: string;
+  name: string;
+};
+type View =
+  | "browse"
+  | "create"
+  | "edit"
+  | "saved"
+  | "creator"
+  | "project"
+  | "mine"
+  | "moderate"
+  | "auth";
 const button = "btn btn-primary";
 const secondary = "btn btn-secondary";
 const field =
@@ -344,13 +360,20 @@ export function CommunityApp({
               </div>
             )}
 
-            {(view === "browse" || view === "mine" || view === "moderate") && (
+            {(view === "browse" ||
+              view === "mine" ||
+              view === "moderate" ||
+              view === "saved" ||
+              view === "creator") && (
               <CommunityGallery
                 client={client}
                 session={session}
                 view={view}
                 moderator={moderator}
               />
+            )}
+            {view === "edit" && (
+              <CommunityEdit client={client} session={session} />
             )}
             {view === "project" && (
               <CommunityDetail
@@ -451,16 +474,22 @@ function CommunityGallery({
 }: {
   client: SupabaseClient | null;
   session: Session | null;
-  view: "browse" | "mine" | "moderate";
+  view: "browse" | "mine" | "moderate" | "saved" | "creator";
   moderator: boolean | null;
 }) {
   const [items, setItems] = useState<CommunitySummary[]>([]);
   const [kind, setKind] = useState("all");
+  const [source, setSource] = useState("all");
+  const [author, setAuthor] = useState<string | null>(null);
+  const publicView = view === "browse" || view === "creator";
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState("");
   useEffect(() => {
     const initial =
       new URLSearchParams(window.location.search).get("q")?.slice(0, 100) ?? "";
+    const creator =
+      new URLSearchParams(window.location.search).get("author") ?? "";
+    setAuthor(/^[a-zA-Z0-9-]{1,39}$/.test(creator) ? creator : "");
     setQuery(initial);
     setSearch(initial);
   }, []);
@@ -481,12 +510,20 @@ function CommunityGallery({
     setLoading(false);
     if (
       !client ||
-      (view !== "browse" && !session) ||
+      (view === "creator" && !author) ||
+      (!publicView && !session) ||
       (view === "moderate" && !moderator)
     )
       return;
     setLoading(true);
-    const request = client.projects({ view, page, kind, search });
+    const request = client.projects({
+      view: view === "creator" ? "browse" : view,
+      page,
+      kind,
+      search,
+      source,
+      ...(view === "creator" ? { author: author! } : {}),
+    });
     Promise.resolve(request)
       .then(({ data, error, count }) => {
         if (!alive) return;
@@ -505,11 +542,23 @@ function CommunityGallery({
     return () => {
       alive = false;
     };
-  }, [client, session, view, moderator, page, kind, search, retry]);
-  if (view !== "browse" && !session)
+  }, [
+    client,
+    session,
+    view,
+    moderator,
+    page,
+    kind,
+    search,
+    source,
+    author,
+    publicView,
+    retry,
+  ]);
+  if (!publicView && !session)
     return (
       <p className="my-8 text-body">
-        Sign in with GitHub to see your submissions
+        Sign in with GitHub to see your saved projects and submissions
         {view === "moderate"
           ? " and access moderation if you are an appointed moderator"
           : ""}
@@ -544,6 +593,26 @@ function CommunityGallery({
             : "Community projects"
       }
     >
+      {view === "creator" && (
+        <div className="mb-6 rounded-[28px] bg-surface p-6">
+          <h2 className="font-display text-2xl font-bold">
+            {author ? `@${author}` : "Choose a creator from a project"}
+          </h2>
+          <p className="mt-2 text-body">
+            Approved projects shared with the community.
+          </p>
+          {author && (
+            <a
+              className={`${secondary} mt-4`}
+              href={`https://github.com/${author}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHubIcon /> View GitHub profile
+            </a>
+          )}
+        </div>
+      )}
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -578,6 +647,21 @@ function CommunityGallery({
             <option value="website">Website types</option>
           </select>
         </label>
+        <label className="text-sm font-semibold">
+          Format
+          <select
+            className={field}
+            value={source}
+            onChange={(event) => {
+              setSource(event.target.value);
+              setPage(0);
+            }}
+          >
+            <option value="all">All formats</option>
+            <option value="code">Interactive demos</option>
+            <option value="github">GitHub showcases</option>
+          </select>
+        </label>
         <button className={button}>Search</button>
       </form>
       <p role="status" className="my-4 text-sm text-muted">
@@ -605,23 +689,40 @@ function CommunityGallery({
           <h2 className="font-display text-2xl font-bold">
             {view === "browse"
               ? "No projects to show yet"
-              : view === "mine"
-                ? "Your next idea starts here"
-                : "The review queue is clear"}
+              : view === "saved"
+                ? "Save something that inspires you"
+                : view === "creator"
+                  ? "No approved projects to show"
+                  : view === "mine"
+                    ? "Your next idea starts here"
+                    : "The review queue is clear"}
           </h2>
           <p className="mt-3 text-muted">
             {view === "browse"
               ? "Only approved submissions appear here. Try another search, or create something for the community."
-              : "New submissions remain private until a moderator approves them."}
+              : view === "saved"
+                ? "Save projects from their detail page. Only projects that are currently approved appear here."
+                : view === "creator"
+                  ? "Try another filter, or discover more creators in the community."
+                  : "New submissions remain private until a moderator approves them."}
           </p>
-          <Link href="/community/create/" className={`${button} mt-5`}>
-            Create a project
+          <Link
+            href={
+              view === "saved" || view === "creator"
+                ? "/community/"
+                : "/community/create/"
+            }
+            className={`${button} mt-5`}
+          >
+            {view === "saved" || view === "creator"
+              ? "Browse projects"
+              : "Create a project"}
           </Link>
         </div>
       )}
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) =>
-          view === "browse" ? (
+          publicView || view === "saved" ? (
             <CommunityBrowseCard
               key={item.id}
               id={item.id}
@@ -830,19 +931,96 @@ function CommunityPreview({
   );
 }
 
-function CommunityEditor({
+function CommunityEdit({
   client,
   session,
 }: {
   client: SupabaseClient | null;
   session: Session | null;
 }) {
-  const [draft, setDraft] = useState<CommunityDraft>(() => ({
-    ...EMPTY_DRAFT,
-    tags: [],
-  }));
+  const [project, setProject] = useState<CommunityProject | null>(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    setProject(null);
+    setError("");
+    if (!client || !session) return;
+    let alive = true;
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!isProjectId(id)) {
+      setError("Choose a project from My submissions.");
+      return;
+    }
+    client
+      .project(id)
+      .then(({ data, error }) => {
+        if (!alive) return;
+        if (error || !data || data.owner_id !== session.user.id)
+          setError("This project is unavailable for editing.");
+        else setProject(data);
+      })
+      .catch(() => {
+        if (alive) setError("Could not load your project. Refresh to retry.");
+      });
+    return () => {
+      alive = false;
+    };
+  }, [client, session]);
+  if (!session)
+    return (
+      <p className="my-8 text-body">
+        Sign in with the owning GitHub account to edit this project.
+      </p>
+    );
+  if (error)
+    return (
+      <p role="alert" className="my-8 text-red">
+        {error}
+      </p>
+    );
+  if (!project || project.owner_id !== session.user.id)
+    return <RequestStatus pending>Loading your project…</RequestStatus>;
+  return (
+    <CommunityEditor
+      key={`${project.id}:${session.user.id}`}
+      client={client}
+      session={session}
+      initial={project}
+    />
+  );
+}
+
+function CommunityEditor({
+  client,
+  session,
+  initial,
+}: {
+  client: SupabaseClient | null;
+  session: Session | null;
+  initial?: CommunityProject;
+}) {
+  const [draft, setDraft] = useState<CommunityDraft>(() =>
+    initial
+      ? {
+          html: initial.html,
+          css: initial.css,
+          js: initial.js,
+          title: initial.title,
+          description: initial.description,
+          kind: initial.kind,
+          tags: initial.tags,
+          submissionType: initial.repository_url ? "github" : "code",
+          repositoryUrl: initial.repository_url ?? "",
+          licenseAccepted: false,
+          remixOf: initial.remix_of,
+        }
+      : { ...EMPTY_DRAFT, tags: [] },
+  );
+  const storageKey = initial
+    ? `${DRAFT_KEY}:edit:${initial.id}:${initial.revision}`
+    : DRAFT_KEY;
+  const [serverRevision, setServerRevision] = useState(initial?.revision ?? 0);
   const showcase = draft.submissionType === "github";
-  const [tagText, setTagText] = useState("");
+  const [tagText, setTagText] = useState(initial?.tags.join(", ") ?? "");
   const [busy, setBusy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const submitPending = useRef(false);
@@ -850,8 +1028,17 @@ function CommunityEditor({
   const [status, setStatus] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
   const revision = useRef(0);
-  const recovery = useDraftRecovery(draft, setDraft, setTagText);
-  const [images, setImages] = useState<PreviewDraft[]>([]);
+  const recovery = useDraftRecovery(draft, setDraft, setTagText, storageKey);
+  const [images, setImages] = useState<PreviewDraft[]>(
+    () =>
+      initial?.previews.map((path, index) => ({
+        id: path,
+        path,
+        url: "",
+        name: `Screenshot ${index + 1}`,
+      })) ?? [],
+  );
+  const existingUrls = previewUrlsFor(client, initial?.previews ?? []);
   const imagesRef = useRef<PreviewDraft[]>([]);
   imagesRef.current = images;
   const fileInput = useRef<HTMLInputElement>(null);
@@ -869,6 +1056,7 @@ function CommunityEditor({
     setError("");
   }
   useEffect(() => {
+    if (initial) return;
     const id = new URL(window.location.href).searchParams.get("remix");
     if (!id || !client || recovery.restoredRemix.current === id) return;
     if (!isProjectId(id)) {
@@ -1045,7 +1233,7 @@ function CommunityEditor({
   }
   function load() {
     try {
-      const raw = localStorage.getItem(DRAFT_KEY);
+      const raw = localStorage.getItem(storageKey);
       if (!raw) {
         setStatus("No saved local draft yet.");
         return;
@@ -1087,8 +1275,14 @@ function CommunityEditor({
     setError("");
     const submittedRevision = revision.current;
     const uploaded: string[] = [];
+    const paths: string[] = [];
     try {
       for (const image of images) {
+        if (image.path) {
+          paths.push(image.path);
+          continue;
+        }
+        if (!image.blob) continue;
         const path = previewPath(
           session.user.id,
           crypto.randomUUID(),
@@ -1097,18 +1291,12 @@ function CommunityEditor({
         const { error } = await client.uploadPreview(path, image.blob);
         if (error) throw error;
         uploaded.push(path);
+        paths.push(path);
       }
-      const { data, error } = showcase
-        ? await client.rpc("submit_community_showcase", {
-            p_title: draft.title.trim(),
-            p_description: draft.description.trim(),
-            p_kind: draft.kind,
-            p_tags: [...new Set(draft.tags)],
-            p_repository_url: githubRepositoryUrl(draft.repositoryUrl ?? ""),
-            p_permission_accepted: draft.licenseAccepted,
-            p_previews: uploaded,
-          })
-        : await client.rpc("submit_community_project", {
+      const { data, error } = initial
+        ? await client.rpc("edit_community_project", {
+            p_id: initial.id,
+            p_revision: serverRevision,
             p_title: draft.title.trim(),
             p_description: draft.description.trim(),
             p_kind: draft.kind,
@@ -1116,24 +1304,51 @@ function CommunityEditor({
             p_html: draft.html,
             p_css: draft.css,
             p_js: draft.js,
-            p_license_accepted: draft.licenseAccepted,
-            p_remix_of: draft.remixOf,
-            p_previews: uploaded,
-          });
+            p_repository_url: showcase
+              ? githubRepositoryUrl(draft.repositoryUrl ?? "")
+              : null,
+            p_permission_accepted: draft.licenseAccepted,
+            p_previews: paths,
+          })
+        : showcase
+          ? await client.rpc("submit_community_showcase", {
+              p_title: draft.title.trim(),
+              p_description: draft.description.trim(),
+              p_kind: draft.kind,
+              p_tags: [...new Set(draft.tags)],
+              p_repository_url: githubRepositoryUrl(draft.repositoryUrl ?? ""),
+              p_permission_accepted: draft.licenseAccepted,
+              p_previews: paths,
+            })
+          : await client.rpc("submit_community_project", {
+              p_title: draft.title.trim(),
+              p_description: draft.description.trim(),
+              p_kind: draft.kind,
+              p_tags: [...new Set(draft.tags)],
+              p_html: draft.html,
+              p_css: draft.css,
+              p_js: draft.js,
+              p_license_accepted: draft.licenseAccepted,
+              p_remix_of: draft.remixOf,
+              p_previews: paths,
+            });
       if (error) {
         // Nothing references these files yet, so the owner policy lets us delete them.
         if (uploaded.length)
           await client.removePreviews(uploaded).catch(() => {});
         setError(message(error));
-      } else if (submittedRevision === revision.current) {
-        setSubmitted(String(data));
-        setStatus(
-          "Submitted for review. Only you and moderators can see it until it is approved.",
-        );
       } else {
-        setStatus(
-          "The earlier version was submitted for review. Your newer edits have not been submitted; view the earlier version in My submissions.",
-        );
+        if (initial) setServerRevision((value) => value + 1);
+        if (submittedRevision === revision.current) {
+          setSubmitted(String(data));
+          setStatus(
+            "Submitted for review. Only you and moderators can see it until it is approved.",
+          );
+        } else {
+          setStatus(
+            "The earlier version was submitted for review. Your newer edits have not been submitted; view the earlier version in My submissions.",
+          );
+        }
       }
     } catch (error) {
       if (uploaded.length)
@@ -1157,9 +1372,18 @@ function CommunityEditor({
         Drafts are stored only in this browser, including on shared devices. Do
         not include secrets. Use Remove saved copy to clear the stored draft.
       </p>
+      {initial && (
+        <p
+          role="status"
+          className="mb-5 rounded-2xl bg-accent-soft p-5 text-body"
+        >
+          Editing {initial.title}. Submitting changes removes this project from
+          public browsing until it is approved again. Its link stays the same.
+        </p>
+      )}
       <fieldset
         className="mb-5 rounded-[28px] bg-surface p-6"
-        disabled={submitting || importing}
+        disabled={submitting || importing || !!initial}
       >
         <legend className="px-2 font-display text-lg font-bold">
           How would you like to share?
@@ -1362,7 +1586,7 @@ function CommunityEditor({
               <li key={image.id} className="min-w-0 rounded-2xl bg-paper p-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
                 <img
-                  src={image.url}
+                  src={image.path ? existingUrls[image.path] : image.url}
                   alt={previewAlt(draft.title, position, images.length)}
                   className="aspect-[16/10] w-full rounded-xl object-cover"
                 />
@@ -1403,10 +1627,10 @@ function CommunityEditor({
             ))}
           </ul>
         )}
-        {images.length > 0 && !session && (
+        {images.length > 0 && (
           <p className="mt-3 text-sm text-muted">
-            Screenshots are not saved with local drafts. Sign in first, then add
-            them before you submit.
+            New screenshots and image ordering are not saved with local drafts.
+            Submit them before leaving this page.
           </p>
         )}
       </section>
@@ -1513,7 +1737,9 @@ function CommunityEditor({
           onClick={submit}
         >
           {submitting && <Spinner />}
-          {submitState.label}
+          {initial && !submitting && !submitted && session
+            ? "Submit changes for review"
+            : submitState.label}
         </button>
         {!session && (
           <p className="mt-3 text-sm text-muted">
@@ -1606,6 +1832,7 @@ function CommunityDetail({
               p_id: project.id,
               p_decision: decision,
               p_note: note,
+              p_revision: project.revision,
             });
       if (result.error) setError(message(result.error));
       else {
@@ -1657,7 +1884,14 @@ function CommunityDetail({
         </h2>
         <p className="mt-3 break-words text-body">{project.description}</p>
         <p className="mt-4 text-sm text-muted">
-          By @{project.author} ·{" "}
+          By{" "}
+          <Link
+            className="underline underline-offset-4"
+            href={`/community/creator/?author=${encodeURIComponent(project.author)}`}
+          >
+            @{project.author}
+          </Link>{" "}
+          ·{" "}
           {project.repository_url
             ? "Repository license applies"
             : "Shared under MIT"}
@@ -1746,6 +1980,22 @@ function CommunityDetail({
             </pre>
           </div>
         </>
+      )}
+      {session?.user.id === project.owner_id && (
+        <Link
+          className={`${secondary} mt-5 mr-3`}
+          href={`/community/edit/?id=${project.id}`}
+        >
+          Edit & resubmit
+        </Link>
+      )}
+      {project.status === "approved" && (
+        <ProjectBookmark
+          key={`${project.id}:${session?.user.id ?? "guest"}`}
+          client={client}
+          session={session}
+          id={project.id}
+        />
       )}
       {session?.user.id === project.owner_id &&
         project.status !== "withdrawn" && (

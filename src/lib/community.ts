@@ -29,6 +29,7 @@ export type CommunityProject = SampleSource & {
   status: CommunityStatus;
   created_at: string;
   reviewed_at: string | null;
+  revision: number;
   review_note: string;
   remix_of: string | null;
   license: string;
@@ -38,7 +39,7 @@ export type CommunityProject = SampleSource & {
 };
 export type CommunitySummary = Omit<
   CommunityProject,
-  "html" | "css" | "js" | "review_note"
+  "html" | "css" | "js" | "review_note" | "revision"
 >;
 export const SUMMARY_COLUMNS =
   "id,owner_id,author,title,description,kind,tags,status,created_at,reviewed_at,remix_of,license,previews,repository_url";

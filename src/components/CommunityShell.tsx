@@ -24,6 +24,12 @@ export function CommunityShell({
       label: "My submissions",
       icon: "folder",
     },
+    {
+      href: "/community/saved/",
+      view: "saved",
+      label: "Saved projects",
+      icon: "bookmark",
+    },
     ...(moderator
       ? [
           {
@@ -66,10 +72,7 @@ export function CommunityShell({
     );
   }
   return (
-    <SiteShell
-      account={account}
-      renderSidebar={navigation}
-    >
+    <SiteShell account={account} renderSidebar={navigation}>
       <main id="main" className="pt-8">
         {children}
         <Footer />
@@ -80,6 +83,7 @@ export function CommunityShell({
 
 function ShellIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
+    bookmark: "M6 3h12v18l-6-4-6 4z",
     grid: "M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z",
     folder: "M3 7V4h6l3 3h9v13H3z",
     check: "m5 12 4 4L19 6",

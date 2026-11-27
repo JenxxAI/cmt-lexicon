@@ -60,6 +60,7 @@ async function main() {
   let calls = 0;
   let verifier = "";
   let receivedAuthorization = "";
+  let receivedUrl = "";
   globalThis.fetch = async (input, init) => {
     calls++;
     const url = String(input);
@@ -77,6 +78,7 @@ async function main() {
       return new Response(null, { status: 204 });
     }
     if (url.includes("/rest/v1/")) {
+      receivedUrl = url;
       receivedAuthorization = headers.get("authorization") ?? "";
       return Response.json([], { headers: { "content-range": "*/0" } });
     }
@@ -199,6 +201,46 @@ async function main() {
     );
     assert.equal(refreshed.status, 200);
     assert.ok(cookieFrom(refreshed, "__Host-community-session"));
+    assert.equal((await request("projects/?view=saved")).status, 401);
+    assert.equal(
+      (await request("bookmark/?id=00000000-0000-4000-8000-000000000001"))
+        .status,
+      401,
+    );
+    assert.equal((await request("projects/?source=invalid")).status, 400);
+    assert.equal((await request("projects/?author=bad%25name")).status, 400);
+    assert.equal(
+      (await request("projects/?view=browse&source=github&author=maker"))
+        .status,
+      200,
+    );
+    let filters = new URL(receivedUrl).searchParams;
+    assert.equal(filters.get("repository_url"), "not.is.null");
+    assert.equal(filters.get("author"), "ilike.maker");
+    assert.ok(
+      filters.getAll("status").every((value) => value === "eq.approved"),
+    );
+    assert.equal(
+      (await request("projects/?view=saved&source=code", "GET", authCookie))
+        .status,
+      200,
+    );
+    filters = new URL(receivedUrl).searchParams;
+    assert.equal(filters.get("community_bookmarks.user_id"), "eq.fixture-user");
+    assert.equal(filters.get("status"), "eq.approved");
+    assert.equal(filters.get("repository_url"), "is.null");
+    assert.match(filters.get("select")!, /community_bookmarks!inner/);
+    const bookmark = await request(
+      "bookmark/?id=00000000-0000-4000-8000-000000000001",
+      "GET",
+      authCookie,
+    );
+    assert.equal(bookmark.status, 200);
+    assert.equal((await bookmark.json()).data, false);
+    assert.equal(
+      new URL(receivedUrl).searchParams.get("user_id"),
+      "eq.fixture-user",
+    );
     const logout = await request("logout/", "POST", authCookie);
     assert.equal(logout.status, 200);
     assert.match(logout.headers.get("set-cookie")!, /Max-Age=0/);
