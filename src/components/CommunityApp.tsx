@@ -3,6 +3,7 @@ import { SandboxPreview } from "./SandboxPreview";
 
 import Link from "next/link";
 import "./community-ui.css";
+import { CommunityBrowseCard } from "./CommunityBrowseCard";
 import { CommunityShell } from "./CommunityShell";
 import type { ReactNode } from "react";
 import { HeaderAccount } from "./HeaderAccount";
@@ -619,66 +620,81 @@ function CommunityGallery({
         </div>
       )}
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
-          <li key={item.id} className="min-w-0 rounded-[28px] bg-surface">
-            {(item.previews ?? []).length > 0 && (
-              <div className="p-3 pb-0">
-                <ImageCarousel
-                  label={`${item.title} preview images`}
-                  href={`/community/project/?id=${item.id}`}
-                  slides={item.previews.map((path, position) => ({
-                    src: previewUrls[path],
-                    alt: previewAlt(item.title, position, item.previews.length),
-                  }))}
-                />
-              </div>
-            )}
-            <div className="p-6">
-              <p className="font-mono text-xs uppercase text-accent-deep">
-                {item.kind === "website" ? "Website type" : "Component"} ·{" "}
-                {item.status}
-              </p>
-              <h2 className="mt-3 break-words font-display text-2xl font-bold">
-                <Link
-                  className="inline-flex min-h-11 items-center hover:text-accent-deep"
-                  href={`/community/project/?id=${item.id}`}
-                >
-                  {item.title}
-                </Link>
-              </h2>
-              <p className="mt-2 break-words text-sm text-body">
-                {item.description}
-              </p>
-              <p className="mt-4 text-sm text-muted">
-                By @{item.author} ·{" "}
-                {item.repository_url ? "GitHub showcase" : "MIT"}
-              </p>
-              <ul aria-label="Tags" className="mt-3 flex flex-wrap gap-2">
-                {item.tags.map((tag) => (
-                  <li
-                    key={tag}
-                    className="rounded-full bg-paper px-3 py-1 text-xs text-muted"
-                  >
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={`/community/project/?id=${item.id}`}
-                className={`${secondary} mt-5`}
-              >
-                {item.repository_url
-                  ? "View showcase →"
-                  : "View code & preview →"}
-              </Link>
-              {item.repository_url && (
-                <div>
-                  <RepositoryLink url={item.repository_url} />
+        {items.map((item) =>
+          view === "browse" ? (
+            <CommunityBrowseCard
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              cover={
+                item.previews?.[0] ? previewUrls[item.previews[0]] : undefined
+              }
+            />
+          ) : (
+            <li key={item.id} className="min-w-0 rounded-[28px] bg-surface">
+              {(item.previews ?? []).length > 0 && (
+                <div className="p-3 pb-0">
+                  <ImageCarousel
+                    label={`${item.title} preview images`}
+                    href={`/community/project/?id=${item.id}`}
+                    slides={item.previews.map((path, position) => ({
+                      src: previewUrls[path],
+                      alt: previewAlt(
+                        item.title,
+                        position,
+                        item.previews.length,
+                      ),
+                    }))}
+                  />
                 </div>
               )}
-            </div>
-          </li>
-        ))}
+              <div className="p-6">
+                <p className="font-mono text-xs uppercase text-accent-deep">
+                  {item.kind === "website" ? "Website type" : "Component"} ·{" "}
+                  {item.status}
+                </p>
+                <h2 className="mt-3 break-words font-display text-2xl font-bold">
+                  <Link
+                    className="inline-flex min-h-11 items-center hover:text-accent-deep"
+                    href={`/community/project/?id=${item.id}`}
+                  >
+                    {item.title}
+                  </Link>
+                </h2>
+                <p className="mt-2 break-words text-sm text-body">
+                  {item.description}
+                </p>
+                <p className="mt-4 text-sm text-muted">
+                  By @{item.author} ·{" "}
+                  {item.repository_url ? "GitHub showcase" : "MIT"}
+                </p>
+                <ul aria-label="Tags" className="mt-3 flex flex-wrap gap-2">
+                  {item.tags.map((tag) => (
+                    <li
+                      key={tag}
+                      className="rounded-full bg-paper px-3 py-1 text-xs text-muted"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={`/community/project/?id=${item.id}`}
+                  className={`${secondary} mt-5`}
+                >
+                  {item.repository_url
+                    ? "View showcase →"
+                    : "View code & preview →"}
+                </Link>
+                {item.repository_url && (
+                  <div>
+                    <RepositoryLink url={item.repository_url} />
+                  </div>
+                )}
+              </div>
+            </li>
+          ),
+        )}
       </ul>
       <div className="mt-6 flex gap-3">
         <button
